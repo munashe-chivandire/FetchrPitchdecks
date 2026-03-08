@@ -138,6 +138,10 @@
   function next() { goTo(current + 1, 'down'); }
   function prev() { goTo(current - 1, 'up'); }
 
+  // Expose for annotation system
+  window._deckGoTo = goTo;
+  window._deckGetCurrent = function () { return current; };
+
   function updateProgress() {
     progressBar.style.transform = 'scaleX(' + (current + 1) / total + ')';
     counter.textContent = (current + 1) + ' / ' + total;

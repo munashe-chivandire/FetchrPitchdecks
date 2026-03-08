@@ -1235,6 +1235,10 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
   function next() { goTo(current + 1, 'down'); }
   function prev() { goTo(current - 1, 'up'); }
 
+  // Expose for annotation system
+  window._deckGoTo = goTo;
+  window._deckGetCurrent = function () { return current; };
+
   function updateProgress() {
     progressBar.style.width = ((current + 1) / total * 100) + '%';
     counter.textContent = `${current + 1} / ${total}`;
