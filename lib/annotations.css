@@ -171,7 +171,14 @@ body.ann-mode-active .slide.active {
   padding: 12px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59,130,246,0.25) transparent;
 }
+
+.ann-slide-tabs::-webkit-scrollbar { height: 4px; }
+.ann-slide-tabs::-webkit-scrollbar-track { background: transparent; }
+.ann-slide-tabs::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.25); border-radius: 2px; }
+.ann-slide-tabs::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.4); }
 
 .ann-slide-tab {
   padding: 5px 10px;
