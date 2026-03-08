@@ -145,6 +145,8 @@
 
   /* ---------- Keyboard Navigation ---------- */
   document.addEventListener('keydown', function (e) {
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); stopAutoplay(); next(); }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); stopAutoplay(); prev(); }
     if (e.key === 'Home') { e.preventDefault(); stopAutoplay(); goTo(0, 'up'); }

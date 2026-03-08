@@ -1272,6 +1272,8 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
 
   // Keyboard
   document.addEventListener('keydown', e => {
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
     if(['ArrowRight','ArrowDown',' '].includes(e.key)) { e.preventDefault(); next(); }
     if(['ArrowLeft','ArrowUp'].includes(e.key)) { e.preventDefault(); prev(); }
     if(e.key === 'Home') { e.preventDefault(); goTo(0,'up'); }
