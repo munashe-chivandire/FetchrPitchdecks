@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetchr. — Presentations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Outfit:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-x: hidden; }
+
+    :root {
+      --bg:           #0A0F1C;
+      --bg-deep:      #060A15;
+      --bg-card:      rgba(255,255,255,0.026);
+      --bg-hover:     rgba(255,255,255,0.045);
+      --border:       rgba(255,255,255,0.072);
+      --border-hover: rgba(59,130,246,0.52);
+      --blue:         #3B82F6;
+      --blue-dim:     rgba(59,130,246,0.10);
+      --amber:        #F59E0B;
+      --amber-dim:    rgba(245,158,11,0.09);
+      --amber-border: rgba(245,158,11,0.26);
+      --green:        #10B981;
+      --text:         #F1F5F9;
+      --text-muted:   #94A3B8;
+      --text-faint:   rgba(148,163,184,0.38);
+      --font-head:    'Plus Jakarta Sans', sans-serif;
+      --font-body:    'Outfit', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+      --nav-h:        56px;
+      --ws-h:         58px;
+      --ease-spring:  cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Global grid texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.020) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.020) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ══════════════════════════════════════════════
+       NAV BAR
+    ══════════════════════════════════════════════ */
+    .nav {
+      position: relative;
+      z-index: 20;
+      height: var(--nav-h);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(6,10,21,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .nav-logo { height: 24px; width: auto; display: block; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+      animation: dotPulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.45); }
+      50%       { box-shadow: 0 0 0 5px rgba(16,185,129,0); }
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+    }
+
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      border-color: rgba(255,255,255,0.15);
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ══════════════════════════════════════════════
+       WORKSPACE HEADER
+    ══════════════════════════════════════════════ */
+    .ws-header {
+      position: relative;
+      z-index: 1;
+      height: var(--ws-h);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeSlideIn 0.4s 0.08s var(--ease-spring) both;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .bc-item       { color: var(--text-muted); }
+    .bc-item.bc-active { color: var(--text); }
+    .bc-sep        { color: var(--text-faint); font-size: 13px; }
+
+    .ws-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ws-sort {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.03em;
+      margin-right: 4px;
+    }
+
+    .ws-icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+    }
+
+    .ws-icon-btn:hover, .ws-icon-btn.active {
+      border-color: rgba(59,130,246,0.4);
+      color: var(--blue);
+      background: rgba(59,130,246,0.06);
+    }
+
+    /* ══════════════════════════════════════════════
+       MAIN CONTENT
+    ══════════════════════════════════════════════ */
+    .content {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 42% 1fr;
+      gap: 14px;
+      padding: 18px 28px;
+    }
+
+    /* ══════════════════════════════════════════════
+       SHARED PREVIEW PANEL
+    ══════════════════════════════════════════════ */
+    .preview-panel {
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-deep);
+    }
+
+    /* inner grid — slightly more visible than body grid */
+    .preview-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.038) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.038) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Large faint number watermark */
+    .preview-num {
+      position: absolute;
+      bottom: -18px;
+      right: -6px;
+      font-family: var(--font-head);
+      font-weight: 800;
+      line-height: 1;
+      color: rgba(255,255,255,0.022);
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      letter-spacing: -0.06em;
+    }
+
+    /* ══════════════════════════════════════════════
+       FEATURED CARD
+    ══════════════════════════════════════════════ */
+    .featured-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s var(--ease-spring);
+      animation: cardUp 0.5s 0.18s var(--ease-spring) both;
+    }
+
+    .featured-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 48px rgba(59,130,246,0.09), 0 24px 64px rgba(0,0,0,0.55);
+      transform: translateY(-3px);
+    }
+
+    .featured-card:hover .feat-action-bar {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Preview panel */
+    .feat-preview {
+      flex: 0 0 57%;
+      position: relative;
+    }
+
+    /* Radial blue accent */
+    .feat-preview::after {
+      content: '';
+      position: absolute;
+      top: 15%;
+      right: 0%;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(59,130,246,0.13) 0%, transparent 68%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Amber warmth bottom-left */
+    .feat-preview-amber {
+      position: absolute;
+      bottom: -10%;
+      left: -5%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 68%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .feat-preview .preview-num { font-size: 200px; }
+
+    /* Top badges row */
+    .preview-top-row {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 3;
+    }
+
+    .slide-count-chip {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      background: rgba(6,10,21,0.65);
+      backdrop-filter: blur(6px);
+      padding: 4px 9px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .flagship-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--amber);
+      border: 1px solid var(--amber-border);
+      background: rgba(245,158,11,0.07);
+      backdrop-filter: blur(6px);
+      padding: 4px 9px 4px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .flagship-pulse {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--amber);
+      flex-shrink: 0;
+      animation: dotPulse 2.5s ease-in-out infinite;
+    }
+
+    /* Stats chips */
+    .feat-stats-row {
+      position: absolute;
+      bottom: 16px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      gap: 9px;
+      z-index: 3;
+    }
+
+    .stat-chip {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      background: rgba(255,255,255,0.062);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 8px;
+      padding: 9px 11px;
+    }
+
+    .sc-val {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .sc-val.amber { color: var(--amber); }
+
+    .sc-lbl {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    /* Info panel */
+    .feat-info {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 18px 20px;
+      background: var(--bg-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── shared card info atoms ── */
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+
+    .card-title-lg {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .card-desc {
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.65;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Transparent wrapper in grid — groups tag + title for list-view row layout */
+    .feat-head-group {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+
+    .card-meta {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.04em;
+    }
+
+    .card-comments {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-faint);
+    }
+
+    /* Action bar — slides up on hover */
+    .feat-action-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 20px;
+      background: rgba(6,10,21,0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      transform: translateY(100%);
+      opacity: 0;
+      transition: transform 0.26s var(--ease-spring), opacity 0.2s ease;
+    }
+
+    .btn-open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      flex: 1;
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--blue);
+      border: none;
+      border-radius: 7px;
+      padding: 8px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.18s;
+    }
+
+    .btn-open:hover { background: #2563eb; }
+
+    .btn-more-sm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: border-color 0.18s, color 0.18s;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+
+    .btn-more-sm:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+
+    /* ══════════════════════════════════════════════
+       RIGHT COLUMN + COMPACT CARDS
+    ══════════════════════════════════════════════ */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .compact-card {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 20px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: inherit;
+      background: var(--bg-card);
+      position: relative;
+      transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s var(--ease-spring);
+    }
+
+    .compact-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 28px rgba(59,130,246,0.08), 0 12px 36px rgba(0,0,0,0.45);
+      transform: translateY(-2px);
+    }
+
+    .compact-card:hover .cc-open {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .compact-card:nth-child(1) { animation: cardUp 0.5s 0.24s var(--ease-spring) both; }
+    .compact-card:nth-child(2) { animation: cardUp 0.5s 0.30s var(--ease-spring) both; }
+
+    /* Colored index badge — replaces fake preview strip */
+    .cc-index {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
+      letter-spacing: -0.01em;
+      align-self: flex-start;
+    }
+
+    .cc-idx-blue  { background: rgba(59,130,246,0.10);  border: 1px solid rgba(59,130,246,0.20);  color: #7FAAEF; }
+    .cc-idx-amber { background: rgba(245,158,11,0.09);  border: 1px solid rgba(245,158,11,0.22);  color: #D4A74A; }
+    .cc-idx-teal  { background: rgba(16,185,129,0.09);  border: 1px solid rgba(16,185,129,0.22);  color: #4DC9A0; }
+
+    /* Body: title + meta */
+    .cc-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .cc-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .cc-title {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+    }
+
+    .cc-meta {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.03em;
+    }
+
+    .cc-desc {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Mini stat chips for compact cards */
+    .cc-stats {
+      display: flex;
+      gap: 10px;
+      margin-top: 2rem;
+    }
+
+    .cc-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.03em;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 7px;
+      padding: 8px 12px;
+    }
+
+    .cc-stat-val {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .cc-stat-val.amber { color: var(--amber); }
+    .cc-stat-val.blue { color: var(--blue); }
+    .cc-stat-val.green { color: var(--green); }
+
+    .cc-stat-lbl {
+      color: var(--text-faint);
+      text-transform: uppercase;
+      font-size: 9.5px;
+      letter-spacing: 0.06em;
+    }
+
+    /* Hide stats row in list view */
+    .content.list-view .cc-stats { display: none; }
+
+    /* Right side: comments + hover open */
+    .cc-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .cc-comments {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-faint);
+    }
+
+    .cc-open {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-head);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+      opacity: 0;
+      transform: translateX(8px);
+      transition: opacity 0.2s ease, transform 0.22s var(--ease-spring);
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════════════════════ */
+    @keyframes cardUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SVG icon helper */
+    .ico { display: block; flex-shrink: 0; }
+
+    /* ══════════════════════════════════════════════
+       LIST VIEW
+    ══════════════════════════════════════════════ */
+    .feat-list-idx, .feat-list-open { display: none; }
+
+    .content.list-view {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Dissolve the right-col wrapper so all cards sit at the same level */
+    .content.list-view .right-col { display: contents; }
+
+    .content.list-view .featured-card {
+      height: 68px;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .content.list-view .feat-preview { display: none; }
+
+    .content.list-view .feat-info {
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      padding: 0 20px;
+      overflow: visible;
+    }
+
+    .content.list-view .feat-list-idx {
+      display: flex;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
+      letter-spacing: -0.01em;
+      background: var(--amber-dim);
+      border: 1px solid var(--amber-border);
+      color: var(--amber);
+    }
+
+    /* feat-head-group becomes the title+tag column in list row */
+    .content.list-view .feat-head-group {
+      flex-shrink: 0;
+      gap: 4px;
+    }
+
+    .content.list-view .card-title-lg {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .content.list-view .card-desc { display: none; }
+
+    .content.list-view .card-foot {
+      flex: 1;
+      margin-top: 0;
+      justify-content: flex-end;
+      gap: 14px;
+    }
+
+    .content.list-view .feat-action-bar { display: none; }
+
+    .content.list-view .feat-list-open {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-head);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .content.list-view .compact-card { flex: none; height: 68px; }
+    .content.list-view .cc-open { opacity: 1; transform: none; }
+    .content.list-view .cc-desc { display: none; }
+
+    /* ══════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════ */
+
+    /* Tablet — collapse to single column, allow scrolling */
+    @media (max-width: 1100px) {
+      html, body { overflow: auto; height: auto; }
+
+      .content {
+        grid-template-columns: 1fr;
+        overflow-y: visible;
+        height: auto;
+        flex: none;
+        padding-bottom: 24px;
+      }
+
+      .featured-card {
+        height: auto;
+        min-height: 400px;
+      }
+
+      .compact-card {
+        flex: none;
+        min-height: 90px;
+        height: auto;
+        padding: 14px 20px;
+        align-items: flex-start;
+      }
+
+      .cc-index { margin-top: 2px; flex-shrink: 0; align-self: flex-start; }
+
+      .cc-body { gap: 6px; }
+
+      .cc-actions { align-self: flex-start; padding-top: 2px; }
+
+      /* list view on tablet */
+      .content.list-view .compact-card { padding: 0 20px; height: 68px; align-items: center; }
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .nav { padding: 0 14px; }
+      .ws-header { padding: 0 14px; }
+      .content { padding: 12px 14px; gap: 10px; }
+
+      .nav-status span:not(.status-dot) { display: none; }
+
+      .feat-preview { flex: 0 0 44%; }
+
+      .feat-stats-row { gap: 6px; }
+      .stat-chip { padding: 7px 9px; }
+      .sc-val { font-size: 15px; }
+
+      .card-title-lg { font-size: 18px; }
+
+      .featured-card { min-height: 360px; }
+
+      .ws-sort { display: none; }
+
+      /* Prevent flex rows from overflowing viewport width */
+      .compact-card { padding: 12px 14px; }
+      .cc-top { flex-wrap: wrap; gap: 6px; }
+      .cc-title { white-space: normal; flex-shrink: 1; min-width: 0; }
+      .cc-actions { flex-shrink: 0; align-self: flex-start; }
+      .nav-right { gap: 10px; }
+      .preview-top-row { gap: 8px; }
+      .flagship-badge { font-size: 9px; padding: 3px 7px 3px 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       NAV BAR
+  ══════════════════════════════════════════════ -->
+  <nav class="nav">
+    <img class="nav-logo" src="../Deck1/fetchrLogoColor-removebg-preview.png" alt="Fetchr.">
+    <div class="nav-right">
+      <div class="nav-status">
+        <span class="status-dot"></span>
+        3 presentations
+      </div>
+      <div class="nav-divider"></div>
+      <button class="icon-btn" aria-label="More options" onclick="return false">
+        <svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       WORKSPACE HEADER
+  ══════════════════════════════════════════════ -->
+  <div class="ws-header">
+    <div class="breadcrumb">
+      <span class="bc-item">Workspace</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-item bc-active">Presentations</span>
+    </div>
+    <div class="ws-controls">
+      <span class="ws-sort">Sort: Recent</span>
+      <button class="ws-icon-btn active" aria-label="Grid view">
+        <svg class="ico" width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+          <rect x="1" y="1" width="6" height="6" rx="1"/>
+          <rect x="9" y="1" width="6" height="6" rx="1"/>
+          <rect x="1" y="9" width="6" height="6" rx="1"/>
+          <rect x="9" y="9" width="6" height="6" rx="1"/>
+        </svg>
+      </button>
+      <button class="ws-icon-btn" aria-label="List view">
+        <svg class="ico" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <line x1="2" y1="4" x2="14" y2="4"/>
+          <line x1="2" y1="8" x2="14" y2="8"/>
+          <line x1="2" y1="12" x2="14" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════════ -->
+  <main class="content">
+
+    <!-- ── FEATURED CARD ─────────────────────────── -->
+    <div class="featured-card"
+         role="link"
+         tabindex="0"
+         onclick="window.open('../Deck1/index.html','_blank')"
+         onkeydown="if(event.key==='Enter')window.open('../Deck1/index.html','_blank')">
+
+      <div class="feat-preview preview-panel">
+        <div class="feat-preview-amber"></div>
+        <span class="preview-num">01</span>
+
+        <div class="preview-top-row">
+          <span class="slide-count-chip">13 slides</span>
+          <span class="flagship-badge">
+            <span class="flagship-pulse"></span>
+            Flagship
+          </span>
+        </div>
+
+        <div class="feat-stats-row">
+          <div class="stat-chip">
+            <span class="sc-val amber">$350K</span>
+            <span class="sc-lbl">Raise</span>
+          </div>
+          <div class="stat-chip">
+            <span class="sc-val">13</span>
+            <span class="sc-lbl">Slides</span>
+          </div>
+          <div class="stat-chip">
+            <span class="sc-val amber">$1.4B</span>
+            <span class="sc-lbl">TAM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-info">
+        <div class="feat-list-idx">01</div>
+        <div class="feat-head-group">
+          <span class="card-tag">Pre-Seed · $350K</span>
+          <h2 class="card-title-lg">Pre-Seed Investor Deck</h2>
+        </div>
+        <p class="card-desc">13 slides covering Fetchr's $1.4B last-mile delivery opportunity in Zimbabwe — problem, product mechanics, GPS-tracked dispatch, live traction, team bios, and a $350K pre-seed raise. Fully interactive with animated counters, keyboard &amp; touch navigation, progress tracking, and dark/light mode.</p>
+        <div class="card-foot">
+          <span class="card-meta">Updated Mar 2026 &middot; Dark theme</span>
+          <div class="card-comments">
+            <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            —
+          </div>
+        </div>
+        <a class="feat-list-open" href="../Deck1/index.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+          Open
+          <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>
+
+        <div class="feat-action-bar">
+          <a class="btn-open" href="../Deck1/index.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+            Open Presentation
+            <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </a>
+          <button class="btn-more-sm" onclick="event.stopPropagation()">
+            <svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT COLUMN ───────────────────────────── -->
+    <div class="right-col">
+
+      <!-- Card 02: Enterprise Revenue Deck -->
+      <a class="compact-card" href="../Deck2/Fetchr_Enterprise_Deck.html" target="_blank" rel="noopener noreferrer">
+        <div class="cc-index cc-idx-blue">02</div>
+        <div class="cc-body">
+          <div class="cc-top">
+            <span class="cc-title">Enterprise Revenue Deck</span>
+            <span class="card-tag">Enterprise · Revenue</span>
+          </div>
+          <span class="cc-desc">Light-theme enterprise deck — revenue model, corporate logistics partnerships, unit economics, and go-to-market strategy. 12 slides with embedded charts and dot navigation.</span>
+          <div class="cc-stats">
+            <div class="cc-stat"><span class="cc-stat-val blue">12</span><span class="cc-stat-lbl">Slides</span></div>
+            <div class="cc-stat"><span class="cc-stat-val amber">B2B</span><span class="cc-stat-lbl">Focus</span></div>
+            <div class="cc-stat"><span class="cc-stat-val green">$350K</span><span class="cc-stat-lbl">Raise</span></div>
+          </div>
+          <span class="cc-meta">Mar 2026 &middot; Light theme</span>
+        </div>
+        <div class="cc-actions">
+          <div class="cc-comments">
+            <svg class="ico" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            —
+          </div>
+          <span class="cc-open">
+            Open
+            <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Card 03: Africa Macro / Regional Vision Deck -->
+      <a class="compact-card" href="../Deck3/index.html" target="_blank" rel="noopener noreferrer">
+        <div class="cc-index cc-idx-amber">03</div>
+        <div class="cc-body">
+          <div class="cc-top">
+            <span class="cc-title">Africa Macro / Regional Vision</span>
+            <span class="card-tag">Pre-Seed · Vision</span>
+          </div>
+          <span class="cc-desc">The $15.5T global logistics market's Africa problem — macro thesis, Southern Africa expansion timeline, competitive moat, and $350K pre-seed ask. 13 slides with animated counters.</span>
+          <div class="cc-stats">
+            <div class="cc-stat"><span class="cc-stat-val amber">$350K</span><span class="cc-stat-lbl">Raise</span></div>
+            <div class="cc-stat"><span class="cc-stat-val blue">13</span><span class="cc-stat-lbl">Slides</span></div>
+            <div class="cc-stat"><span class="cc-stat-val green">$15.5T</span><span class="cc-stat-lbl">TAM</span></div>
+          </div>
+          <span class="cc-meta">Mar 2026 &middot; Dark theme</span>
+        </div>
+        <div class="cc-actions">
+          <div class="cc-comments">
+            <svg class="ico" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            —
+          </div>
+          <span class="cc-open">
+            Open
+            <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var gridBtn = document.querySelector('[aria-label="Grid view"]');
+      var listBtn = document.querySelector('[aria-label="List view"]');
+      var content = document.querySelector('.content');
+
+      gridBtn.addEventListener('click', function () {
+        content.classList.remove('list-view');
+        gridBtn.classList.add('active');
+        listBtn.classList.remove('active');
+      });
+
+      listBtn.addEventListener('click', function () {
+        content.classList.add('list-view');
+        listBtn.classList.add('active');
+        gridBtn.classList.remove('active');
+      });
+    })();
+  </script>
+</body>
+</html>

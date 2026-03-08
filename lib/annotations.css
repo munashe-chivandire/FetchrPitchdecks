@@ -1,0 +1,546 @@
+/* ══════════════════════════════════════════════
+   ANNOTATION SYSTEM — Overlay Styles
+   ══════════════════════════════════════════════ */
+
+/* ── Toggle Button ── */
+.ann-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(15, 20, 35, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #94A3B8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.ann-toggle:hover {
+  border-color: rgba(59,130,246,0.5);
+  color: #3B82F6;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 32px rgba(59,130,246,0.15);
+}
+
+.ann-toggle.active {
+  background: #3B82F6;
+  border-color: #3B82F6;
+  color: #fff;
+}
+
+.ann-toggle .ann-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: #EF4444;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.ann-badge:empty { display: none; }
+
+/* ── Annotation Pins ── */
+.ann-pin {
+  position: absolute;
+  z-index: 9000;
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  background: #3B82F6;
+  border: 2px solid #fff;
+  transform: rotate(-45deg) translate(-50%, -50%);
+  transform-origin: 0 0;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 2px 12px rgba(59,130,246,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ann-pin:hover {
+  transform: rotate(-45deg) translate(-50%, -50%) scale(1.15);
+  box-shadow: 0 4px 20px rgba(59,130,246,0.5);
+}
+
+.ann-pin.resolved {
+  background: #10B981;
+  box-shadow: 0 2px 12px rgba(16,185,129,0.35);
+  opacity: 0.6;
+}
+
+.ann-pin-number {
+  transform: rotate(45deg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+}
+
+/* ── Click Indicator (annotation mode cursor) ── */
+body.ann-mode-active .slide.active {
+  cursor: crosshair;
+}
+
+/* ── Panel (sidebar) ── */
+.ann-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  max-width: 92vw;
+  z-index: 10001;
+  background: rgba(10, 14, 28, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-left: 1px solid rgba(255,255,255,0.08);
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+}
+
+.ann-panel.open {
+  transform: translateX(0);
+}
+
+.ann-panel-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.ann-panel-title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #F1F5F9;
+  letter-spacing: -0.02em;
+}
+
+.ann-panel-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent;
+  color: #94A3B8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.ann-panel-close:hover {
+  background: rgba(255,255,255,0.05);
+  color: #F1F5F9;
+}
+
+/* ── Slide Tab Nav ── */
+.ann-slide-tabs {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  overflow-x: auto;
+}
+
+.ann-slide-tab {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: transparent;
+  color: #64748B;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.ann-slide-tab:hover {
+  background: rgba(255,255,255,0.04);
+  color: #94A3B8;
+}
+
+.ann-slide-tab.active {
+  background: rgba(59,130,246,0.12);
+  border-color: rgba(59,130,246,0.3);
+  color: #3B82F6;
+}
+
+.ann-slide-tab .tab-count {
+  margin-left: 4px;
+  opacity: 0.6;
+}
+
+/* ── Annotation List ── */
+.ann-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+}
+
+.ann-list::-webkit-scrollbar { width: 4px; }
+.ann-list::-webkit-scrollbar-track { background: transparent; }
+.ann-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+.ann-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.ann-empty-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+}
+
+.ann-empty-text {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.ann-empty-hint {
+  font-size: 11px;
+  color: #334155;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Single Annotation Card ── */
+.ann-card {
+  padding: 14px 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  margin-bottom: 8px;
+  transition: all 0.18s ease;
+}
+
+.ann-card:hover {
+  background: rgba(255,255,255,0.035);
+  border-color: rgba(255,255,255,0.08);
+}
+
+.ann-card.resolved {
+  opacity: 0.5;
+}
+
+.ann-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.ann-card-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ann-card-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.ann-card-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #E2E8F0;
+}
+
+.ann-card-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #475569;
+}
+
+.ann-card-content {
+  font-size: 13px;
+  color: #CBD5E1;
+  line-height: 1.55;
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+
+.ann-card-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 7px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.ann-card-type.comment {
+  background: rgba(59,130,246,0.1);
+  color: #60A5FA;
+  border: 1px solid rgba(59,130,246,0.2);
+}
+
+.ann-card-type.suggestion {
+  background: rgba(245,158,11,0.1);
+  color: #FBBF24;
+  border: 1px solid rgba(245,158,11,0.2);
+}
+
+.ann-card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.ann-card-btn {
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: transparent;
+  color: #64748B;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ann-card-btn:hover {
+  background: rgba(255,255,255,0.05);
+  color: #94A3B8;
+}
+
+.ann-card-btn.resolve {
+  border-color: rgba(16,185,129,0.25);
+  color: #10B981;
+}
+
+.ann-card-btn.resolve:hover {
+  background: rgba(16,185,129,0.1);
+}
+
+.ann-card-btn.delete {
+  border-color: rgba(239,68,68,0.2);
+  color: #EF4444;
+}
+
+.ann-card-btn.delete:hover {
+  background: rgba(239,68,68,0.1);
+}
+
+/* ── New Annotation Form ── */
+.ann-form {
+  flex-shrink: 0;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: none;
+}
+
+.ann-form.visible {
+  display: block;
+}
+
+.ann-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ann-form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94A3B8;
+}
+
+.ann-form-pos {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #475569;
+}
+
+.ann-form-author {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: #E2E8F0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  outline: none;
+  margin-bottom: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.ann-form-author:focus {
+  border-color: rgba(59,130,246,0.4);
+}
+
+.ann-form-textarea {
+  width: 100%;
+  min-height: 72px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: #E2E8F0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.ann-form-textarea:focus {
+  border-color: rgba(59,130,246,0.4);
+}
+
+.ann-form-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ann-type-toggle {
+  display: flex;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.ann-type-btn {
+  padding: 5px 12px;
+  border: none;
+  background: transparent;
+  color: #64748B;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ann-type-btn.active {
+  background: rgba(59,130,246,0.15);
+  color: #3B82F6;
+}
+
+.ann-form-submit {
+  margin-left: auto;
+  padding: 7px 16px;
+  border-radius: 7px;
+  border: none;
+  background: #3B82F6;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ann-form-submit:hover {
+  background: #2563EB;
+}
+
+.ann-form-submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .ann-panel {
+    width: 100vw;
+  }
+
+  .ann-toggle {
+    bottom: 16px;
+    right: 16px;
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* Light theme support */
+body[data-theme="light"] .ann-panel,
+.deck[data-theme="light"] ~ .ann-panel,
+body.light-theme .ann-panel {
+  background: rgba(255, 255, 255, 0.97);
+  border-left-color: rgba(0,0,0,0.08);
+}
+
+body[data-theme="light"] .ann-panel .ann-panel-title,
+body.light-theme .ann-panel .ann-panel-title {
+  color: #111827;
+}
+
+body[data-theme="light"] .ann-panel .ann-card-name,
+body.light-theme .ann-panel .ann-card-name {
+  color: #1F2937;
+}
+
+body[data-theme="light"] .ann-panel .ann-card-content,
+body.light-theme .ann-panel .ann-card-content {
+  color: #4B5563;
+}
+
+body[data-theme="light"] .ann-toggle,
+body.light-theme .ann-toggle {
+  background: rgba(255,255,255,0.92);
+  border-color: rgba(0,0,0,0.1);
+  color: #6B7280;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}

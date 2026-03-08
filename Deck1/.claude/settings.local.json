@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \":*)",
+      "Bash(python3:*)",
+      "Bash(for class in gap-callout domino-chain domino-nodes domino-node domino-arrow emotional-callout moat-pills moat-pill diaspora-keystat market-layers market-layer layer-badge layer-info layer-title layer-stats layer-sam layer-cagr layer-desc network-callout comp-table comp-table-row comp-cell takeaway-callout indrive-callout platform-cards platform-card platform-icon platform-title platform-desc vision-callout feature-pills feature-pill expansion-roadmap expansion-phase expansion-dot expansion-content expansion-badge expansion-year expansion-metrics expansion-line exit-thesis exit-thesis-label exit-thesis-calc exit-pills exit-pill return-pills return-pill)",
+      "Bash(do)",
+      "Bash(if grep -q \"\\\\.$class\" \"c:/Users/User/Desktop/PitchDecks/Deck3/styles.css\")",
+      "Bash(then)",
+      "Bash(echo \"OK: $class\")",
+      "Bash(else)",
+      "Bash(echo \"MISSING: $class\")",
+      "Bash(fi)",
+      "Bash(done)"
+    ]
+  }
+}
