@@ -3041,7 +3041,7 @@ body, .slide, .slide::before, .slide::after,
   display: flex;
   align-items: flex-start;
   margin-top: 20px;
-  overflow-x: auto;
+  overflow: hidden;
   padding-bottom: 4px;
 }
 
