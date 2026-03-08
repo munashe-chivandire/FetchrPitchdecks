@@ -506,7 +506,7 @@ body {
   top: 50%;
   left: 80px;
   transform: translateY(-50%);
-  max-width: 480px;
+  max-width: 580px;
   z-index: 2;
 }
 
