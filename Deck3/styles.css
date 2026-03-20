@@ -2804,6 +2804,11 @@ body, .slide, .slide::before, .slide::after,
 
 /* ---------- PRINT ---------- */
 @media print {
+  body, html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
   .deck { overflow: visible; height: auto; }
   .slide {
     position: relative;
@@ -2814,14 +2819,9 @@ body, .slide, .slide::before, .slide::after,
     page-break-inside: avoid;
     height: 100vh;
     padding: 48px;
-    background: white !important;
-    color: #111 !important;
   }
-  .grain { display: none; }
-  .progress-bar, .slide-counter, .nav-hint { display: none; }
-  .nav-panel { display: none; }
-  .theme-toggle { display: none; }
-  .autoplay-btn { display: none; }
+  .grain, .progress-bar, .slide-counter, .nav-hint,
+  .theme-toggle, .nav-panel, .autoplay-btn { display: none !important; }
   [data-animate] { opacity: 1 !important; animation: none !important; }
   .domino-node, .domino-arrow, .flow-node--source, .flow-arrow, .flow-node--target,
   .moat-pill, .feature-pill, .return-pill, .market-layer,

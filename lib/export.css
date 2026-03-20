@@ -1,0 +1,319 @@
+/* ══════════════════════════════════════════════
+   EXPORT SYSTEM — UI Overlay Styles
+   ══════════════════════════════════════════════ */
+
+/* ── Export Button (bottom-right, beside annotation toggle) ── */
+.export-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 80px;
+  z-index: 10000;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(15, 20, 35, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #94A3B8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.export-toggle:hover {
+  border-color: rgba(59,130,246,0.5);
+  color: #3B82F6;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 32px rgba(59,130,246,0.15);
+}
+
+.export-toggle.active {
+  border-color: rgba(59,130,246,0.5);
+  color: #3B82F6;
+}
+
+/* ── Dropdown Menu ── */
+.export-dropdown {
+  position: fixed;
+  bottom: 80px;
+  right: 80px;
+  z-index: 10001;
+  min-width: 200px;
+  background: rgba(10, 14, 28, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.96);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+}
+
+.export-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.export-dropdown-header {
+  padding: 10px 12px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(148,163,184,0.5);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.export-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #E2E8F0;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.export-option:hover {
+  background: rgba(59,130,246,0.08);
+  color: #fff;
+}
+
+.export-option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.export-option:disabled:hover {
+  background: transparent;
+  color: #E2E8F0;
+}
+
+.export-option-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.export-option-icon.pdf {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #F87171;
+}
+
+.export-option-icon.pptx {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  color: #FBBF24;
+}
+
+.export-option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.export-option-label {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.export-option-desc {
+  font-size: 10px;
+  color: #64748B;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+/* ── Progress Overlay ── */
+.export-progress-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(6, 10, 21, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+}
+
+.export-progress-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.export-progress-title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #F1F5F9;
+  letter-spacing: -0.02em;
+}
+
+.export-progress-status {
+  font-size: 13px;
+  color: #94A3B8;
+}
+
+.export-progress-bar-track {
+  width: 280px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+
+.export-progress-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: #3B82F6;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 0%;
+}
+
+.export-progress-slide-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #475569;
+  letter-spacing: 0.04em;
+}
+
+.export-cancel-btn {
+  margin-top: 8px;
+  padding: 7px 20px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent;
+  color: #94A3B8;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.export-cancel-btn:hover {
+  background: rgba(255,255,255,0.05);
+  color: #F1F5F9;
+  border-color: rgba(255,255,255,0.15);
+}
+
+/* ── Light Theme Support ── */
+[data-theme="light"] .export-toggle,
+body.light-theme .export-toggle {
+  background: rgba(255,255,255,0.92);
+  border-color: rgba(0,0,0,0.1);
+  color: #6B7280;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .export-toggle:hover,
+body.light-theme .export-toggle:hover {
+  border-color: rgba(0,65,245,0.4);
+  color: #0041F5;
+  box-shadow: 0 6px 32px rgba(0,65,245,0.12);
+}
+
+[data-theme="light"] .export-dropdown,
+body.light-theme .export-dropdown {
+  background: rgba(255,255,255,0.97);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+}
+
+[data-theme="light"] .export-option,
+body.light-theme .export-option {
+  color: #1F2937;
+}
+
+[data-theme="light"] .export-option:hover,
+body.light-theme .export-option:hover {
+  background: rgba(0,65,245,0.06);
+  color: #111827;
+}
+
+[data-theme="light"] .export-progress-overlay,
+body.light-theme .export-progress-overlay {
+  background: rgba(255,255,255,0.92);
+}
+
+[data-theme="light"] .export-progress-title,
+body.light-theme .export-progress-title {
+  color: #111827;
+}
+
+[data-theme="light"] .export-progress-status,
+body.light-theme .export-progress-status {
+  color: #4B5563;
+}
+
+[data-theme="light"] .export-progress-bar-track,
+body.light-theme .export-progress-bar-track {
+  background: rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .export-progress-bar-fill,
+body.light-theme .export-progress-bar-fill {
+  background: #0041F5;
+}
+
+/* Deck2 light-theme (no data-theme, inherently light) */
+.deck[style*="background:#fff"] ~ .export-toggle,
+body[style*="background:var(--gray-900)"] .export-toggle {
+  background: rgba(255,255,255,0.92);
+  border-color: rgba(0,0,0,0.1);
+  color: #6B7280;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .export-toggle {
+    bottom: 16px;
+    right: 66px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .export-dropdown {
+    bottom: 66px;
+    right: 66px;
+    min-width: 180px;
+  }
+}
+
+/* ── Hide during print ── */
+@media print {
+  .export-toggle,
+  .export-dropdown,
+  .export-progress-overlay {
+    display: none !important;
+  }
+}
