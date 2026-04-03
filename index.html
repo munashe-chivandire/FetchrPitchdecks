@@ -224,7 +224,7 @@
       background: var(--bg-deep);
     }
 
-    /* inner grid — slightly more visible than body grid */
+    /* inner grid */
     .preview-panel::before {
       content: '';
       position: absolute;
@@ -285,27 +285,39 @@
       position: relative;
     }
 
-    /* Radial blue accent */
+    /* Radial blue accent — enhanced */
     .feat-preview::after {
       content: '';
       position: absolute;
-      top: 15%;
-      right: 0%;
-      width: 260px;
-      height: 260px;
-      background: radial-gradient(circle, rgba(59,130,246,0.13) 0%, transparent 68%);
+      top: 12%;
+      right: -5%;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(59,130,246,0.16) 0%, transparent 65%);
       pointer-events: none;
       z-index: 1;
     }
 
-    /* Amber warmth bottom-left */
+    /* Amber warmth bottom-left — enhanced */
     .feat-preview-amber {
       position: absolute;
-      bottom: -10%;
-      left: -5%;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 68%);
+      bottom: -8%;
+      left: -3%;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(245,158,11,0.09) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Third glow — subtle teal top-left */
+    .feat-preview-teal {
+      position: absolute;
+      top: -12%;
+      left: 25%;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 65%);
       pointer-events: none;
       z-index: 1;
     }
@@ -454,7 +466,6 @@
       min-height: 0;
     }
 
-    /* Transparent wrapper in grid — groups tag + title for list-view row layout */
     .feat-head-group {
       display: flex;
       flex-direction: column;
@@ -544,7 +555,7 @@
     .btn-more-sm:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
 
     /* ══════════════════════════════════════════════
-       RIGHT COLUMN + COMPACT CARDS
+       RIGHT COLUMN + COMPACT CARDS (VERTICAL)
     ══════════════════════════════════════════════ */
     .right-col {
       display: flex;
@@ -557,14 +568,12 @@
       flex: 1;
       min-height: 0;
       display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 0 20px;
+      flex-direction: column;
       border: 1px solid var(--border);
       border-radius: 10px;
       text-decoration: none;
       color: inherit;
-      background: var(--bg-card);
+      overflow: hidden;
       position: relative;
       transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s var(--ease-spring);
     }
@@ -583,95 +592,110 @@
     .compact-card:nth-child(1) { animation: cardUp 0.5s 0.24s var(--ease-spring) both; }
     .compact-card:nth-child(2) { animation: cardUp 0.5s 0.30s var(--ease-spring) both; }
 
-    /* Colored index badge — replaces fake preview strip */
-    .cc-index {
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 500;
-      flex-shrink: 0;
-      letter-spacing: -0.01em;
-      align-self: flex-start;
+    /* ── Preview area ── */
+    .cc-preview {
+      position: relative;
+      flex: 0 0 50%;
+      overflow: hidden;
+      background: var(--bg-deep);
     }
 
-    .cc-idx-blue  { background: rgba(59,130,246,0.10);  border: 1px solid rgba(59,130,246,0.20);  color: #7FAAEF; }
-    .cc-idx-amber { background: rgba(245,158,11,0.09);  border: 1px solid rgba(245,158,11,0.22);  color: #D4A74A; }
-    .cc-idx-teal  { background: rgba(16,185,129,0.09);  border: 1px solid rgba(16,185,129,0.22);  color: #4DC9A0; }
-
-    /* Body: title + meta */
-    .cc-body {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+    /* Grid texture */
+    .cc-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.032) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.032) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .cc-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .cc-title {
+    /* Number watermark */
+    .cc-preview-num {
+      position: absolute;
+      bottom: -10px;
+      right: -4px;
       font-family: var(--font-head);
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-shrink: 0;
+      font-weight: 800;
+      font-size: 110px;
+      line-height: 1;
+      color: rgba(255,255,255,0.025);
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      letter-spacing: -0.06em;
     }
 
-    .cc-meta {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-faint);
-      letter-spacing: 0.03em;
+    /* Gradient orbs */
+    .cc-glow {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .cc-desc {
-      font-family: var(--font-body);
-      font-size: 11px;
-      font-weight: 300;
-      color: var(--text-muted);
-      line-height: 1.55;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    .cc-glow-blue {
+      top: 8%;
+      right: 2%;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(59,130,246,0.17) 0%, transparent 62%);
     }
 
-    /* Mini stat chips for compact cards */
+    .cc-glow-teal {
+      bottom: -12%;
+      left: 8%;
+      width: 130px;
+      height: 130px;
+      background: radial-gradient(circle, rgba(16,185,129,0.09) 0%, transparent 62%);
+    }
+
+    .cc-glow-amber {
+      top: 8%;
+      right: 2%;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 62%);
+    }
+
+    .cc-glow-rose {
+      bottom: -12%;
+      left: 8%;
+      width: 130px;
+      height: 130px;
+      background: radial-gradient(circle, rgba(239,68,68,0.07) 0%, transparent 62%);
+    }
+
+    /* Stats row inside preview */
     .cc-stats {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
       display: flex;
-      gap: 10px;
-      margin-top: 2rem;
+      gap: 7px;
+      z-index: 3;
     }
 
     .cc-stat {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      font-family: var(--font-mono);
-      letter-spacing: 0.03em;
-      background: rgba(255,255,255,0.045);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 7px;
-      padding: 8px 12px;
+      gap: 2px;
+      background: rgba(255,255,255,0.055);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 6px;
+      padding: 7px 10px;
     }
 
     .cc-stat-val {
-      font-size: 15px;
+      font-family: var(--font-head);
+      font-size: 14px;
       font-weight: 600;
       color: var(--text);
       line-height: 1;
@@ -682,30 +706,75 @@
     .cc-stat-val.green { color: var(--green); }
 
     .cc-stat-lbl {
+      font-family: var(--font-mono);
       color: var(--text-faint);
       text-transform: uppercase;
-      font-size: 9.5px;
+      font-size: 9px;
       letter-spacing: 0.06em;
     }
 
-    /* Hide stats row in list view */
-    .content.list-view .cc-stats { display: none; }
-
-    /* Right side: comments + hover open */
-    .cc-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-shrink: 0;
+    /* Tag chip in preview top-left */
+    .cc-preview-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 3;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      background: rgba(6,10,21,0.65);
+      backdrop-filter: blur(6px);
+      padding: 4px 9px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
     }
 
-    .cc-comments {
+    /* ── Info section ── */
+    .cc-info {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 14px 16px;
+      background: var(--bg-card);
+    }
+
+    .cc-title {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+
+    .cc-desc {
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .cc-foot {
       display: flex;
       align-items: center;
-      gap: 5px;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .cc-meta {
       font-family: var(--font-mono);
       font-size: 10px;
       color: var(--text-faint);
+      letter-spacing: 0.03em;
     }
 
     .cc-open {
@@ -721,6 +790,9 @@
       transition: opacity 0.2s ease, transform 0.22s var(--ease-spring);
       flex-shrink: 0;
     }
+
+    /* List-view-only index badge (hidden in grid) */
+    .cc-list-idx { display: none; }
 
     /* ══════════════════════════════════════════════
        ANIMATIONS
@@ -752,6 +824,7 @@
     /* Dissolve the right-col wrapper so all cards sit at the same level */
     .content.list-view .right-col { display: contents; }
 
+    /* Featured card — list row */
     .content.list-view .featured-card {
       height: 68px;
       flex-direction: row;
@@ -785,7 +858,6 @@
       color: var(--amber);
     }
 
-    /* feat-head-group becomes the title+tag column in list row */
     .content.list-view .feat-head-group {
       flex-shrink: 0;
       gap: 4px;
@@ -819,9 +891,72 @@
       flex-shrink: 0;
     }
 
-    .content.list-view .compact-card { flex: none; height: 68px; }
-    .content.list-view .cc-open { opacity: 1; transform: none; }
+    /* Compact cards — list row */
+    .content.list-view .compact-card {
+      flex: none;
+      height: 68px;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .content.list-view .cc-preview { display: none; }
+
+    .content.list-view .cc-list-idx {
+      display: flex;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
+      letter-spacing: -0.01em;
+    }
+
+    .cc-list-idx.cc-lidx-blue {
+      background: rgba(59,130,246,0.10);
+      border: 1px solid rgba(59,130,246,0.20);
+      color: #7FAAEF;
+    }
+
+    .cc-list-idx.cc-lidx-amber {
+      background: rgba(245,158,11,0.09);
+      border: 1px solid rgba(245,158,11,0.22);
+      color: #D4A74A;
+    }
+
+    .content.list-view .cc-info {
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      padding: 0 20px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .content.list-view .cc-title {
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+    }
+
     .content.list-view .cc-desc { display: none; }
+
+    .content.list-view .cc-foot {
+      flex: 1;
+      margin-top: 0;
+      justify-content: flex-end;
+      gap: 14px;
+    }
+
+    .content.list-view .cc-open {
+      opacity: 1;
+      transform: none;
+    }
 
     /* ══════════════════════════════════════════════
        RESPONSIVE
@@ -846,20 +981,14 @@
 
       .compact-card {
         flex: none;
-        min-height: 90px;
+        min-height: 260px;
         height: auto;
-        padding: 14px 20px;
-        align-items: flex-start;
       }
 
-      .cc-index { margin-top: 2px; flex-shrink: 0; align-self: flex-start; }
-
-      .cc-body { gap: 6px; }
-
-      .cc-actions { align-self: flex-start; padding-top: 2px; }
+      .cc-preview { flex: 0 0 140px; }
 
       /* list view on tablet */
-      .content.list-view .compact-card { padding: 0 20px; height: 68px; align-items: center; }
+      .content.list-view .compact-card { min-height: 0; height: 68px; }
     }
 
     /* Mobile */
@@ -882,11 +1011,12 @@
 
       .ws-sort { display: none; }
 
-      /* Prevent flex rows from overflowing viewport width */
-      .compact-card { padding: 12px 14px; }
-      .cc-top { flex-wrap: wrap; gap: 6px; }
-      .cc-title { white-space: normal; flex-shrink: 1; min-width: 0; }
-      .cc-actions { flex-shrink: 0; align-self: flex-start; }
+      .compact-card { min-height: 240px; }
+      .cc-preview { flex: 0 0 120px; }
+      .cc-stats { gap: 5px; }
+      .cc-stat { padding: 6px 8px; }
+      .cc-stat-val { font-size: 13px; }
+
       .nav-right { gap: 10px; }
       .preview-top-row { gap: 8px; }
       .flagship-badge { font-size: 9px; padding: 3px 7px 3px 6px; }
@@ -957,6 +1087,7 @@
 
       <div class="feat-preview preview-panel">
         <div class="feat-preview-amber"></div>
+        <div class="feat-preview-teal"></div>
         <span class="preview-num">01</span>
 
         <div class="preview-top-row">
@@ -1029,67 +1160,61 @@
 
       <!-- Card 02: Enterprise Revenue Deck -->
       <a class="compact-card" href="./Deck2/Fetchr_Enterprise_Deck.html" target="_blank" rel="noopener noreferrer">
-        <div class="cc-index cc-idx-blue">02</div>
-        <div class="cc-body">
-          <div class="cc-top">
-            <span class="cc-title">Enterprise Revenue Deck</span>
-            <span class="card-tag">Enterprise · Revenue</span>
-          </div>
-          <span class="cc-desc">Light-theme enterprise deck — revenue model, corporate logistics partnerships, unit economics, and go-to-market strategy. 12 slides with embedded charts and dot navigation.</span>
+        <div class="cc-preview">
+          <div class="cc-glow cc-glow-blue"></div>
+          <div class="cc-glow cc-glow-teal"></div>
+          <span class="cc-preview-num">02</span>
+          <span class="cc-preview-tag">Enterprise · Revenue</span>
           <div class="cc-stats">
             <div class="cc-stat"><span class="cc-stat-val blue">12</span><span class="cc-stat-lbl">Slides</span></div>
             <div class="cc-stat"><span class="cc-stat-val amber">B2B</span><span class="cc-stat-lbl">Focus</span></div>
             <div class="cc-stat"><span class="cc-stat-val green">$350K</span><span class="cc-stat-lbl">Raise</span></div>
           </div>
-          <span class="cc-meta">Mar 2026 &middot; Light theme</span>
         </div>
-        <div class="cc-actions">
-          <div class="cc-comments">
-            <svg class="ico" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            —
+        <div class="cc-list-idx cc-lidx-blue">02</div>
+        <div class="cc-info">
+          <span class="cc-title">Enterprise Revenue Deck</span>
+          <span class="cc-desc">Light-theme enterprise deck — revenue model, corporate logistics partnerships, unit economics, and go-to-market strategy. 12 slides with embedded charts and dot navigation.</span>
+          <div class="cc-foot">
+            <span class="cc-meta">Mar 2026 &middot; Light theme</span>
+            <span class="cc-open">
+              Open
+              <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </span>
           </div>
-          <span class="cc-open">
-            Open
-            <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-          </span>
         </div>
       </a>
 
       <!-- Card 03: Africa Macro / Regional Vision Deck -->
       <a class="compact-card" href="./Deck3/index.html" target="_blank" rel="noopener noreferrer">
-        <div class="cc-index cc-idx-amber">03</div>
-        <div class="cc-body">
-          <div class="cc-top">
-            <span class="cc-title">Africa Macro / Regional Vision</span>
-            <span class="card-tag">Pre-Seed · Vision</span>
-          </div>
-          <span class="cc-desc">The $15.5T global logistics market's Africa problem — macro thesis, Southern Africa expansion timeline, competitive moat, and $350K pre-seed ask. 13 slides with animated counters.</span>
+        <div class="cc-preview">
+          <div class="cc-glow cc-glow-amber"></div>
+          <div class="cc-glow cc-glow-rose"></div>
+          <span class="cc-preview-num">03</span>
+          <span class="cc-preview-tag">Pre-Seed · Vision</span>
           <div class="cc-stats">
             <div class="cc-stat"><span class="cc-stat-val amber">$350K</span><span class="cc-stat-lbl">Raise</span></div>
             <div class="cc-stat"><span class="cc-stat-val blue">13</span><span class="cc-stat-lbl">Slides</span></div>
             <div class="cc-stat"><span class="cc-stat-val green">$15.5T</span><span class="cc-stat-lbl">TAM</span></div>
           </div>
-          <span class="cc-meta">Mar 2026 &middot; Dark theme</span>
         </div>
-        <div class="cc-actions">
-          <div class="cc-comments">
-            <svg class="ico" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            —
+        <div class="cc-list-idx cc-lidx-amber">03</div>
+        <div class="cc-info">
+          <span class="cc-title">Africa Macro / Regional Vision</span>
+          <span class="cc-desc">The $15.5T global logistics market's Africa problem — macro thesis, Southern Africa expansion timeline, competitive moat, and $350K pre-seed ask. 13 slides with animated counters.</span>
+          <div class="cc-foot">
+            <span class="cc-meta">Mar 2026 &middot; Dark theme</span>
+            <span class="cc-open">
+              Open
+              <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </span>
           </div>
-          <span class="cc-open">
-            Open
-            <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-          </span>
         </div>
       </a>
 
