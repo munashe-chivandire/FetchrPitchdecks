@@ -376,6 +376,22 @@ body.ann-mode-active .slide.active {
   background: rgba(16,185,129,0.1);
 }
 
+.ann-card-btn.copy {
+  border-color: rgba(148,163,184,0.25);
+  color: #94A3B8;
+}
+
+.ann-card-btn.copy:hover {
+  background: rgba(148,163,184,0.1);
+  color: #CBD5E1;
+}
+
+.ann-card-btn.copy.copied {
+  border-color: rgba(16,185,129,0.35);
+  color: #10B981;
+  background: rgba(16,185,129,0.08);
+}
+
 .ann-card-btn.delete {
   border-color: rgba(239,68,68,0.2);
   color: #EF4444;

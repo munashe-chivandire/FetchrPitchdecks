@@ -171,7 +171,7 @@
   }, { passive: true });
 
   document.addEventListener('click', function (e) {
-    if (e.target.closest('a,button,input,textarea,kbd,.comp-dot,.nav-panel')) return;
+    if (e.target.closest('a,button,input,textarea,kbd,.comp-dot,.nav-panel,.ann-panel,.ann-toggle,.ann-pin')) return;
     var x = e.clientX / window.innerWidth;
     if (x > 0.65) { stopAutoplay(); next(); } else if (x < 0.35) { stopAutoplay(); prev(); }
   });
