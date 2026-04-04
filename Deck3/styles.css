@@ -2719,6 +2719,35 @@ body, .slide, .slide::before, .slide::after,
   stroke: rgba(0, 0, 0, 0.08);
 }
 
+/* Light theme scrollbar colors */
+@media (max-width: 768px) {
+  [data-theme="light"] .slide::-webkit-scrollbar-thumb,
+  [data-theme="light"] .problem-stats::-webkit-scrollbar-thumb,
+  [data-theme="light"] .platform-cards::-webkit-scrollbar-thumb,
+  [data-theme="light"] .team-roster::-webkit-scrollbar-thumb,
+  [data-theme="light"] .comp-table::-webkit-scrollbar-thumb,
+  [data-theme="light"] .flow-chain::-webkit-scrollbar-thumb,
+  [data-theme="light"] .milestone-chart::-webkit-scrollbar-thumb,
+  [data-theme="light"] .domino-nodes::-webkit-scrollbar-thumb,
+  [data-theme="light"] .closing-pillars::-webkit-scrollbar-thumb {
+    background: rgba(0, 65, 245, 0.18);
+  }
+  [data-theme="light"] .slide::-webkit-scrollbar-thumb:hover,
+  [data-theme="light"] .problem-stats::-webkit-scrollbar-thumb:hover,
+  [data-theme="light"] .platform-cards::-webkit-scrollbar-thumb:hover,
+  [data-theme="light"] .team-roster::-webkit-scrollbar-thumb:hover,
+  [data-theme="light"] .comp-table::-webkit-scrollbar-thumb:hover,
+  [data-theme="light"] .flow-chain::-webkit-scrollbar-thumb:hover,
+  [data-theme="light"] .milestone-chart::-webkit-scrollbar-thumb:hover,
+  [data-theme="light"] .domino-nodes::-webkit-scrollbar-thumb:hover,
+  [data-theme="light"] .closing-pillars::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 65, 245, 0.3);
+  }
+  [data-theme="light"] .slide::-webkit-scrollbar-track {
+    background: rgba(0, 65, 245, 0.04);
+  }
+}
+
 /* ============================================
    RESPONSIVE
    ============================================ */
@@ -2744,6 +2773,7 @@ body, .slide, .slide::before, .slide::after,
     padding-top: 48px;
     padding-bottom: 48px;
     -webkit-overflow-scrolling: touch;
+    scrollbar-color: rgba(59, 130, 246, 0.25) transparent;
   }
   .slide--title,
   .slide--ask,
@@ -2891,10 +2921,13 @@ body, .slide, .slide::before, .slide::after,
   .domino-nodes::-webkit-scrollbar-thumb,
   .closing-pillars::-webkit-scrollbar-thumb,
   .slide::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(59, 130, 246, 0.25);
     border-radius: 4px;
   }
-  .slide::-webkit-scrollbar-track { background: transparent; }
+  .slide::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.4);
+  }
+  .slide::-webkit-scrollbar-track { background: rgba(59, 130, 246, 0.05); }
 }
 
 /* ---------- REDUCED MOTION ---------- */

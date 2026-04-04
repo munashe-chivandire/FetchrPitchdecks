@@ -533,7 +533,7 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
   .ue-container{flex-direction:column}
 }
 @media(max-width:768px){
-  .slide{padding:32px 28px;overflow-y:auto;overflow-x:hidden;justify-content:flex-start;padding-top:48px;padding-bottom:48px;-webkit-overflow-scrolling:touch}
+  .slide{padding:32px 28px;overflow-y:auto;overflow-x:hidden;justify-content:flex-start;padding-top:48px;padding-bottom:48px;-webkit-overflow-scrolling:touch;scrollbar-color:rgba(0,65,245,0.25) transparent}
   .slide-headline{font-size:26px}
   .problem-grid,.pricing-grid,.tech-grid,.team-grid{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;display:flex;gap:12px;padding-bottom:6px}
   .problem-grid>*,.pricing-grid>*,.tech-grid>*,.team-grid>*{min-width:240px;flex-shrink:0}
@@ -545,8 +545,10 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
   .corp-table{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;font-size:11px}
   .problem-grid,.pricing-grid,.tech-grid,.team-grid,.alloc-grid,.flow-diagram,.corp-table{mask-image:linear-gradient(to right,black 88%,transparent 100%);-webkit-mask-image:linear-gradient(to right,black 88%,transparent 100%)}
   .scroll-end{mask-image:none;-webkit-mask-image:none}
-  .slide::-webkit-scrollbar{height:3px;width:3px}
-  .slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:4px}
+  .slide::-webkit-scrollbar,.problem-grid::-webkit-scrollbar,.pricing-grid::-webkit-scrollbar,.tech-grid::-webkit-scrollbar,.team-grid::-webkit-scrollbar,.alloc-grid::-webkit-scrollbar,.flow-diagram::-webkit-scrollbar,.corp-table::-webkit-scrollbar{height:3px;width:3px}
+  .slide::-webkit-scrollbar-thumb,.problem-grid::-webkit-scrollbar-thumb,.pricing-grid::-webkit-scrollbar-thumb,.tech-grid::-webkit-scrollbar-thumb,.team-grid::-webkit-scrollbar-thumb,.alloc-grid::-webkit-scrollbar-thumb,.flow-diagram::-webkit-scrollbar-thumb,.corp-table::-webkit-scrollbar-thumb{background:rgba(0,65,245,0.25);border-radius:4px}
+  .slide::-webkit-scrollbar-thumb:hover,.problem-grid::-webkit-scrollbar-thumb:hover,.pricing-grid::-webkit-scrollbar-thumb:hover,.tech-grid::-webkit-scrollbar-thumb:hover,.team-grid::-webkit-scrollbar-thumb:hover,.alloc-grid::-webkit-scrollbar-thumb:hover,.flow-diagram::-webkit-scrollbar-thumb:hover,.corp-table::-webkit-scrollbar-thumb:hover{background:rgba(0,65,245,0.4)}
+  .slide::-webkit-scrollbar-track{background:rgba(0,65,245,0.04)}
 }
 @media(prefers-reduced-motion:reduce){
   [data-animate]{opacity:1;animation:none!important}
