@@ -154,15 +154,33 @@
     if (e.key === 'End') { e.preventDefault(); stopAutoplay(); goTo(total - 1, 'down'); }
   });
 
-  var touchStartY = 0, touchStartX = 0;
+  var touchStartY = 0, touchStartX = 0, touchStartTarget = null;
   document.addEventListener('touchstart', function (e) {
     touchStartY = e.touches[0].clientY;
     touchStartX = e.touches[0].clientX;
+    touchStartTarget = e.target;
   }, { passive: true });
+
+  function isInsideScrollable(el) {
+    while (el && el !== document.body) {
+      var style = getComputedStyle(el);
+      var overflowX = style.overflowX;
+      var overflowY = style.overflowY;
+      if ((overflowX === 'auto' || overflowX === 'scroll') && el.scrollWidth > el.clientWidth) return 'x';
+      if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) return 'y';
+      el = el.parentElement;
+    }
+    return false;
+  }
 
   document.addEventListener('touchend', function (e) {
     var dy = touchStartY - e.changedTouches[0].clientY;
     var dx = touchStartX - e.changedTouches[0].clientX;
+    var scrollDir = isInsideScrollable(touchStartTarget);
+    // If swiping horizontally inside a horizontally scrollable container, let it scroll
+    if (scrollDir === 'x' && Math.abs(dx) > Math.abs(dy)) return;
+    // If swiping vertically inside a vertically scrollable container (the slide itself), let it scroll
+    if (scrollDir === 'y' && Math.abs(dy) > Math.abs(dx)) return;
     if (Math.abs(dx) > Math.abs(dy)) {
       if (dx > 50) { stopAutoplay(); next(); } else if (dx < -50) { stopAutoplay(); prev(); }
     } else {
@@ -322,6 +340,27 @@
       if (isPlaying) stopAutoplay(); else startAutoplay();
     });
   }
+
+  // ── Scroll-fade hint: remove mask when scrolled to end ──
+  function initScrollFades() {
+    document.querySelectorAll('.metric-grid, .problem-stats, .team-roster, .ue-equation, .uof-grid, .bm-grid, .speed-bars, .feat-grid, .commission-bench, .breakeven-chain, .flow-chain, .milestone-chart').forEach(function (el) {
+      function checkScroll() {
+        if (el.scrollWidth <= el.clientWidth + 2) {
+          el.classList.add('scroll-end');
+        } else if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
+          el.classList.add('scroll-end');
+        } else {
+          el.classList.remove('scroll-end');
+        }
+      }
+      el.addEventListener('scroll', checkScroll, { passive: true });
+      // Check on resize too
+      window.addEventListener('resize', checkScroll, { passive: true });
+      // Initial check after a tick
+      setTimeout(checkScroll, 100);
+    });
+  }
+  initScrollFades();
 
   // Init first slide
   updateProgress();

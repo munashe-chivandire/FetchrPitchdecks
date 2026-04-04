@@ -158,15 +158,31 @@
   });
 
   /* ---------- Touch Navigation ---------- */
-  var touchStartY = 0, touchStartX = 0;
+  var touchStartY = 0, touchStartX = 0, touchStartTarget = null;
   document.addEventListener('touchstart', function (e) {
     touchStartY = e.touches[0].clientY;
     touchStartX = e.touches[0].clientX;
+    touchStartTarget = e.target;
   }, { passive: true });
+
+  function isInsideScrollable(el) {
+    while (el && el !== document.body) {
+      var style = getComputedStyle(el);
+      var overflowX = style.overflowX;
+      var overflowY = style.overflowY;
+      if ((overflowX === 'auto' || overflowX === 'scroll') && el.scrollWidth > el.clientWidth) return 'x';
+      if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) return 'y';
+      el = el.parentElement;
+    }
+    return false;
+  }
 
   document.addEventListener('touchend', function (e) {
     var dy = touchStartY - e.changedTouches[0].clientY;
     var dx = touchStartX - e.changedTouches[0].clientX;
+    var scrollDir = isInsideScrollable(touchStartTarget);
+    if (scrollDir === 'x' && Math.abs(dx) > Math.abs(dy)) return;
+    if (scrollDir === 'y' && Math.abs(dy) > Math.abs(dx)) return;
     if (Math.abs(dx) > Math.abs(dy)) {
       if (dx > 50) { stopAutoplay(); next(); } else if (dx < -50) { stopAutoplay(); prev(); }
     } else {

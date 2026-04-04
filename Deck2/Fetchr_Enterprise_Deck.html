@@ -533,14 +533,20 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
   .ue-container{flex-direction:column}
 }
 @media(max-width:768px){
-  .slide{padding:32px 28px}
+  .slide{padding:32px 28px;overflow-y:auto;overflow-x:hidden;justify-content:flex-start;padding-top:48px;padding-bottom:48px;-webkit-overflow-scrolling:touch}
   .slide-headline{font-size:26px}
-  .problem-grid,.pricing-grid,.tech-grid,.team-grid{grid-template-columns:1fr}
-  .alloc-grid{flex-wrap:wrap}
-  .alloc-item{min-width:calc(50% - 8px)}
-  .flow-diagram{flex-direction:column;gap:16px}
-  .flow-arrow{transform:rotate(90deg)}
-  .corp-table{font-size:11px}
+  .problem-grid,.pricing-grid,.tech-grid,.team-grid{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;display:flex;gap:12px;padding-bottom:6px}
+  .problem-grid>*,.pricing-grid>*,.tech-grid>*,.team-grid>*{min-width:240px;flex-shrink:0}
+  .alloc-grid{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;scrollbar-width:thin}
+  .alloc-item{min-width:140px;flex-shrink:0}
+  .flow-diagram{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;scrollbar-width:thin}
+  .flow-diagram>*{flex-shrink:0}
+  .flow-arrow{transform:none}
+  .corp-table{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;font-size:11px}
+  .problem-grid,.pricing-grid,.tech-grid,.team-grid,.alloc-grid,.flow-diagram,.corp-table{mask-image:linear-gradient(to right,black 88%,transparent 100%);-webkit-mask-image:linear-gradient(to right,black 88%,transparent 100%)}
+  .scroll-end{mask-image:none;-webkit-mask-image:none}
+  .slide::-webkit-scrollbar{height:3px;width:3px}
+  .slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:4px}
 }
 @media(prefers-reduced-motion:reduce){
   [data-animate]{opacity:1;animation:none!important}
@@ -1284,12 +1290,24 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
     if(e.key === 'End') { e.preventDefault(); goTo(total-1,'down'); }
   });
 
-  // Touch / swipe
-  let tx=0, ty=0;
-  document.addEventListener('touchstart', e => { tx=e.touches[0].clientX; ty=e.touches[0].clientY; }, {passive:true});
+  // Touch / swipe — respects scrollable containers on mobile
+  let tx=0, ty=0, touchTarget=null;
+  document.addEventListener('touchstart', e => { tx=e.touches[0].clientX; ty=e.touches[0].clientY; touchTarget=e.target; }, {passive:true});
+  function isInsideScrollable(el) {
+    while (el && el !== document.body) {
+      const s = getComputedStyle(el);
+      if ((s.overflowX === 'auto' || s.overflowX === 'scroll') && el.scrollWidth > el.clientWidth) return 'x';
+      if ((s.overflowY === 'auto' || s.overflowY === 'scroll') && el.scrollHeight > el.clientHeight) return 'y';
+      el = el.parentElement;
+    }
+    return false;
+  }
   document.addEventListener('touchend', e => {
     const dx = tx - e.changedTouches[0].clientX;
     const dy = ty - e.changedTouches[0].clientY;
+    const scrollDir = isInsideScrollable(touchTarget);
+    if (scrollDir === 'x' && Math.abs(dx) > Math.abs(dy)) return;
+    if (scrollDir === 'y' && Math.abs(dy) > Math.abs(dx)) return;
     if(Math.abs(dx) > Math.abs(dy)) { if(dx > 40) next(); else if(dx < -40) prev(); }
     else { if(dy > 40) next(); else if(dy < -40) prev(); }
   }, {passive:true});

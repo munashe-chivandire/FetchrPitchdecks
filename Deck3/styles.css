@@ -2735,59 +2735,166 @@ body, .slide, .slide::before, .slide::after,
 
 @media (max-width: 768px) {
   :root { --slide-padding: 28px 20px; }
+
+  /* ── Vertical scrolling on all slides ── */
+  .slide {
+    overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: flex-start;
+    padding-top: 48px;
+    padding-bottom: 48px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .slide--title,
+  .slide--ask,
+  .slide--closing {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .slide-headline { font-size: 24px; }
-  .problem-stats { grid-template-columns: 1fr; }
-  .platform-cards { grid-template-columns: 1fr; }
-  .team-roster { grid-template-columns: 1fr; }
-  .team-member { padding: 18px; gap: 14px; }
+
+  /* ── Horizontal scroll instead of stacking ── */
+  .problem-stats {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    scrollbar-width: thin;
+    padding-bottom: 6px;
+  }
+
+  .platform-cards {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    gap: 12px;
+    scrollbar-width: thin;
+    padding-bottom: 6px;
+  }
+  .platform-cards > * { min-width: 260px; flex-shrink: 0; }
+
+  /* Team roster: horizontal scroll row */
+  .team-roster {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    scrollbar-width: thin;
+    padding-bottom: 8px;
+  }
+  .team-member {
+    min-width: 260px;
+    max-width: 300px;
+    flex-shrink: 0;
+    padding: 18px;
+    gap: 14px;
+  }
   .team-monogram { width: 60px; height: 60px; min-width: 60px; font-size: 20px; border-radius: 14px; }
 
-  .comp-table-row { grid-template-columns: 1fr; gap: 4px; padding: 12px 14px; }
-  .comp-table-row--header { display: none; }
-  .comp-cell { padding: 2px 0; }
-  .comp-cell--company { font-size: 14px; }
+  /* Competition table: horizontal scroll */
+  .comp-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .comp-table-row { min-width: 420px; }
 
   .remittance-flow { flex-direction: column; gap: 16px; }
   .flow-arrows { flex-direction: row; }
   .flow-arrow { width: 2px; height: 24px; }
   .flow-arrow::after { right: unset; top: unset; bottom: -1px; left: -4px; border: 5px solid transparent; border-top: 6px solid var(--primary); border-left: 5px solid transparent; }
 
-  .milestone-chart .vchart { gap: 8px; height: 160px; padding-bottom: 64px; }
-  .milestone-chart .vchart-bar { width: 48px; }
+  /* Milestone chart: horizontal scroll */
+  .milestone-chart { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .milestone-chart .vchart { gap: 12px; min-width: 400px; padding-bottom: 64px; }
+  .milestone-chart .vchart-bar { width: 56px; flex-shrink: 0; }
   .milestone-chart .vchart-label { font-size: 10px; bottom: -20px; }
-  .vchart-milestone { font-size: 8px; width: 52px; bottom: -52px; }
+  .vchart-milestone { font-size: 9px; width: 56px; bottom: -52px; }
 
-  .flow-chain-row { flex-wrap: wrap; gap: 4px; justify-content: center; }
-  .flow-chain-node { flex: none; font-size: 11px; padding: 7px 10px; }
-  .flow-chain-node--input { min-width: unset; }
-  .flow-chain-arrow { font-size: 12px; }
+  /* Flow chain: horizontal scroll per row */
+  .flow-chain { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .flow-chain-row { flex-wrap: nowrap; gap: 6px; min-width: 520px; }
+  .flow-chain-node { flex-shrink: 0; font-size: 12px; padding: 8px 12px; }
+  .flow-chain-node--input { min-width: 110px; }
+  .flow-chain-arrow { flex-shrink: 0; font-size: 13px; }
 
   .nav-panel { display: none; }
 
+  /* Closing pillars: horizontal scroll */
   .closing-pillars {
-    flex-direction: column;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
     gap: 16px;
     padding: 20px 28px;
+    scrollbar-width: thin;
   }
-
-  .closing-pillar {
-    padding: 0;
-  }
-
-  .closing-pillar-divider {
-    width: 48px;
-    height: 1px;
-  }
+  .closing-pillar { padding: 0; flex-shrink: 0; }
+  .closing-pillar-divider { flex-shrink: 0; }
 
   .closing-contacts {
-    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     gap: 10px;
+    scrollbar-width: thin;
+  }
+  .closing-contact-pill { flex-shrink: 0; }
+
+  /* Domino, moat, etc: horizontal scroll */
+  .domino-nodes { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; scrollbar-width: thin; }
+  .domino-nodes > * { flex-shrink: 0; }
+  .moat-pills { gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; scrollbar-width: thin; }
+  .moat-pills > * { flex-shrink: 0; }
+  .return-pills { gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; scrollbar-width: thin; }
+  .return-pills > * { flex-shrink: 0; }
+  .exit-pills { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; scrollbar-width: thin; }
+  .exit-pills > * { flex-shrink: 0; }
+
+  /* ── Scroll fade hints ── */
+  .problem-stats,
+  .platform-cards,
+  .team-roster,
+  .comp-table,
+  .flow-chain,
+  .milestone-chart,
+  .domino-nodes,
+  .moat-pills,
+  .return-pills {
+    mask-image: linear-gradient(to right, black 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 88%, transparent 100%);
+  }
+  .scroll-end {
+    mask-image: none;
+    -webkit-mask-image: none;
   }
 
-  .domino-nodes { flex-wrap: wrap; }
-  .moat-pills { gap: 6px; }
-  .return-pills { gap: 6px; }
-  .exit-pills { flex-direction: column; align-items: center; }
+  /* ── Thin scrollbar styling ── */
+  .problem-stats::-webkit-scrollbar,
+  .platform-cards::-webkit-scrollbar,
+  .team-roster::-webkit-scrollbar,
+  .comp-table::-webkit-scrollbar,
+  .flow-chain::-webkit-scrollbar,
+  .milestone-chart::-webkit-scrollbar,
+  .domino-nodes::-webkit-scrollbar,
+  .closing-pillars::-webkit-scrollbar,
+  .slide::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  .problem-stats::-webkit-scrollbar-thumb,
+  .platform-cards::-webkit-scrollbar-thumb,
+  .team-roster::-webkit-scrollbar-thumb,
+  .comp-table::-webkit-scrollbar-thumb,
+  .flow-chain::-webkit-scrollbar-thumb,
+  .milestone-chart::-webkit-scrollbar-thumb,
+  .domino-nodes::-webkit-scrollbar-thumb,
+  .closing-pillars::-webkit-scrollbar-thumb,
+  .slide::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+  }
+  .slide::-webkit-scrollbar-track { background: transparent; }
 }
 
 /* ---------- REDUCED MOTION ---------- */

@@ -1698,23 +1698,74 @@ body {
 /* Mobile adjustments */
 @media (max-width: 640px) {
   .closing-pillars {
-    flex-direction: column;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
     gap: 16px;
     padding: 20px 28px;
+    scrollbar-width: thin;
   }
 
   .closing-pillar {
     padding: 0;
+    flex-shrink: 0;
   }
 
   .closing-pillar-divider {
-    width: 48px;
-    height: 1px;
+    flex-shrink: 0;
   }
 
   .closing-contacts {
-    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     gap: 10px;
+    scrollbar-width: thin;
+  }
+
+  .closing-contact-pill { flex-shrink: 0; }
+}
+
+/* ── Mobile scrollbar styling ── */
+@media (max-width: 768px) {
+  .metric-grid::-webkit-scrollbar,
+  .problem-stats::-webkit-scrollbar,
+  .team-roster::-webkit-scrollbar,
+  .ue-equation::-webkit-scrollbar,
+  .uof-grid::-webkit-scrollbar,
+  .bm-grid::-webkit-scrollbar,
+  .speed-bars::-webkit-scrollbar,
+  .feat-grid::-webkit-scrollbar,
+  .commission-bench::-webkit-scrollbar,
+  .breakeven-chain::-webkit-scrollbar,
+  .flow-chain::-webkit-scrollbar,
+  .milestone-chart::-webkit-scrollbar,
+  .scale-roadmap::-webkit-scrollbar,
+  .closing-pillars::-webkit-scrollbar,
+  .slide::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  .metric-grid::-webkit-scrollbar-thumb,
+  .problem-stats::-webkit-scrollbar-thumb,
+  .team-roster::-webkit-scrollbar-thumb,
+  .ue-equation::-webkit-scrollbar-thumb,
+  .uof-grid::-webkit-scrollbar-thumb,
+  .bm-grid::-webkit-scrollbar-thumb,
+  .speed-bars::-webkit-scrollbar-thumb,
+  .feat-grid::-webkit-scrollbar-thumb,
+  .commission-bench::-webkit-scrollbar-thumb,
+  .breakeven-chain::-webkit-scrollbar-thumb,
+  .flow-chain::-webkit-scrollbar-thumb,
+  .milestone-chart::-webkit-scrollbar-thumb,
+  .scale-roadmap::-webkit-scrollbar-thumb,
+  .closing-pillars::-webkit-scrollbar-thumb,
+  .slide::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+  }
+  .slide::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
@@ -2137,6 +2188,20 @@ body {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+/* Light theme scrollbar colors */
+@media (max-width: 768px) {
+  [data-theme="light"] .slide::-webkit-scrollbar-thumb,
+  [data-theme="light"] .metric-grid::-webkit-scrollbar-thumb,
+  [data-theme="light"] .problem-stats::-webkit-scrollbar-thumb,
+  [data-theme="light"] .team-roster::-webkit-scrollbar-thumb,
+  [data-theme="light"] .speed-bars::-webkit-scrollbar-thumb,
+  [data-theme="light"] .feat-grid::-webkit-scrollbar-thumb,
+  [data-theme="light"] .commission-bench::-webkit-scrollbar-thumb,
+  [data-theme="light"] .flow-chain::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.12);
+  }
+}
+
 /* Light timeline */
 [data-theme="light"] .tl-rail {
   background: rgba(0, 65, 245, 0.08);
@@ -2241,29 +2306,125 @@ body, .slide, .slide::before, .slide::after,
 
 @media (max-width: 768px) {
   :root { --slide-padding: 28px 20px; }
+
+  /* ── Vertical scrolling: let slides scroll when content overflows ── */
+  .slide {
+    overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: flex-start;
+    padding-top: 48px;
+    padding-bottom: 48px;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Hero-style slides also need scroll on mobile */
+  .slide--title,
+  .slide--ask,
+  .slide--closing {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Solution slide: switch from absolute to flow layout on mobile */
+  .slide--solution { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .slide--solution .slide-inner {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    max-width: 100%;
+  }
+  .slide-inner { gap: 16px; }
+
   .slide-headline { font-size: 24px; }
+
+  /* ── Horizontal-scroll utility for data-dense sections ── */
   .metric-grid,
-  .problem-stats { grid-template-columns: 1fr; }
-  .team-grid { grid-template-columns: 1fr 1fr; }
+  .problem-stats {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    scrollbar-width: thin;
+    padding-bottom: 6px;
+  }
+
+  .team-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    scrollbar-width: thin;
+  }
+
+  /* Horizontal scroll for unit economics equation */
+  .ue-equation {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+  }
+  .ue-term { min-width: 110px; padding: 12px 16px; flex-shrink: 0; }
+  .ue-op { font-size: 18px; flex-shrink: 0; }
+  .ue-val { font-size: 24px; }
+  .ue-legend { gap: 12px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; }
+  .ue-panel { padding: 20px 16px; }
+
   .tam-visual { flex-direction: column; gap: 24px; }
   .tam-circles { width: 200px; height: 200px; }
   .tam-circle--tam { width: 200px; height: 200px; }
   .tam-circle--sam { width: 130px; height: 130px; top: 35px; left: 35px; }
   .tam-circle--som { width: 70px; height: 70px; top: 65px; left: 65px; }
   .comp-matrix { height: 300px; }
-  .ue-equation { flex-wrap: wrap; gap: 10px; }
-  .ue-term { min-width: 100px; padding: 12px 16px; }
-  .ue-val { font-size: 24px; }
-  .ue-op { font-size: 18px; }
-  .ue-legend { gap: 12px; }
-  .ue-panel { padding: 20px 16px; }
-  .vchart { gap: 20px; }
-  .vchart-bar { width: 60px; }
-  .uof-grid { grid-template-columns: 1fr; }
-  .bm-grid { grid-template-columns: 1fr; }
-  .team-roster { grid-template-columns: 1fr; }
-  .team-member { padding: 18px; gap: 14px; }
+
+  .vchart { gap: 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .vchart-bar { width: 60px; flex-shrink: 0; }
+
+  /* Keep 2-column grids scrollable instead of stacking */
+  .uof-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    scrollbar-width: thin;
+  }
+  .bm-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    scrollbar-width: thin;
+  }
+
+  /* Team roster: horizontal scroll row */
+  .team-roster {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    scrollbar-width: thin;
+    padding-bottom: 8px;
+  }
+  .team-member {
+    min-width: 260px;
+    max-width: 300px;
+    flex-shrink: 0;
+    padding: 18px;
+    gap: 14px;
+  }
   .team-monogram { width: 60px; height: 60px; min-width: 60px; font-size: 20px; border-radius: 14px; }
+
+  /* Scroll fade hints on scrollable containers */
+  .metric-grid,
+  .problem-stats,
+  .team-roster,
+  .ue-equation,
+  .uof-grid,
+  .bm-grid {
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  }
+  /* Remove fade when fully scrolled (JS adds this class) */
+  .scroll-end {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3346,8 +3507,9 @@ body, .slide, .slide::before, .slide::after,
 }
 
 @media (max-width: 768px) {
-  .hbar-row { flex-direction: column; align-items: flex-start; gap: 4px; }
-  .hbar { width: 100%; }
+  /* ── Market bars: keep horizontal layout with scroll ── */
+  .market-bars { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .hbar-row { min-width: 0; }
   .hbar-meta { min-width: unset; flex-direction: row; gap: 8px; align-items: baseline; }
 
   .remittance-flow { flex-direction: column; gap: 16px; }
@@ -3355,37 +3517,95 @@ body, .slide, .slide::before, .slide::after,
   .flow-arrow { width: 2px; height: 24px; }
   .flow-arrow::after { right: unset; top: unset; bottom: -1px; left: -4px; border: 5px solid transparent; border-top: 6px solid var(--primary); border-left: 5px solid transparent; }
 
-  .diaspora-orders-grid { grid-template-columns: 1fr; }
+  /* Diaspora orders: keep 2 columns, scroll if needed */
+  .diaspora-orders { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .diaspora-orders-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
 
-  .speed-bar-row { grid-template-columns: 80px 1fr 45px 90px; gap: 6px; }
-  .speed-bar-name { font-size: 11px; }
+  /* ── Speed bars: horizontal scroll, preserve grid layout ── */
+  .speed-bars {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: 6px;
+  }
+  .speed-bar-row {
+    grid-template-columns: 100px 1fr 55px 110px;
+    min-width: 480px;
+    gap: 8px;
+  }
+  .speed-bar-name { font-size: 12px; }
   .speed-outcome { font-size: 10px; }
 
-  .feat-row { grid-template-columns: 100px repeat(4, 1fr); }
-  .feat-cell { padding: 8px 6px; font-size: 11px; }
-  .feat-cell--label { font-size: 10px; }
+  /* ── Feature comparison table: scroll horizontally ── */
+  .feat-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .feat-row {
+    grid-template-columns: 130px repeat(4, 80px);
+    min-width: 450px;
+  }
+  .feat-cell { padding: 10px 8px; font-size: 12px; }
+  .feat-cell--label { font-size: 11px; }
 
-  .breakeven-chain { gap: 4px; }
-  .chain-step { padding: 6px 10px; font-size: 12px; }
-  .chain-arrow { font-size: 14px; }
+  /* ── Commission benchmark: horizontal scroll ── */
+  .commission-bench {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .cbench-row {
+    min-width: 420px;
+  }
 
-  .scale-roadmap { flex-direction: column; align-items: stretch; }
-  .scale-step { flex-direction: row; min-width: unset; gap: 12px; }
-  .scale-step-dot { margin-top: 14px; }
-  .scale-step-content { text-align: left; }
-  .scale-step-line { width: 2px; height: 16px; min-width: 2px; margin-top: 0; margin-left: 6px; align-self: center; }
+  /* ── Break-even chain: horizontal scroll, no wrapping ── */
+  .breakeven-chain {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    scrollbar-width: thin;
+    padding-bottom: 6px;
+  }
+  .chain-step { flex-shrink: 0; padding: 8px 14px; font-size: 13px; }
+  .chain-arrow { flex-shrink: 0; font-size: 14px; }
 
-  .milestone-chart .vchart { gap: 8px; height: 160px; padding-bottom: 64px; }
-  .milestone-chart .vchart-bar { width: 48px; }
+  /* ── Scale roadmap: horizontal scroll ── */
+  .scale-roadmap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: 8px;
+  }
+  .scale-step { flex-shrink: 0; min-width: 130px; }
+  .scale-step-line { flex-shrink: 0; }
+
+  /* ── Milestone chart: scroll horizontally ── */
+  .milestone-chart { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .milestone-chart .vchart { gap: 12px; min-width: 400px; padding-bottom: 64px; }
+  .milestone-chart .vchart-bar { width: 56px; flex-shrink: 0; }
   .milestone-chart .vchart-label { font-size: 10px; bottom: -20px; }
-  .vchart-milestone { font-size: 8px; width: 52px; bottom: -52px; }
+  .vchart-milestone { font-size: 9px; width: 56px; bottom: -52px; }
 
   .revenue-breakdown { margin-top: 24px; }
 
-  .flow-chain-row { flex-wrap: wrap; gap: 4px; justify-content: center; }
-  .flow-chain-node { flex: none; font-size: 11px; padding: 7px 10px; }
-  .flow-chain-node--input { min-width: unset; }
-  .flow-chain-arrow { font-size: 12px; }
+  /* ── Flow chain (The Ask): horizontal scroll per row ── */
+  .flow-chain { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .flow-chain-row { flex-wrap: nowrap; gap: 6px; min-width: 520px; }
+  .flow-chain-node { flex-shrink: 0; font-size: 12px; padding: 8px 12px; }
+  .flow-chain-node--input { min-width: 110px; }
+  .flow-chain-arrow { flex-shrink: 0; font-size: 13px; }
+
+  /* ── Scroll fade hints for data sections ── */
+  .speed-bars,
+  .feat-grid,
+  .commission-bench,
+  .breakeven-chain,
+  .flow-chain,
+  .milestone-chart {
+    mask-image: linear-gradient(to right, black 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 88%, transparent 100%);
+  }
 
   .nav-panel { display: none; }
 }
