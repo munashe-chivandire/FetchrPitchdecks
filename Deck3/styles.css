@@ -326,7 +326,8 @@ body {
   background: radial-gradient(ellipse 80% 80% at 50% 50%, #0C1E4A 0%, #060A1A 100%);
   color: var(--text-on-hero);
   text-align: center;
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 }
 
@@ -1389,6 +1390,13 @@ body {
   margin-top: 20px;
 }
 
+/* Odd member count: centre the trailing card instead of leaving a gap */
+.team-roster > .team-member:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - 8px);
+}
+
 .team-member {
   display: flex;
   gap: 18px;
@@ -1663,7 +1671,8 @@ body {
   background: radial-gradient(ellipse 80% 80% at 50% 50%, #0C1E4A 0%, #060A1A 100%);
   color: var(--text-on-hero);
   text-align: center;
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 }
 
