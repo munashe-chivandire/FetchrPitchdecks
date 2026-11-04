@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="../lib/hover.css">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -51,15 +53,23 @@
     button { font-family: inherit; }
 
     /* ── Toolbar (screen only) ── */
-    .toolbar { max-width: 1240px; margin: 0 auto 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
-    .progress { display: grid; gap: 8px; min-width: 300px; }
-    .progress-text { font-size: 14px; color: var(--gray-700); }
-    .progress-text b { color: var(--gray-900); }
+    .toolbar {
+      max-width: 1240px; margin: 0 auto 18px; display: grid; grid-template-columns: minmax(260px, 1fr) auto auto; align-items: center; gap: 16px 0;
+      background: #fff; border: 1px solid var(--gray-200); border-radius: 20px; padding: 16px 18px 16px 22px; box-shadow: 0 16px 40px -28px rgba(0,18,69,0.35);
+    }
+    .toolbar > * + * { border-left: 1px solid var(--gray-200); margin-left: 22px; padding-left: 22px; }
+    .progress { display: grid; gap: 8px; }
+    .progress-text { font-size: 13.5px; color: var(--gray-600); }
+    .progress-text b { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--gray-900); margin-right: 4px; }
     .progress-bar { height: 6px; border-radius: 99px; background: var(--gray-200); overflow: hidden; }
     .progress-bar span { display: block; height: 100%; width: 0; background: var(--green-500); border-radius: inherit; transition: width 0.3s; }
     .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--gray-500); }
     .legend span { display: inline-flex; align-items: center; gap: 6px; }
     .tools { display: flex; flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 1100px) {
+      .toolbar { grid-template-columns: 1fr auto; }
+      .tools { grid-column: 1 / -1; border-left: 0; margin-left: 0; padding-left: 0; border-top: 1px solid var(--gray-200); padding-top: 14px; }
+    }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       min-height: 44px; padding: 10px 18px; border-radius: 12px;
@@ -67,16 +77,20 @@
       font: 600 14px var(--font); cursor: pointer;
       transition: background 0.2s, border-color 0.2s, transform 0.2s;
     }
-    .btn:hover { border-color: var(--blue-200); background: var(--blue-50); }
-    .btn.primary { background: var(--blue-500); border-color: var(--blue-500); color: #fff; box-shadow: 0 10px 24px -10px rgba(0,65,245,0.6); }
-    .btn.primary:hover { background: var(--blue-600); transform: translateY(-2px); }
+    .btn { --flood: var(--blue-50); --flood-edge: var(--blue-200); }
+    .btn:hover { border-color: var(--blue-200); }
+    .btn.primary { background: var(--blue-500); border-color: var(--blue-500); color: #fff; box-shadow: 0 10px 24px -10px rgba(0,65,245,0.6); --flood: var(--blue-900); --flood-edge: var(--blue-200); }
+    .btn.primary:hover { border-color: var(--blue-900); }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
     .btn:focus-visible, .step-head:focus-visible { outline: none; box-shadow: var(--focus); }
     .btn .ico { font-size: 18px; }
     .status { max-width: 1240px; margin: -8px auto 14px; font-size: 13px; color: var(--gray-600); min-height: 18px; }
 
     /* ── Sheet ── */
-    .sheet { max-width: 1240px; margin: 0 auto; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 60px -30px rgba(17,24,39,0.35); }
+    /* Inputs and results sit in two separate cards */
+    .sheet { max-width: 1240px; margin: 0 auto; }
+    .stepper, .summary { background: #fff; border-radius: 24px; box-shadow: 0 24px 60px -30px rgba(17,24,39,0.35); }
+    .stepper { padding: 40px 44px 44px; }
 
     .band { position: relative; background: var(--blue-500); color: #fff; padding: 56px 24px 150px; overflow: hidden; }
     .band::after {
@@ -100,7 +114,7 @@
     .page { padding: 0 24px; margin-top: -64px; position: relative; z-index: 3; }
 
     /* ── Two columns: steps left, results right ── */
-    .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; padding: 44px 56px 56px; align-items: start; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; }
 
     /* Stepper */
     .steps-intro h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
@@ -149,6 +163,7 @@
     tr.minus td:first-child::before { content: '− '; color: var(--gray-400); }
     .out { font-weight: 600; }
     .neg { color: var(--red-600); }
+    .wk-row .wk-copy { display: inline-block; vertical-align: middle; white-space: normal; max-width: calc(100% - 40px); }
 
     .inp { display: inline-flex; align-items: center; gap: 6px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber-400); flex-shrink: 0; margin-right: 6px; }
@@ -174,11 +189,20 @@
     .hero-kpi.loss { background: #7f1d1d; }
 
     /* who is editing, save state */
-    .who { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13.5px; color: var(--gray-700); }
-    .who b { color: var(--gray-900); }
-    .link-btn { background: none; border: none; padding: 6px 2px; min-height: 32px; font: 600 13.5px var(--font); color: var(--blue-500); cursor: pointer; border-radius: 6px; }
-    .link-btn:hover { text-decoration: underline; }
-    .link-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+    .who { display: grid; gap: 6px; justify-items: start; }
+    .who-btn {
+      display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 5px 16px 5px 5px; border-radius: 99px;
+      border: 1px solid var(--gray-200); background: #fff; color: var(--gray-900); font: inherit; text-align: left; cursor: pointer;
+      --flood: var(--blue-50); --flood-edge: var(--blue-200);
+    }
+    .who-btn:hover { border-color: var(--blue-200); }
+    .who-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+    .who-av { width: 34px; height: 34px; border-radius: 50%; background: var(--blue-500); color: #fff; display: grid; place-items: center; font: 700 13px var(--font); flex-shrink: 0; }
+    .who-av.empty { background: var(--blue-50); color: var(--blue-500); }
+    .who-av .ico { font-size: 18px; }
+    .who-copy { display: grid; line-height: 1.3; }
+    .who-copy b { font-size: 14px; font-weight: 600; }
+    .who-copy span { font-size: 12px; color: var(--gray-500); }
     .sync { font-size: 12.5px; color: var(--gray-500); display: inline-flex; align-items: center; gap: 6px; }
     .sync::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--gray-300); }
     .sync.ok::before { background: var(--green-500); }
@@ -189,6 +213,10 @@
 
     /* dialogs */
     .dlg { margin: auto; border: none; border-radius: 24px; padding: 0; width: min(440px, calc(100vw - 32px)); box-shadow: 0 30px 80px -20px rgba(0,18,69,0.45); color: var(--gray-900); }
+    /* The contents slide in from 22px down, which would otherwise flash a scrollbar on the dialog */
+    .dlg { overflow: hidden; }
+    html { scrollbar-gutter: stable; }
+    html:has(.dlg[open]) { overflow: hidden; }
     .dlg::backdrop { background: rgba(0,18,69,0.45); backdrop-filter: blur(3px); }
     .dlg form { padding: 30px 30px 26px; }
     .dlg .tile { width: 48px; height: 48px; border-radius: 14px; background: var(--blue-50); color: var(--blue-500); display: grid; place-items: center; margin-bottom: 18px; }
@@ -204,7 +232,8 @@
     /* how this works */
     .dlg.how { width: min(560px, calc(100vw - 32px)); overflow: hidden; }
     .how-close { position: absolute; top: 14px; right: 14px; z-index: 2; width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,0.9); color: var(--gray-700); display: grid; place-items: center; cursor: pointer; box-shadow: 0 2px 10px rgba(0,18,69,0.12); }
-    .how-close:hover { background: #fff; color: var(--gray-900); }
+    .how-close { background: var(--red-600); color: #fff; --flood: #b91c1c; }
+    .how-close .ico { font-size: 18px; }
     .how-close:focus-visible { outline: none; box-shadow: var(--focus); }
     .how-close .ico { font-size: 20px; }
     .how-art { aspect-ratio: 4 / 3; background: #f3f6ff; overflow: hidden; }
@@ -224,10 +253,21 @@
       .how h2 { font-size: 20px; }
     }
 
+    /* GSAP eases the dialog itself; the backdrop is a pseudo-element, so CSS fades it */
     @media (prefers-reduced-motion: no-preference) {
-      .dlg[open] { animation: dlgIn 0.22s ease-out; }
-      @keyframes dlgIn { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+      .dlg[open]::backdrop { animation: fadeIn 0.3s ease-out; }
+      .dlg.closing::backdrop { opacity: 0; transition: opacity 0.25s ease-in; }
+      @keyframes fadeIn { from { opacity: 0; } }
     }
+
+    /* Loader: only shown when the head script adds .js, so no-JS and reduced-motion visitors skip it */
+    .loader { display: none; }
+    .js .loader { position: fixed; inset: 0; z-index: 100; display: grid; place-content: center; justify-items: center; gap: 22px; background: var(--blue-900); }
+    .loader img { width: 132px; }
+    .loader-bar { width: 160px; height: 3px; border-radius: 99px; background: rgba(255,255,255,0.15); overflow: hidden; }
+    .loader-bar span { display: block; height: 100%; background: #fff; transform-origin: left; transform: scaleX(0); animation: loadBar 2.4s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
+    @keyframes loadBar { to { transform: scaleX(0.85); } }
+    @media print { .loader { display: none !important; } }
     .hero-kpi .neg { color: #fff; }
     .unit { font-size: 13px; font-weight: 500; color: var(--gray-500); }
     select.field { width: auto; text-align: left; font-weight: 500; }
@@ -239,12 +279,36 @@
     .notes li::marker { color: var(--blue-500); }
 
     /* Results panel */
-    .summary { position: sticky; top: 20px; display: grid; gap: 14px; }
-    .hero-kpi { background: var(--blue-900); color: #fff; border-radius: 22px; padding: 28px 28px 26px; }
+    .summary { position: sticky; top: 20px; display: grid; gap: 14px; padding: 18px; }
+    .hero-kpi { position: relative; isolation: isolate; overflow: hidden; background: var(--blue-900); color: #fff; border-radius: 22px; padding: 28px 28px 26px; }
+    .hero-kpi > * { position: relative; }
+    /* A city delivery map (ChatGPT), faded in from the right so the figure stays clean.
+       Screen blend keeps the lines readable on the red loss state too. */
+    .hero-kpi::before {
+      content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; mix-blend-mode: screen;
+      background: url("./kpi-pattern.webp") right center / cover no-repeat;
+      -webkit-mask-image: linear-gradient(100deg, transparent 15%, #000 70%); mask-image: linear-gradient(100deg, transparent 15%, #000 70%);
+    }
     .hero-kpi .l { font-size: 14px; color: rgba(255,255,255,0.75); font-weight: 500; }
     .hero-kpi .v { font-size: 56px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; margin-top: 10px; }
     .hero-kpi .v small { font-size: 18px; font-weight: 600; letter-spacing: 0; opacity: 0.7; margin-left: 6px; }
     .hero-kpi .sub { font-size: 13.5px; color: rgba(255,255,255,0.7); margin-top: 12px; line-height: 1.45; }
+    /* Results: an icon on every figure and a live tip under each block */
+    .kpi-head { display: flex; align-items: center; gap: 10px; }
+    .kpi-ico { width: 36px; height: 36px; border-radius: 11px; background: rgba(255,255,255,0.12); display: grid; place-items: center; flex-shrink: 0; }
+    .kpi-ico .ico { font-size: 20px; color: var(--blue-200); }
+    .tip { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.45; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--gray-200); color: var(--gray-600); text-wrap: pretty; }
+    .tip .ico { font-size: 17px; color: var(--amber-400); flex-shrink: 0; margin-top: 1px; }
+    .tip b { color: var(--gray-900); font-weight: 600; }
+    .hero-kpi .tip { border-top-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.85); }
+    .hero-kpi .tip b { color: #fff; }
+    .m-ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--blue-50); color: var(--blue-500); margin-bottom: 10px; }
+    .m-ico .ico { font-size: 18px; }
+    .wk-ico { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: var(--gray-100); color: var(--gray-600); margin-right: 10px; vertical-align: middle; }
+    .wk-ico .ico { font-size: 16px; }
+    .wk-row td:first-child { white-space: nowrap; }
+    tr.minus.wk-row td:first-child::before { content: none; }
+    .wk-row.minus .out::before { content: '− '; color: var(--gray-400); font-weight: 500; }
     .mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .mini > div { border: 1px solid var(--gray-200); border-radius: 16px; padding: 16px 16px 14px; }
     .mini .v { white-space: nowrap; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
@@ -264,15 +328,16 @@
     .fleet .v { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
     .fleet .l { font-size: 12.5px; color: var(--gray-500); margin-top: 4px; line-height: 1.35; }
 
-    .foot { padding: 22px 56px 26px; border-top: 1px solid var(--gray-200); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--gray-500); }
+    .foot { padding: 22px 8px 26px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--gray-500); }
 
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
 
     @media (max-width: 980px) {
-      .layout { grid-template-columns: 1fr; gap: 36px; padding: 32px 28px 40px; }
+      .layout { grid-template-columns: 1fr; gap: 20px; }
+      .stepper { padding: 32px 28px 36px; }
       .summary { position: static; order: -1; }
       .band-inner { padding: 0 28px; }
-      .foot { padding: 20px 28px 24px; }
+      .foot { padding: 20px 8px 24px; }
     }
     @media (max-width: 640px) {
       .band { padding: 36px 0 120px; }
@@ -282,7 +347,8 @@
       .band-top { margin-bottom: 26px; }
       .band h1 { font-size: 32px; }
       .band p { font-size: 15.5px; }
-      .layout { padding: 22px 16px 32px; }
+      .stepper { padding: 22px 16px 28px; }
+      .summary { padding: 12px; }
       .hero-kpi .v { font-size: 44px; }
       .mini { gap: 8px; }
       .mini > div { padding: 14px 12px 12px; }
@@ -295,8 +361,8 @@
       .step-body { padding: 4px 14px 16px; }
       .st-count { display: none; }
       .field { width: 88px; }
-      .progress { min-width: 0; width: 100%; }
-      .tools { width: 100%; }
+      .toolbar { grid-template-columns: 1fr; padding: 16px; }
+      .who { border-left: 0; margin-left: 0; padding-left: 0; }
       .btn { flex: 1 1 auto; }
       .foot { padding: 18px 16px 22px; }
     }
@@ -307,6 +373,7 @@
       html, body { background: #fff; padding: 0; }
       .toolbar, .status, .dot, .chev, .step-nav, .st-count { display: none !important; }
       .sheet { box-shadow: none; border-radius: 0; max-width: none; }
+      .tip, .kpi-ico, .m-ico, .wk-ico { display: none !important; }
       .band, .hero-kpi, .split-bar span, .sw, .step.done .num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .band { padding: 26px 0 28px; }
       .band::before { display: none; }
@@ -315,6 +382,7 @@
       .band-top { margin-bottom: 18px; }
       .band h1 { font-size: 30px; }
       .layout { display: block; padding: 20px 30px; }
+      .stepper, .summary { box-shadow: none; padding: 0; border-radius: 0; }
       .summary { position: static; }
       .hero-kpi .v { font-size: 40px; }
       .stepper { break-before: page; }
@@ -330,6 +398,10 @@
   </style>
 </head>
 <body>
+  <div class="loader" aria-hidden="true">
+    <img src="./logo-white.png" alt="">
+    <div class="loader-bar"><span></span></div>
+  </div>
 
   <header class="band">
     <div class="band-inner">
@@ -354,14 +426,16 @@
       </div>
     </div>
     <div class="who">
-      <span id="whoText">Not signed in yet</span>
-      <button type="button" class="link-btn" id="changeName">Add your name</button>
+      <button type="button" class="who-btn" id="changeName" data-hover="flood">
+        <span class="who-av empty" id="whoAv"><i class="ph-duotone ph-user ico"></i></span>
+        <span class="who-copy"><b id="whoName">Add your name</b><span id="whoHint">So your edits save to the team sheet</span></span>
+      </button>
       <span class="sync" id="sync" role="status" aria-live="polite"></span>
     </div>
     <div class="tools">
-      <button class="btn" id="howOpen" type="button"><i class="ph-duotone ph-question ico"></i>How this works</button>
-      <button class="btn" id="copyLink" type="button"><i class="ph-duotone ph-link ico"></i>Copy link</button>
-      <button class="btn primary" id="print" type="button"><i class="ph-duotone ph-file-pdf ico"></i>Save as PDF</button>
+      <button class="btn" data-hover="flood" id="howOpen" type="button"><i class="ph-duotone ph-question ico"></i>How this works</button>
+      <button class="btn" data-hover="flood" id="copyLink" type="button"><i class="ph-duotone ph-link ico"></i>Copy link</button>
+      <button class="btn primary" data-hover="flood" id="print" type="button"><i class="ph-duotone ph-file-pdf ico"></i>Save as PDF</button>
     </div>
   </div>
   <p class="status" id="status" role="status"></p>
@@ -383,15 +457,16 @@
 
       <aside class="summary" aria-label="Results">
         <div class="hero-kpi">
-          <div class="l">The partner earns</div>
+          <div class="kpi-head"><span class="kpi-ico"><i class="ph-duotone ph-hand-coins ico"></i></span><div class="l">The partner earns</div></div>
           <div class="v"><span id="k-partner">—</span><small>a week</small></div>
           <div class="sub" id="k-partner-sub"></div>
+          <p class="tip"><i class="ph-duotone ph-lightbulb ico"></i><span id="k-tip"></span></p>
         </div>
 
         <div class="mini">
-          <div><div class="v" id="k-setup">—</div><div class="l">To put one bike on the road</div></div>
-          <div><div class="v" id="k-payback">—</div><div class="l">Weeks to pay the bike back</div></div>
-          <div><div class="v" id="k-rider">—</div><div class="l">Rider takes home a week</div></div>
+          <div><span class="m-ico"><i class="ph-duotone ph-motorcycle ico"></i></span><div class="v" id="k-setup">—</div><div class="l">To put one bike on the road</div></div>
+          <div><span class="m-ico"><i class="ph-duotone ph-hourglass-medium ico"></i></span><div class="v" id="k-payback">—</div><div class="l">Weeks to pay the bike back</div></div>
+          <div><span class="m-ico"><i class="ph-duotone ph-user ico"></i></span><div class="v" id="k-rider">—</div><div class="l">Rider takes home a week</div></div>
         </div>
 
         <div class="panel">
@@ -408,15 +483,17 @@
           <table><tbody id="week"></tbody>
             <tfoot><tr class="total"><td>Partner keeps</td><td id="t-partner">—</td></tr></tfoot>
           </table>
+          <p class="tip"><i class="ph-duotone ph-lightbulb ico"></i><span id="w-tip"></span></p>
         </div>
 
         <div class="panel">
           <h3 id="fleetTitle">Across the fleet</h3>
           <div class="fleet">
-            <div><div class="v" id="f-capital">—</div><div class="l">Capital to raise</div></div>
-            <div><div class="v" id="f-weekly">—</div><div class="l">Paid to partners a week</div></div>
-            <div><div class="v" id="f-deliveries">—</div><div class="l">Deliveries a month</div></div>
+            <div><span class="m-ico"><i class="ph-duotone ph-wallet ico"></i></span><div class="v" id="f-capital">—</div><div class="l">Capital to raise</div></div>
+            <div><span class="m-ico"><i class="ph-duotone ph-hand-coins ico"></i></span><div class="v" id="f-weekly">—</div><div class="l">Paid to partners a week</div></div>
+            <div><span class="m-ico"><i class="ph-duotone ph-package ico"></i></span><div class="v" id="f-deliveries">—</div><div class="l">Deliveries a month</div></div>
           </div>
+          <p class="tip"><i class="ph-duotone ph-lightbulb ico"></i><span id="f-tip"></span></p>
         </div>
       </aside>
     </div>
@@ -429,7 +506,7 @@
   </div>
 
   <dialog class="dlg how" id="howDlg" aria-labelledby="howTitle">
-    <button class="how-close" type="button" id="howClose" aria-label="Close"><i class="ph-duotone ph-x ico"></i></button>
+    <button class="how-close" type="button" data-hover="flood" id="howClose" aria-label="Close"><i class="ph-duotone ph-x ico"></i></button>
     <div class="how-art"><img id="howImg" src="./how/1.webp" alt="" width="1120" height="840"></div>
     <div class="how-body">
       <div class="how-dots" role="tablist" aria-label="Steps" id="howDots"></div>
@@ -437,8 +514,8 @@
       <h2 id="howTitle"></h2>
       <p id="howText"></p>
       <div class="dlg-actions how-actions">
-        <button class="btn" type="button" id="howBack"><i class="ph-duotone ph-arrow-left ico"></i>Back</button>
-        <button class="btn primary" type="button" id="howNext"></button>
+        <button class="btn" data-hover="flood" type="button" id="howBack"><i class="ph-duotone ph-arrow-left ico"></i>Back</button>
+        <button class="btn primary" data-hover="flood" type="button" id="howNext"></button>
       </div>
     </div>
   </dialog>
@@ -452,12 +529,15 @@
       <input id="nameInput" class="text-field" type="text" maxlength="60" autocomplete="name" placeholder="For example, Leo Marecha">
       <p class="field-err" id="nameErr" role="alert"></p>
       <div class="dlg-actions">
-        <button class="btn" type="button" id="nameLater">Not now</button>
-        <button class="btn primary" type="submit">Continue</button>
+        <button class="btn" data-hover="flood" type="button" id="nameLater">Not now</button>
+        <button class="btn primary" data-hover="flood" type="submit">Continue</button>
       </div>
     </form>
   </dialog>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="../lib/hover-motion.js"></script>
   <script>
   /* Every input: default value, label, unit, where the default came from.
      Defaults count as estimates until someone edits them. */
@@ -507,6 +587,7 @@
     { id: 'pilot',   title: 'Pilot results, 26 to 30 October', icon: 'clipboard-text' },
     { id: 'fleet',   title: 'Fleet size', icon: 'users-three' },
   ];
+
 
   const NOTES = [
     'The partner buys and owns the bike. Fetchr assigns a vetted rider, finds the corporate work, and pays the partner weekly.',
@@ -620,9 +701,9 @@
           <tr><td>Fuel per kilometre</td><td class="out" id="p-fuelkm">—</td></tr>
           <tr class="total"><td>Cost per delivery</td><td id="p-cost">—</td></tr>
         </tbody></table></div>
-        <button class="btn" id="usePilot" type="button" style="width:100%;margin-top:14px" disabled><i class="ph-duotone ph-arrow-bend-left-up ico"></i>Use these in steps 2 and 3</button>`;
-      const back = i > 0 ? `<button class="btn" type="button" data-go="${i - 1}"><i class="ph-duotone ph-arrow-left ico"></i>Back</button>` : '<span></span>';
-      const next = i < STEPS.length - 1 ? `<button class="btn primary" type="button" data-go="${i + 1}">Next<i class="ph-duotone ph-arrow-right ico"></i></button>` : '';
+        <button class="btn" data-hover="flood" id="usePilot" type="button" style="width:100%;margin-top:14px" disabled><i class="ph-duotone ph-arrow-bend-left-up ico"></i>Use these in steps 2 and 3</button>`;
+      const back = i > 0 ? `<button class="btn" data-hover="flood" type="button" data-go="${i - 1}"><i class="ph-duotone ph-arrow-left ico"></i>Back</button>` : '<span></span>';
+      const next = i < STEPS.length - 1 ? `<button class="btn primary" data-hover="flood" type="button" data-go="${i + 1}">Next<i class="ph-duotone ph-arrow-right ico"></i></button>` : '';
       return `<li class="step" data-step="${i}" id="step-${st.id}">
         <span class="num" aria-hidden="true">${i + 1}</span>
         <button class="step-head" type="button" data-go="${i}" aria-expanded="false" aria-controls="body-${st.id}">
@@ -633,10 +714,9 @@
       </li>`;
     }).join('');
     document.getElementById('week').innerHTML = `
-      <tr><td>Fares <span class="src" id="w-fares-src"></span></td><td class="out" id="w-revenue"></td></tr>
-      <tr class="minus"><td>Fetchr and payment fees <span class="src" id="w-fees-src"></span></td><td class="out" id="w-fees"></td></tr>
-      <tr class="minus"><td>Rider pay <span class="src" id="w-rider-src"></span></td><td class="out" id="w-rider"></td></tr>
-      <tr class="minus"><td>Running costs <span class="src" id="w-running-src"></span></td><td class="out" id="w-running"></td></tr>`;
+      ${[['coins', 'Fares', 'fares', 'revenue', ''], ['buildings', 'Fetchr and payment fees', 'fees', 'fees', 'minus'],
+         ['user', 'Rider pay', 'rider', 'rider', 'minus'], ['gas-pump', 'Running costs', 'running', 'running', 'minus']]
+        .map(([icon, label, src, out, cls]) => `<tr class="wk-row ${cls}"><td><span class="wk-ico"><i class="ph-duotone ph-${icon} ico"></i></span><span class="wk-copy">${label}<span class="src" id="w-${src}-src"></span></span></td><td class="out" id="w-${out}"></td></tr>`).join('')}`;
     document.getElementById('notes').innerHTML = NOTES.map(n => `<li>${n}</li>`).join('');
     document.getElementById('today').textContent = new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
   }
@@ -659,6 +739,16 @@
     set('w-rider', money(r.rider));
     set('w-running', money(r.running));
     set('t-partner', money(r.partner));
+    // One more delivery a day, everything else the same
+    const extra = compute({ ...state, perDay: state.perDay + 1 }).partner - r.partner;
+    document.getElementById('k-tip').innerHTML = r.partner < 0
+      ? 'Raise deliveries per day or the fare in <b>step 2</b> to get the partner above zero.'
+      : `One more delivery a day adds <b>${money(extra)}</b> a week for the partner.`;
+    const costs = [['Rider pay', r.rider, 2], ['Fetchr and payment fees', r.fees, 2], ['Running costs', r.running, 3]].sort((a, b) => b[1] - a[1]);
+    document.getElementById('w-tip').innerHTML = r.revenue > 0
+      ? `<b>${costs[0][0]}</b> is the biggest cost, at ${Math.round(costs[0][1] / r.revenue * 100)}% of fares. Change it in <b>step ${costs[0][2]}</b>.`
+      : 'Add deliveries and a fare in <b>step 2</b> to see where the money goes.';
+    document.getElementById('f-tip').innerHTML = `Capital is <b>${state.bikes} bikes × ${money(r.setup)}</b> to set each one up. Change the fleet size in <b>step 5</b>.`;
     set('w-fares-src', `${r.deliveries} deliveries × ${money(state.fare, 2)}`);
     set('w-fees-src', `${state.fetchrPct}% Fetchr + ${state.procPct}% payments`);
     set('w-rider-src', state.riderMode === 'fixed' ? 'weekly wage' : `${state.riderPct}% of fares`);
@@ -735,9 +825,12 @@
     document.querySelector('.hero-kpi').classList.toggle('loss', r.partner < 0);
     if (r.partner < 0) set('k-partner-sub', `At these numbers the partner loses ${money(-r.partner)} a week. Raise the fare or deliveries, or lower the rider or Fetchr share.`);
 
-    document.getElementById('whoText').innerHTML = editor ? `Editing as <b></b>` : 'Add your name to save to the team sheet';
-    if (editor) document.querySelector('#whoText b').textContent = editor;
-    document.getElementById('changeName').textContent = editor ? 'Change' : 'Add your name';
+    const av = document.getElementById('whoAv');
+    av.classList.toggle('empty', !editor);
+    av.innerHTML = editor ? '' : '<i class="ph-duotone ph-user ico"></i>';
+    if (editor) av.textContent = editor.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    document.getElementById('whoName').textContent = editor || 'Add your name';
+    document.getElementById('whoHint').textContent = editor ? 'Editing · tap to change' : 'So your edits save to the team sheet';
     const total = Object.keys(INPUTS).length;
     const done = Object.keys(confirmed).length;
     document.getElementById('progressText').innerHTML = `<b>${done} of ${total}</b> figures confirmed`;
@@ -812,6 +905,42 @@
     if (mode === 'shared' && !editor) askName();
   }
 
+  // ── Motion ──
+  const calm = !document.documentElement.classList.contains('js') || !window.gsap;
+  function openDlg(d) {
+    d.showModal();
+    if (calm) return;
+    // A transform on the dialog itself drops it out of the top layer in Chrome, so only its contents move
+    gsap.fromTo(d, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out', clearProps: 'opacity' });
+    gsap.fromTo(d.children, { y: 22 }, { y: 0, duration: 0.5, ease: 'power3.out', stagger: 0.04, clearProps: 'transform' });
+  }
+  function closeDlg(d) {
+    if (!d.open || d.classList.contains('closing')) return;
+    if (calm) { d.close(); return; }
+    d.classList.add('closing');
+    gsap.to(d.children, { y: 18, duration: 0.3, ease: 'power3.in', clearProps: 'transform' });
+    gsap.to(d, { opacity: 0, duration: 0.3, ease: 'power3.in', clearProps: 'opacity',
+      onComplete: () => { d.classList.remove('closing'); d.close(); } });
+  }
+  // Esc closes through the same eased path
+  document.querySelectorAll('.dlg').forEach(d => d.addEventListener('cancel', e => { e.preventDefault(); closeDlg(d); }));
+
+  const FOLD = { height: 0, opacity: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, overflow: 'hidden' };
+  function easeSteps(prev, next) {
+    if (calm || prev === next) return;
+    [prev, next].forEach(el => { if (el) { gsap.killTweensOf(el); gsap.set(el, { clearProps: 'all' }); } });
+    if (prev) {
+      prev.style.display = 'block';   // render() already hid it; keep it up while it folds
+      gsap.fromTo(prev, { height: prev.offsetHeight, overflow: 'hidden' }, { ...FOLD, duration: 0.3, ease: 'power2.inOut', clearProps: 'all' });
+    }
+    if (next) {
+      gsap.from(next, { ...FOLD, duration: 0.45, ease: 'power3.out', clearProps: 'all', onComplete: () => ScrollTrigger.refresh() });
+      const kids = next.querySelectorAll('tr[data-row]:not([hidden]), .warn:not([hidden]), .pilot-out, #usePilot, .step-nav');
+      gsap.killTweensOf(kids);
+      gsap.fromTo(kids, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', stagger: 0.045, delay: 0.08, clearProps: 'transform,opacity' });
+    }
+  }
+
   const dlg = document.getElementById('nameDlg');
   function askName() {
     if (dlg.open) return;
@@ -819,7 +948,7 @@
     input.value = editor;
     input.classList.remove('invalid');
     document.getElementById('nameErr').textContent = '';
-    dlg.showModal();
+    openDlg(dlg);
     input.focus();
   }
   document.getElementById('nameForm').addEventListener('submit', e => {
@@ -833,7 +962,7 @@
     if (err) { input.focus(); return; }
     editor = v;
     try { localStorage.setItem(NAME_KEY, v); } catch (e2) { /* storage blocked */ }
-    dlg.close();
+    closeDlg(dlg);
     render();
     [...unsent].forEach(push);
   });
@@ -842,7 +971,7 @@
       e.target.classList.remove('invalid'); document.getElementById('nameErr').textContent = '';
     }
   });
-  document.getElementById('nameLater').addEventListener('click', () => dlg.close());
+  document.getElementById('nameLater').addEventListener('click', () => closeDlg(dlg));
   document.getElementById('changeName').addEventListener('click', askName);
 
   // ── How this works ──
@@ -872,17 +1001,32 @@
     document.getElementById('howNext').innerHTML = last ? 'Start filling in' : 'Next<i class="ph-duotone ph-arrow-right ico"></i>';
     document.querySelectorAll('[data-how]').forEach(b => b.setAttribute('aria-selected', String(Number(b.dataset.how) === howStep)));
   }
-  function openHow() { showHow(0); how.showModal(); document.getElementById('howNext').focus(); }
-  function closeHow() { how.close(); }
+  let howTl;
+  function goHow(i) {
+    const n = Math.max(0, Math.min(HOW.length - 1, i));
+    if (n === howStep) return;
+    if (calm) { showHow(n); return; }
+    if (howTl) howTl.progress(1);   // finish a half-played change so quick clicks never skip a step's text
+    const dir = n > howStep ? 1 : -1;
+    const parts = ['#howImg', '#howCount', '#howTitle', '#howText'];
+    howTl = gsap.timeline()
+      .to(parts, { opacity: 0, x: -24 * dir, duration: 0.18, ease: 'power2.in', stagger: 0.03 })
+      .add(() => showHow(n))
+      .fromTo(parts, { opacity: 0, x: 24 * dir }, { opacity: 1, x: 0, duration: 0.42, ease: 'power3.out', stagger: 0.05, clearProps: 'all' });
+  }
+  // Back, Next and the arrow keys step from where a half-played change is heading
+  function stepHow(delta) { if (howTl) howTl.progress(1); goHow(howStep + delta); }
+  function openHow() { showHow(0); openDlg(how); document.getElementById('howNext').focus(); }
+  function closeHow() { closeDlg(how); }
   how.addEventListener('close', () => { try { localStorage.setItem(INTRO_KEY, '1'); } catch (e) { /* storage blocked */ } });
   document.getElementById('howOpen').addEventListener('click', openHow);
   document.getElementById('howClose').addEventListener('click', closeHow);
-  document.getElementById('howBack').addEventListener('click', () => showHow(howStep - 1));
-  document.getElementById('howNext').addEventListener('click', () => { if (howStep === HOW.length - 1) closeHow(); else showHow(howStep + 1); });
-  document.getElementById('howDots').addEventListener('click', e => { const b = e.target.closest('[data-how]'); if (b) showHow(Number(b.dataset.how)); });
+  document.getElementById('howBack').addEventListener('click', () => stepHow(-1));
+  document.getElementById('howNext').addEventListener('click', () => { if (howTl) howTl.progress(1); if (howStep === HOW.length - 1) closeHow(); else stepHow(1); });
+  document.getElementById('howDots').addEventListener('click', e => { const b = e.target.closest('[data-how]'); if (b) goHow(Number(b.dataset.how)); });
   how.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); showHow(howStep + 1); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); showHow(howStep - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); stepHow(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); stepHow(-1); }
   });
   how.addEventListener('click', e => { if (e.target === how) closeHow(); });   // click on the backdrop
 
@@ -890,11 +1034,41 @@
   load();
   fill();
   render();
-  let seen = false;
-  try { seen = !!localStorage.getItem(INTRO_KEY); } catch (e) { seen = true; }
-  if (!seen && !location.hash) openHow();
   syncState('busy', 'Loading the team sheet…');
-  loadShared();
+  const firstLoad = loadShared();
+
+  function intro() {
+    let seen = false;
+    try { seen = !!localStorage.getItem(INTRO_KEY); } catch (e) { seen = true; }
+    if (!seen && !location.hash) openHow();
+  }
+  // Loader lifts, then everything rises in as it scrolls into view, staggered in batches
+  const REVEAL = '.band-inner > *, .toolbar, .step, .summary > *, .notes, .foot';
+  function reveal() {
+    const loader = document.querySelector('.loader');
+    if (calm) { loader.remove(); intro(); return; }
+    gsap.registerPlugin(ScrollTrigger);
+    const items = gsap.utils.toArray(REVEAL);
+    gsap.set(items, { opacity: 0, y: 24 });
+    const bar = loader.querySelector('.loader-bar span');
+    const from = new DOMMatrix(getComputedStyle(bar).transform).a;
+    bar.style.animation = 'none';   // CSS animations beat inline styles, so hand the bar over to GSAP
+    gsap.timeline()
+      .fromTo(bar, { scaleX: from }, { scaleX: 1, duration: 0.3, ease: 'power2.out' })
+      .to(loader.children, { y: -12, opacity: 0, duration: 0.3, ease: 'power2.in', stagger: 0.05 })
+      .to(loader, { yPercent: -100, duration: 0.75, ease: 'power4.inOut' })
+      .add(() => ScrollTrigger.batch(items, {
+        start: 'top bottom', once: true,
+        onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.08, clearProps: 'transform,opacity' }),
+      }), '-=0.4')
+      .add(() => loader.remove())
+      .add(intro, '+=0.3');
+    // a PDF printed before scrolling would miss anything still hidden
+    addEventListener('beforeprint', () => gsap.set(items, { clearProps: 'transform,opacity' }));
+  }
+  // wait for the team sheet, but show the loader at least 0.7 s and never more than 3 s
+  Promise.race([firstLoad, new Promise(r => setTimeout(r, 3000))])
+    .then(() => setTimeout(reveal, Math.max(0, 700 - performance.now())));
   setInterval(() => { if (document.visibilityState === 'visible') loadShared(); }, 15000);
 
   document.addEventListener('input', e => {
@@ -920,10 +1094,13 @@
     const go = e.target.closest('[data-go]');
     if (!go) return;
     const i = Number(go.dataset.go);
+    const prev = document.querySelector('.step.open .step-body');
     openStep = go.classList.contains('step-head') && openStep === i ? -1 : i;
     render();
+    easeSteps(prev, document.querySelector('.step.open .step-body'));
     if (!go.classList.contains('step-head') && openStep >= 0) {
-      document.querySelector(`[data-step="${openStep}"]`).scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+      // wait for the old step to fold so the scroll lands on the new one
+      setTimeout(() => document.querySelector(`[data-step="${openStep}"]`).scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' }), calm ? 0 : 320);
     }
   });
 

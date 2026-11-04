@@ -1,0 +1,76 @@
+/*
+ * Hover, focus and press for buttons and links. hover-motion.js moves these by
+ * setting the custom properties below; .claude/skills/fetchr-hover says which
+ * control gets which. Until that script runs, and under reduced motion, the
+ * plain color changes at the end stand in.
+ */
+
+/* A solid button the hover color floods from where the pointer came in.
+   Buttons set --flood, and --flood-edge for a rim. */
+[data-hover="flood"] {
+  --flood-x: 50%;
+  --flood-y: 50%;
+  --flood-r: 0;
+  --flood-rim: 3px;
+  --splash-x: 50%;
+  --splash-y: 50%;
+  --splash-r: 0;
+  --splash-o: 0;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden; /* clips the arrow loop */
+}
+
+[data-hover="flood"]::before,
+[data-hover="flood"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* A stop at 0 starts where the one before it ended, which gives hard edges. */
+[data-hover="flood"]::before {
+  background: radial-gradient(
+    circle at var(--flood-x) var(--flood-y),
+    var(--flood) calc(var(--flood-r) * 1px - var(--flood-rim)),
+    var(--flood-edge, var(--flood)) 0 calc(var(--flood-r) * 1px),
+    transparent 0
+  );
+}
+
+/* A press: two rings in the text color, so they show on any button. */
+[data-hover="flood"]::after {
+  --splash: color-mix(in srgb, currentColor calc(var(--splash-o) * 55%), transparent);
+  background:
+    radial-gradient(circle at var(--splash-x) var(--splash-y),
+      transparent calc(var(--splash-r) * 1px - 2px), var(--splash) 0 calc(var(--splash-r) * 1px), transparent 0),
+    radial-gradient(circle at var(--splash-x) var(--splash-y),
+      transparent calc(var(--splash-r) * 0.6px - 1.5px), var(--splash) 0 calc(var(--splash-r) * 0.6px), transparent 0);
+}
+
+/* A line drawn under text from the nearer end. */
+[data-line] {
+  --line: 0;
+  --line-from: 0;
+  --line-color: currentColor;
+  --line-weight: 1.5px;
+  background-image: linear-gradient(var(--line-color), var(--line-color));
+  background-clip: content-box;
+  background-origin: content-box;
+  background-position: calc(var(--line-from) * 1%) 100%;
+  background-repeat: no-repeat;
+  background-size: calc(var(--line) * 100%) var(--line-weight);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* The plain versions */
+@media (hover: hover) {
+  html:not([data-hover-motion]) [data-hover="flood"]:hover { background-color: var(--flood); }
+  html:not([data-hover-motion]) :is([data-hover="line"]:hover[data-line], [data-hover="line"]:hover [data-line]) { --line: 1; }
+}
+html:not([data-hover-motion]) [data-hover="flood"]:focus-visible { background-color: var(--flood); }
+html:not([data-hover-motion]) :is([data-hover="line"]:focus-visible[data-line], [data-hover="line"]:focus-visible [data-line]) { --line: 1; }

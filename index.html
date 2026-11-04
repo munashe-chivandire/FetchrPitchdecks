@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+  <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="./lib/hover.css">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -50,19 +52,6 @@
     body {
       display: flex;
       flex-direction: column;
-    }
-
-    /* Global grid texture */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.020) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.020) 1px, transparent 1px);
-      background-size: 60px 60px;
-      pointer-events: none;
-      z-index: 0;
     }
 
     /* ══════════════════════════════════════════════
@@ -114,7 +103,6 @@
       gap: 32px;
       padding: 28px 28px 22px;
       border-bottom: 1px solid var(--border);
-      animation: fadeSlideIn 0.4s 0.08s var(--ease-spring) both;
     }
 
     .ph-title {
@@ -159,16 +147,12 @@
       text-decoration: none;
       white-space: nowrap;
       box-shadow: 0 10px 24px -8px rgba(0,65,245,0.55);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      transition: box-shadow 0.2s;
+      --flood: var(--fetchr-blue-400);
+      --flood-edge: var(--fetchr-blue-200);
     }
 
-    .btn-primary:hover {
-      background: #0035c9;
-      box-shadow: 0 14px 30px -8px rgba(0,65,245,0.65);
-      transform: translateY(-2px);
-    }
-
-    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:hover { box-shadow: 0 14px 30px -8px rgba(0,65,245,0.65); }
 
     .btn-primary:focus-visible,
     .ws-icon-btn:focus-visible,
@@ -179,8 +163,6 @@
       outline-offset: 3px;
     }
 
-    .btn-primary .ico { transition: transform 0.2s; }
-    .btn-primary:hover .ico { transform: translateX(4px); }
 
     .ws-controls {
       display: flex;
@@ -269,7 +251,6 @@
       cursor: pointer;
       position: relative;
       transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s var(--ease-spring);
-      animation: cardUp 0.5s 0.18s var(--ease-spring) both;
     }
 
     .featured-card:hover {
@@ -423,10 +404,9 @@
       padding: 8px 16px;
       cursor: pointer;
       text-decoration: none;
-      transition: background 0.18s;
+      --flood: var(--fetchr-blue-400);
+      --flood-edge: var(--fetchr-blue-200);
     }
-
-    .btn-open:hover { background: #0035c9; }
 
 
 
@@ -465,8 +445,6 @@
       transform: translateX(0);
     }
 
-    .compact-card:nth-child(1) { animation: cardUp 0.5s 0.24s var(--ease-spring) both; }
-    .compact-card:nth-child(2) { animation: cardUp 0.5s 0.30s var(--ease-spring) both; }
 
     /* ── Preview area ── */
     .cc-preview {
@@ -592,15 +570,13 @@
     /* ══════════════════════════════════════════════
        ANIMATIONS
     ══════════════════════════════════════════════ */
-    @keyframes cardUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    /* Loader: only shown when the head script adds .js, so no-JS and reduced-motion visitors skip it */
+    .loader { display: none; }
+    .js .loader { position: fixed; inset: 0; z-index: 100; display: grid; place-content: center; justify-items: center; gap: 22px; background: var(--bg-deep); }
+    .loader img { width: 140px; }
+    .loader-bar { width: 160px; height: 3px; border-radius: 99px; background: rgba(255,255,255,0.12); overflow: hidden; }
+    .loader-bar span { display: block; height: 100%; background: var(--fetchr-blue-400); transform-origin: left; transform: scaleX(0); animation: loadBar 2.4s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
+    @keyframes loadBar { to { transform: scaleX(0.85); } }
 
     /* SVG icon helper */
     .ico { display: block; flex-shrink: 0; line-height: 1; }
@@ -834,13 +810,17 @@
   </style>
 </head>
 <body>
+  <div class="loader" aria-hidden="true">
+    <img src="./Deck1/fetchrLogoColor-removebg-preview.png" alt="">
+    <div class="loader-bar"><span></span></div>
+  </div>
 
   <!-- ══════════════════════════════════════════════
        NAV BAR
   ══════════════════════════════════════════════ -->
   <nav class="nav">
     <img class="nav-logo" src="./Deck1/fetchrLogoColor-removebg-preview.png" alt="Fetchr.">
-    <a class="nav-link" href="https://fetchr.delivery" target="_blank" rel="noopener noreferrer">fetchr.delivery <i class="ph-duotone ph-arrow-square-out ico" style="font-size:13px" aria-hidden="true"></i></a>
+    <a class="nav-link" data-hover="line" href="https://fetchr.delivery" target="_blank" rel="noopener noreferrer"><span data-line>fetchr.delivery</span> <i class="ph-duotone ph-arrow-square-out ico" style="font-size:13px" aria-hidden="true"></i></a>
   </nav>
 
   <!-- ══════════════════════════════════════════════
@@ -852,7 +832,7 @@
       <p class="ph-sub">Three decks: the pre-seed pitch, the enterprise revenue model, and the plan for Southern Africa.</p>
     </div>
     <div class="ph-actions">
-      <a class="btn-primary" href="./Deck1/index.html" target="_blank" rel="noopener noreferrer">
+      <a class="btn-primary" data-hover="flood" href="./Deck1/index.html" target="_blank" rel="noopener noreferrer">
         View the pre-seed deck
         <i class="ph-duotone ph-arrow-right ico" style="font-size:18px" aria-hidden="true"></i>
       </a>
@@ -913,7 +893,7 @@
         </a>
 
         <div class="feat-action-bar">
-          <a class="btn-open" href="./Deck1/index.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+          <a class="btn-open" data-hover="flood" href="./Deck1/index.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
             Open Presentation
             <i class="ph-duotone ph-arrow-square-out ico" style="font-size:15px" aria-hidden="true"></i>
           </a>
@@ -975,7 +955,44 @@
     </div>
   </main>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="./lib/hover-motion.js"></script>
   <script>
+    // Loader lifts, then everything rises in as it scrolls into view, staggered in batches
+    (function () {
+      var loader = document.querySelector('.loader');
+      if (!document.documentElement.classList.contains('js') || !window.gsap) { loader.remove(); return; }
+      var done = false;
+      function reveal() {
+        if (done) return;
+        done = true;
+        gsap.registerPlugin(ScrollTrigger);
+        var items = gsap.utils.toArray('.nav, .ph-title, .ph-sub, .ph-actions, .featured-card, .compact-card, .stat-chip, .cc-stat');
+        gsap.set(items, { opacity: 0, y: 24 });
+        var bar = loader.querySelector('.loader-bar span');
+        var from = new DOMMatrix(getComputedStyle(bar).transform).a;
+        bar.style.animation = 'none';   // CSS animations beat inline styles, so hand the bar over to GSAP
+        gsap.timeline()
+          .fromTo(bar, { scaleX: from }, { scaleX: 1, duration: 0.3, ease: 'power2.out' })
+          .to(loader.children, { y: -12, opacity: 0, duration: 0.3, ease: 'power2.in', stagger: 0.05 })
+          .to(loader, { yPercent: -100, duration: 0.75, ease: 'power4.inOut' })
+          .add(function () {
+            ScrollTrigger.batch(items, {
+              start: 'top bottom', once: true,
+              onEnter: function (batch) {
+                gsap.to(batch, { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', stagger: 0.08, clearProps: 'transform,opacity' });
+              },
+            });
+          }, '-=0.4')
+          .add(function () { loader.remove(); });
+      }
+      // wait for the thumbnails, but show the loader at least 0.7 s and never more than 3 s
+      function ready() { setTimeout(reveal, Math.max(0, 700 - performance.now())); }
+      if (document.readyState === 'complete') ready(); else addEventListener('load', ready);
+      setTimeout(reveal, 3000);
+    })();
+
     (function () {
       var gridBtn = document.querySelector('[aria-label="Grid view"]');
       var listBtn = document.querySelector('[aria-label="List view"]');
