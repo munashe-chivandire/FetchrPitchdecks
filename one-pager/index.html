@@ -172,6 +172,39 @@
     .warn[hidden] { display: none; }
     .st-count.bad { color: var(--red-600); background: var(--red-50); }
     .hero-kpi.loss { background: #7f1d1d; }
+
+    /* who is editing, save state */
+    .who { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13.5px; color: var(--gray-700); }
+    .who b { color: var(--gray-900); }
+    .link-btn { background: none; border: none; padding: 6px 2px; min-height: 32px; font: 600 13.5px var(--font); color: var(--blue-500); cursor: pointer; border-radius: 6px; }
+    .link-btn:hover { text-decoration: underline; }
+    .link-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+    .sync { font-size: 12.5px; color: var(--gray-500); display: inline-flex; align-items: center; gap: 6px; }
+    .sync::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--gray-300); }
+    .sync.ok::before { background: var(--green-500); }
+    .sync.busy::before { background: var(--blue-500); }
+    .sync.bad { color: var(--red-600); }
+    .sync.bad::before { background: var(--red-600); }
+    .sync.local::before { background: var(--amber-400); }
+
+    /* dialogs */
+    .dlg { margin: auto; border: none; border-radius: 24px; padding: 0; width: min(440px, calc(100vw - 32px)); box-shadow: 0 30px 80px -20px rgba(0,18,69,0.45); color: var(--gray-900); }
+    .dlg::backdrop { background: rgba(0,18,69,0.45); backdrop-filter: blur(3px); }
+    .dlg form { padding: 30px 30px 26px; }
+    .dlg .tile { width: 48px; height: 48px; border-radius: 14px; background: var(--blue-50); color: var(--blue-500); display: grid; place-items: center; margin-bottom: 18px; }
+    .dlg .tile .ico { font-size: 26px; }
+    .dlg h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+    .dlg p { font-size: 14.5px; color: var(--gray-600); line-height: 1.55; margin-top: 8px; }
+    .dlg label { display: block; font-size: 13.5px; font-weight: 600; margin: 22px 0 8px; }
+    .text-field { width: 100%; font: 500 16px var(--font); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--gray-300); color: var(--gray-900); transition: border-color 0.2s, box-shadow 0.2s; }
+    .text-field:focus { outline: none; border-color: var(--blue-500); box-shadow: 0 0 0 4px rgba(0,65,245,0.14); }
+    .text-field.invalid { border-color: var(--red-600); background: var(--red-50); }
+    .field-err { min-height: 20px; font-size: 13px !important; color: var(--red-600) !important; margin-top: 6px !important; }
+    .dlg-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .dlg[open] { animation: dlgIn 0.22s ease-out; }
+      @keyframes dlgIn { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+    }
     .hero-kpi .neg { color: #fff; }
     .unit { font-size: 13px; font-weight: 500; color: var(--gray-500); }
     select.field { width: auto; text-align: left; font-weight: 500; }
@@ -297,9 +330,13 @@
         <span><i class="dot empty"></i>Not filled in</span>
       </div>
     </div>
+    <div class="who">
+      <span id="whoText">Not signed in yet</span>
+      <button type="button" class="link-btn" id="changeName">Add your name</button>
+      <span class="sync" id="sync" role="status" aria-live="polite"></span>
+    </div>
     <div class="tools">
       <button class="btn" id="copyLink" type="button"><i class="ph-duotone ph-link ico"></i>Copy link</button>
-      <button class="btn" id="reset" type="button"><i class="ph-duotone ph-arrow-counter-clockwise ico"></i>Reset</button>
       <button class="btn primary" id="print" type="button"><i class="ph-duotone ph-file-pdf ico"></i>Save as PDF</button>
     </div>
   </div>
@@ -367,6 +404,21 @@
   </main>
   </div>
 
+  <dialog class="dlg" id="nameDlg" aria-labelledby="nameTitle">
+    <form method="dialog" id="nameForm" novalidate>
+      <div class="tile"><i class="ph-duotone ph-user-circle ico"></i></div>
+      <h2 id="nameTitle">Who's filling this in?</h2>
+      <p>Your name shows next to every figure you confirm, so the team can see who set each number.</p>
+      <label for="nameInput">Your name</label>
+      <input id="nameInput" class="text-field" type="text" maxlength="60" autocomplete="name" placeholder="For example, Leo Marecha">
+      <p class="field-err" id="nameErr" role="alert"></p>
+      <div class="dlg-actions">
+        <button class="btn" type="button" id="nameLater">Not now</button>
+        <button class="btn primary" type="submit">Continue</button>
+      </div>
+    </form>
+  </dialog>
+
   <script>
   /* Every input: default value, label, unit, where the default came from.
      Defaults count as estimates until someone edits them. */
@@ -426,9 +478,15 @@
   ];
 
   const state = {};       // current values
-  const confirmed = {};   // keys someone has edited
+  const confirmed = {};   // key -> { by, at } once someone has set it
   const errors = {};      // key -> message while a field holds a bad value
   const STORE = 'fetchr-onepager-v3';
+  const NAME_KEY = 'fetchr-onepager-name';
+  let mode = 'local';     // 'shared' once the team sheet loads
+  let editor = '';
+  try { editor = localStorage.getItem(NAME_KEY) || ''; } catch (e) { /* storage blocked */ }
+  const pending = {};     // key -> timer for a save not yet sent
+  const unsent = new Set(); // keys changed while no name was given
   let openStep = 0;
 
   const money = (n, dp = 0) => (n < 0 ? '−$' : '$') + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
@@ -618,9 +676,11 @@
       const k = el.dataset.dot;
       el.className = 'dot' + (state[k] === null ? ' empty' : confirmed[k] ? ' ok' : '');
     });
+    const when = at => { try { return new Date(at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); } catch (e) { return ''; } };
     document.querySelectorAll('[data-src]').forEach(el => {
       const k = el.dataset.src;
-      el.textContent = errors[k] || (confirmed[k] ? 'Confirmed' : INPUTS[k].src);
+      const c = confirmed[k];
+      el.textContent = errors[k] || (c ? (c.by ? `Confirmed by ${c.by}${c.at ? ' · ' + when(c.at) : ''}` : 'Confirmed on this device') : INPUTS[k].src);
       el.classList.toggle('err', !!errors[k]);
     });
     document.querySelectorAll('[data-k]').forEach(el => {
@@ -636,6 +696,9 @@
     document.querySelector('.hero-kpi').classList.toggle('loss', r.partner < 0);
     if (r.partner < 0) set('k-partner-sub', `At these numbers the partner loses ${money(-r.partner)} a week. Raise the fare or deliveries, or lower the rider or Fetchr share.`);
 
+    document.getElementById('whoText').innerHTML = editor ? `Editing as <b></b>` : 'Add your name to save to the team sheet';
+    if (editor) document.querySelector('#whoText b').textContent = editor;
+    document.getElementById('changeName').textContent = editor ? 'Change' : 'Add your name';
     const total = Object.keys(INPUTS).length;
     const done = Object.keys(confirmed).length;
     document.getElementById('progressText').innerHTML = `<b>${done} of ${total}</b> figures confirmed`;
@@ -660,10 +723,96 @@
     }
   }
 
+  const syncState = (cls, text) => { const el = document.getElementById('sync'); el.className = 'sync ' + cls; el.textContent = text; };
+
+  async function loadShared() {
+    try {
+      const res = await fetch('/api/figures/', { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(res.status);
+      const { figures } = await res.json();
+      mode = 'shared';
+      for (const [k, f] of Object.entries(figures)) {
+        if (!(k in INPUTS) || pending[k] || unsent.has(k) || errors[k]) continue;
+        if (document.activeElement && document.activeElement.dataset && document.activeElement.dataset.k === k) continue;
+        state[k] = f.value === null ? INPUTS[k].v : f.value;
+        if (f.value === null) delete confirmed[k]; else confirmed[k] = { by: f.by, at: f.at };
+      }
+      fill(); render();
+      if (!Object.keys(pending).length && !unsent.size) syncState('ok', 'Team sheet, up to date');
+    } catch (e) {
+      if (mode !== 'shared') syncState('local', 'Saving on this device only');
+      else syncState('bad', "Can't reach the team sheet. Retrying.");
+    }
+  }
+
+  async function push(k) {
+    delete pending[k];
+    if (mode !== 'shared') return;
+    if (!editor) { unsent.add(k); syncState('local', 'Not shared yet: add your name'); return; }
+    unsent.delete(k);
+    syncState('busy', 'Saving…');
+    try {
+      const res = await fetch('/api/figures/', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: k, value: state[k], by: editor }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || res.status);
+      if (state[k] === null) delete confirmed[k]; else confirmed[k] = { by: editor, at: body.at };
+      render();
+      if (!Object.keys(pending).length && !unsent.size) syncState('ok', 'Saved to the team sheet');
+    } catch (e) {
+      unsent.add(k);
+      syncState('bad', `Not saved: ${e.message}. Will retry.`);
+    }
+  }
+
+  function queue(k) {
+    clearTimeout(pending[k]);
+    pending[k] = setTimeout(() => push(k), 600);
+    if (mode === 'shared' && !editor) askName();
+  }
+
+  const dlg = document.getElementById('nameDlg');
+  function askName() {
+    if (dlg.open) return;
+    const input = document.getElementById('nameInput');
+    input.value = editor;
+    input.classList.remove('invalid');
+    document.getElementById('nameErr').textContent = '';
+    dlg.showModal();
+    input.focus();
+  }
+  document.getElementById('nameForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = document.getElementById('nameInput');
+    const v = input.value.trim().replace(/\s+/g, ' ');
+    const err = !v ? 'Enter your name so the team knows who set these figures.' : v.length < 2 ? 'Use at least 2 letters.' : '';
+    document.getElementById('nameErr').textContent = err;
+    input.classList.toggle('invalid', !!err);
+    input.setAttribute('aria-invalid', err ? 'true' : 'false');
+    if (err) { input.focus(); return; }
+    editor = v;
+    try { localStorage.setItem(NAME_KEY, v); } catch (e2) { /* storage blocked */ }
+    dlg.close();
+    render();
+    [...unsent].forEach(push);
+  });
+  document.getElementById('nameInput').addEventListener('input', e => {
+    if (e.target.classList.contains('invalid') && e.target.value.trim().length >= 2) {
+      e.target.classList.remove('invalid'); document.getElementById('nameErr').textContent = '';
+    }
+  });
+  document.getElementById('nameLater').addEventListener('click', () => dlg.close());
+  document.getElementById('changeName').addEventListener('click', askName);
+
   build();
   load();
   fill();
   render();
+  syncState('busy', 'Loading the team sheet…');
+  loadShared();
+  setInterval(() => { if (document.visibilityState === 'visible') loadShared(); }, 15000);
 
   document.addEventListener('input', e => {
     const k = e.target.dataset && e.target.dataset.k;
@@ -675,12 +824,13 @@
       const msg = e.target.validity && e.target.validity.badInput ? 'Enter a number' : validate(k, raw);
       if (msg) { errors[k] = msg; render(); return; }   // results keep the last good value
       delete errors[k];
-      if (raw.trim() === '') { state[k] = null; delete confirmed[k]; render(); save(); return; }
+      if (raw.trim() === '') { state[k] = null; delete confirmed[k]; render(); save(); queue(k); return; }
       state[k] = Number(raw);
     }
-    confirmed[k] = true;
+    confirmed[k] = { by: editor, at: new Date().toISOString() };
     render();
     save();
+    queue(k);
   });
 
   document.addEventListener('click', e => {
@@ -697,23 +847,15 @@
   const status = msg => { const s = document.getElementById('status'); s.textContent = msg; setTimeout(() => { if (s.textContent === msg) s.textContent = ''; }, 4000); };
 
   document.getElementById('copyLink').addEventListener('click', async () => {
-    const url = location.href.split('#')[0] + '#' + btoa(encodeURIComponent(JSON.stringify({ state, confirmed })));
-    try { await navigator.clipboard.writeText(url); status('Link copied. Anyone who opens it sees these numbers.'); }
+    const url = mode === 'shared' ? location.href.split('#')[0] : location.href.split('#')[0] + '#' + btoa(encodeURIComponent(JSON.stringify({ state, confirmed })));
+    try { await navigator.clipboard.writeText(url); status(mode === 'shared' ? 'Link copied. Anyone with it sees and edits the team sheet.' : 'Link copied. Anyone who opens it sees these numbers.'); }
     catch (e) { history.replaceState(null, '', url); status('Copy the address bar to share these numbers.'); }
   });
 
-  document.getElementById('reset').addEventListener('click', () => {
-    for (const [k, d] of Object.entries(INPUTS)) state[k] = d.v;
-    for (const k of Object.keys(confirmed)) delete confirmed[k];
-    for (const k of Object.keys(errors)) delete errors[k];
-    history.replaceState(null, '', location.href.split('#')[0]);
-    fill(); render(); save();
-    status('Back to the starting estimates.');
-  });
 
   document.getElementById('usePilot').addEventListener('click', () => {
     const p = pilot(state);
-    const take = (k, v) => { state[k] = v; confirmed[k] = true; };
+    const take = (k, v) => { state[k] = v; confirmed[k] = { by: editor, at: new Date().toISOString() }; queue(k); };
     if (p.perDay !== null) take('perDay', Math.round(p.perDay * 10) / 10);
     if (p.kmDay !== null) take('kmDay', Math.round(p.kmDay));
     if (p.fuelKm !== null) take('kmPerL', Math.round(state.fuelPrice / p.fuelKm * 10) / 10);
