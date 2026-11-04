@@ -201,6 +201,29 @@
     .text-field.invalid { border-color: var(--red-600); background: var(--red-50); }
     .field-err { min-height: 20px; font-size: 13px !important; color: var(--red-600) !important; margin-top: 6px !important; }
     .dlg-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+    /* how this works */
+    .dlg.how { width: min(560px, calc(100vw - 32px)); overflow: hidden; }
+    .how-close { position: absolute; top: 14px; right: 14px; z-index: 2; width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,0.9); color: var(--gray-700); display: grid; place-items: center; cursor: pointer; box-shadow: 0 2px 10px rgba(0,18,69,0.12); }
+    .how-close:hover { background: #fff; color: var(--gray-900); }
+    .how-close:focus-visible { outline: none; box-shadow: var(--focus); }
+    .how-close .ico { font-size: 20px; }
+    .how-art { aspect-ratio: 4 / 3; background: #f3f6ff; overflow: hidden; }
+    .how-art img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.25s; }
+    .how-body { padding: 22px 30px 26px; }
+    .how-dots { display: flex; gap: 6px; margin-bottom: 14px; }
+    .how-dots button { width: 28px; height: 6px; border-radius: 99px; border: none; padding: 0; background: var(--gray-200); cursor: pointer; transition: background 0.2s, width 0.2s; }
+    .how-dots button[aria-selected="true"] { background: var(--blue-500); width: 44px; }
+    .how-dots button:focus-visible { outline: none; box-shadow: var(--focus); }
+    .how-count { font-size: 13px !important; font-weight: 600; color: var(--blue-500) !important; margin: 0 0 4px !important; }
+    .how h2 { font-size: 24px; }
+    .how #howText { min-height: 4.8em; }
+    .how-actions { justify-content: space-between; margin-top: 18px; }
+    .how-actions [hidden] { visibility: hidden; display: inline-flex; }
+    @media (max-width: 640px) {
+      .how-body { padding: 18px 20px 20px; }
+      .how h2 { font-size: 20px; }
+    }
+
     @media (prefers-reduced-motion: no-preference) {
       .dlg[open] { animation: dlgIn 0.22s ease-out; }
       @keyframes dlgIn { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
@@ -336,6 +359,7 @@
       <span class="sync" id="sync" role="status" aria-live="polite"></span>
     </div>
     <div class="tools">
+      <button class="btn" id="howOpen" type="button"><i class="ph-duotone ph-question ico"></i>How this works</button>
       <button class="btn" id="copyLink" type="button"><i class="ph-duotone ph-link ico"></i>Copy link</button>
       <button class="btn primary" id="print" type="button"><i class="ph-duotone ph-file-pdf ico"></i>Save as PDF</button>
     </div>
@@ -403,6 +427,21 @@
     </footer>
   </main>
   </div>
+
+  <dialog class="dlg how" id="howDlg" aria-labelledby="howTitle">
+    <button class="how-close" type="button" id="howClose" aria-label="Close"><i class="ph-duotone ph-x ico"></i></button>
+    <div class="how-art"><img id="howImg" src="./how/1.webp" alt="" width="1120" height="840"></div>
+    <div class="how-body">
+      <div class="how-dots" role="tablist" aria-label="Steps" id="howDots"></div>
+      <p class="how-count" id="howCount"></p>
+      <h2 id="howTitle"></h2>
+      <p id="howText"></p>
+      <div class="dlg-actions how-actions">
+        <button class="btn" type="button" id="howBack"><i class="ph-duotone ph-arrow-left ico"></i>Back</button>
+        <button class="btn primary" type="button" id="howNext"></button>
+      </div>
+    </div>
+  </dialog>
 
   <dialog class="dlg" id="nameDlg" aria-labelledby="nameTitle">
     <form method="dialog" id="nameForm" novalidate>
@@ -806,10 +845,54 @@
   document.getElementById('nameLater').addEventListener('click', () => dlg.close());
   document.getElementById('changeName').addEventListener('click', askName);
 
+  // ── How this works ──
+  const HOW = [
+    { title: 'A partner puts a bike into the fleet', text: 'A partner buys a bike and kits it out. Fetchr puts a vetted rider on it, finds the corporate deliveries and pays the partner every week.' },
+    { title: 'Leo confirms the real numbers', text: "Every figure starts as a sourced estimate. Leo works through the five steps and swaps in real prices, quotes and the pilot week's totals. His name goes next to each one." },
+    { title: 'The page does the maths', text: 'As figures change, the results update: what the partner earns each week, how long the bike takes to pay back, and what the rider takes home.' },
+    { title: 'Share it with partners', text: 'Everyone with the link sees the same team sheet. Save it as a PDF for partners: page one shows the results, page two the workings.' },
+  ];
+  const INTRO_KEY = 'fetchr-onepager-intro-seen';
+  const how = document.getElementById('howDlg');
+  let howStep = 0;
+  HOW.forEach((_, i) => { const img = new Image(); img.src = `./how/${i + 1}.webp`; });   // warm the cache
+  document.getElementById('howDots').innerHTML = HOW.map((h, i) =>
+    `<button type="button" role="tab" data-how="${i}" aria-label="Step ${i + 1}: ${h.title}"></button>`).join('');
+
+  function showHow(i) {
+    howStep = Math.max(0, Math.min(HOW.length - 1, i));
+    const h = HOW[howStep];
+    document.getElementById('howImg').src = `./how/${howStep + 1}.webp`;
+    document.getElementById('howImg').alt = h.title;
+    document.getElementById('howCount').textContent = `${howStep + 1} of ${HOW.length}`;
+    document.getElementById('howTitle').textContent = h.title;
+    document.getElementById('howText').textContent = h.text;
+    document.getElementById('howBack').hidden = howStep === 0;
+    const last = howStep === HOW.length - 1;
+    document.getElementById('howNext').innerHTML = last ? 'Start filling in' : 'Next<i class="ph-duotone ph-arrow-right ico"></i>';
+    document.querySelectorAll('[data-how]').forEach(b => b.setAttribute('aria-selected', String(Number(b.dataset.how) === howStep)));
+  }
+  function openHow() { showHow(0); how.showModal(); document.getElementById('howNext').focus(); }
+  function closeHow() { how.close(); }
+  how.addEventListener('close', () => { try { localStorage.setItem(INTRO_KEY, '1'); } catch (e) { /* storage blocked */ } });
+  document.getElementById('howOpen').addEventListener('click', openHow);
+  document.getElementById('howClose').addEventListener('click', closeHow);
+  document.getElementById('howBack').addEventListener('click', () => showHow(howStep - 1));
+  document.getElementById('howNext').addEventListener('click', () => { if (howStep === HOW.length - 1) closeHow(); else showHow(howStep + 1); });
+  document.getElementById('howDots').addEventListener('click', e => { const b = e.target.closest('[data-how]'); if (b) showHow(Number(b.dataset.how)); });
+  how.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); showHow(howStep + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); showHow(howStep - 1); }
+  });
+  how.addEventListener('click', e => { if (e.target === how) closeHow(); });   // click on the backdrop
+
   build();
   load();
   fill();
   render();
+  let seen = false;
+  try { seen = !!localStorage.getItem(INTRO_KEY); } catch (e) { seen = true; }
+  if (!seen && !location.hash) openHow();
   syncState('busy', 'Loading the team sheet…');
   loadShared();
   setInterval(() => { if (document.visibilityState === 'visible') loadShared(); }, 15000);
