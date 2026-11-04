@@ -252,6 +252,23 @@
       letter-spacing: -0.06em;
     }
 
+
+    /* Deck photo behind the preview chips; ::before becomes a scrim so chips stay readable */
+    .preview-thumb {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .preview-panel.has-thumb::before,
+    .cc-preview.has-thumb::before {
+      background: linear-gradient(to top, rgba(6,10,21,0.92), rgba(6,10,21,0.45) 45%, rgba(6,10,21,0.15) 75%, rgba(6,10,21,0.35));
+      background-size: auto;
+      z-index: 1;
+    }
+
     /* ══════════════════════════════════════════════
        FEATURED CARD
     ══════════════════════════════════════════════ */
@@ -1085,7 +1102,8 @@
          onclick="window.open('./Deck1/index.html','_blank')"
          onkeydown="if(event.key==='Enter')window.open('./Deck1/index.html','_blank')">
 
-      <div class="feat-preview preview-panel">
+      <div class="feat-preview preview-panel has-thumb">
+        <img class="preview-thumb" src="./thumbnails/deck1.webp" alt="" loading="eager">
         <div class="feat-preview-amber"></div>
         <div class="feat-preview-teal"></div>
         <span class="preview-num">01</span>
@@ -1160,7 +1178,8 @@
 
       <!-- Card 02: Enterprise Revenue Deck -->
       <a class="compact-card" href="./Deck2/Fetchr_Enterprise_Deck.html" target="_blank" rel="noopener noreferrer">
-        <div class="cc-preview">
+        <div class="cc-preview has-thumb">
+          <img class="preview-thumb" src="./thumbnails/deck2.webp" style="object-position: 50% 22%" alt="" loading="lazy">
           <div class="cc-glow cc-glow-blue"></div>
           <div class="cc-glow cc-glow-teal"></div>
           <span class="cc-preview-num">02</span>
@@ -1190,7 +1209,8 @@
 
       <!-- Card 03: Africa Macro / Regional Vision Deck -->
       <a class="compact-card" href="./Deck3/index.html" target="_blank" rel="noopener noreferrer">
-        <div class="cc-preview">
+        <div class="cc-preview has-thumb">
+          <img class="preview-thumb" src="./thumbnails/deck3.webp" style="object-position: 50% 48%" alt="" loading="lazy">
           <div class="cc-glow cc-glow-amber"></div>
           <div class="cc-glow cc-glow-rose"></div>
           <span class="cc-preview-num">03</span>
