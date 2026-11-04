@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetchr. Fleet bike economics</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-50:  #ebf0ff;
+      --blue-100: #d6e0ff;
+      --blue-200: #adc2ff;
+      --blue-500: #0041f5;
+      --blue-600: #0035c9;
+      --blue-900: #001245;
+      --gray-50:  #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --amber-400: #f59e0b;
+      --green-50: #ecfdf5;
+      --green-500: #10b981;
+      --green-600: #059669;
+      --red-50: #fef2f2;
+      --red-600: #dc2626;
+      --amber-50: #fffbeb;
+      --font: 'DM Sans', sans-serif;
+      --focus: 0 0 0 3px rgba(0,65,245,0.3);
+    }
+
+    html { background: var(--gray-100); }
+    body {
+      font-family: var(--font); color: var(--gray-900); background: var(--gray-100);
+      -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums;
+      padding: 0 0 64px;
+    }
+    .ico { line-height: 1; }
+    h1, h2, h3, .st-title, .hero-kpi .l { text-wrap: balance; }
+    p, li, td, .src, .sub, .l, .st-sub, .warn span, .progress-text { text-wrap: pretty; }
+    button { font-family: inherit; }
+
+    /* ── Toolbar (screen only) ── */
+    .toolbar { max-width: 1240px; margin: 0 auto 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+    .progress { display: grid; gap: 8px; min-width: 300px; }
+    .progress-text { font-size: 14px; color: var(--gray-700); }
+    .progress-text b { color: var(--gray-900); }
+    .progress-bar { height: 6px; border-radius: 99px; background: var(--gray-200); overflow: hidden; }
+    .progress-bar span { display: block; height: 100%; width: 0; background: var(--green-500); border-radius: inherit; transition: width 0.3s; }
+    .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--gray-500); }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .tools { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 44px; padding: 10px 18px; border-radius: 12px;
+      border: 1px solid var(--gray-200); background: #fff; color: var(--gray-900);
+      font: 600 14px var(--font); cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .btn:hover { border-color: var(--blue-200); background: var(--blue-50); }
+    .btn.primary { background: var(--blue-500); border-color: var(--blue-500); color: #fff; box-shadow: 0 10px 24px -10px rgba(0,65,245,0.6); }
+    .btn.primary:hover { background: var(--blue-600); transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    .btn:focus-visible, .step-head:focus-visible { outline: none; box-shadow: var(--focus); }
+    .btn .ico { font-size: 18px; }
+    .status { max-width: 1240px; margin: -8px auto 14px; font-size: 13px; color: var(--gray-600); min-height: 18px; }
+
+    /* ── Sheet ── */
+    .sheet { max-width: 1240px; margin: 0 auto; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 60px -30px rgba(17,24,39,0.35); }
+
+    .band { position: relative; background: var(--blue-500); color: #fff; padding: 56px 24px 150px; overflow: hidden; }
+    .band::after {
+      content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 62%;
+      background: url('../thumbnails/deck2.webp') center 32% / cover;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 60%);
+              mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 60%);
+    }
+    /* soft fade from the header into the page */
+    .band::before {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 190px; z-index: 1;
+      background: linear-gradient(to bottom, rgba(243,244,246,0) 0%, rgba(243,244,246,0.55) 45%, var(--gray-100) 100%);
+      pointer-events: none;
+    }
+    .band-inner { position: relative; z-index: 2; max-width: 1240px; margin: 0 auto; padding: 0 56px; }
+    .band-top { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
+    .band img { height: 32px; width: auto; display: block; }
+    .band .meta { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.78); padding-left: 14px; border-left: 1px solid rgba(255,255,255,0.3); }
+    .band h1 { font-size: 52px; line-height: 1.04; font-weight: 700; letter-spacing: -0.03em; max-width: 14ch; text-wrap: balance; text-shadow: 0 2px 24px rgba(0,18,69,0.25); }
+    .band p { margin-top: 18px; font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.88); max-width: 40ch; }
+    .page { padding: 0 24px; margin-top: -64px; position: relative; z-index: 3; }
+
+    /* ── Two columns: steps left, results right ── */
+    .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; padding: 44px 56px 56px; align-items: start; }
+
+    /* Stepper */
+    .steps-intro h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+    .steps-intro p { font-size: 14.5px; color: var(--gray-500); margin-top: 6px; line-height: 1.5; max-width: 58ch; }
+    .steps { list-style: none; margin-top: 24px; }
+    .step { position: relative; padding-left: 60px; padding-bottom: 14px; }
+    .step::before { content: ''; position: absolute; left: 19px; top: 44px; bottom: 0; width: 2px; background: var(--gray-200); }
+    .step:last-child::before { display: none; }
+    .step.done::before { background: var(--green-500); }
+    .num {
+      position: absolute; left: 0; top: 2px; width: 40px; height: 40px; border-radius: 50%;
+      display: grid; place-items: center; font-weight: 700; font-size: 15px;
+      background: #fff; border: 2px solid var(--gray-200); color: var(--gray-500);
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .step.open .num { border-color: var(--blue-500); color: var(--blue-500); }
+    .step.done .num { background: var(--green-500); border-color: var(--green-500); color: #fff; }
+    .num .ico { font-size: 20px; }
+    .step-head {
+      width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 6px 14px 6px 4px; min-height: 48px; border-radius: 12px; color: inherit;
+    }
+    .step-head:hover .st-title { color: var(--blue-500); }
+    .st-title { display: block; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; transition: color 0.2s; }
+    .st-sub { display: block; font-size: 13.5px; color: var(--gray-500); margin-top: 2px; }
+    .st-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .st-count { font-size: 12.5px; font-weight: 600; color: var(--gray-500); background: var(--gray-100); padding: 4px 10px; border-radius: 99px; }
+    .step.done .st-count { color: var(--green-600); background: var(--green-50); }
+    .chev { font-size: 18px; color: var(--gray-400); transition: transform 0.25s; }
+    .step.open .chev { transform: rotate(180deg); }
+    .step-body { display: none; margin-top: 10px; padding: 8px 24px 20px; border: 1px solid var(--gray-200); border-radius: 18px; background: #fff; }
+    .step.open .step-body { display: block; }
+    .step-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; }
+    .step-nav .btn { min-width: 120px; }
+
+    /* Tables and inputs */
+    table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+    td { padding: 13px 0; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    td:last-child { text-align: right; white-space: nowrap; }
+    td:first-child { padding-right: 16px; }
+    td .src { display: block; font-size: 12px; color: var(--gray-500); margin-top: 3px; line-height: 1.4; }
+    tr.total td { border-top: 1px solid var(--gray-300); border-bottom: none; padding-top: 16px; font-weight: 700; font-size: 15px; }
+    tr.total td:last-child { font-size: 22px; letter-spacing: -0.02em; }
+    tr.minus td:first-child::before { content: '− '; color: var(--gray-400); }
+    .out { font-weight: 600; }
+    .neg { color: var(--red-600); }
+
+    .inp { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber-400); flex-shrink: 0; margin-right: 6px; }
+    .dot.ok { background: var(--green-500); }
+    .dot.empty { background: transparent; box-shadow: inset 0 0 0 1.5px var(--gray-400); }
+    .field {
+      width: 104px; font: 600 15px var(--font); font-variant-numeric: tabular-nums; text-align: right;
+      padding: 10px 12px; border-radius: 10px; border: 1px solid var(--gray-200); background: #fff; color: var(--gray-900);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field:hover { border-color: var(--gray-300); }
+    .field:focus, .field:focus-visible { outline: none; border-color: var(--blue-500); background: #fff; box-shadow: 0 0 0 4px rgba(0,65,245,0.14); }
+    tr:focus-within td:first-child { color: var(--blue-600); }
+    tr:focus-within .src { color: var(--blue-600); }
+    .field.invalid { border-color: var(--red-600); background: var(--red-50); }
+    .field.invalid:focus { box-shadow: 0 0 0 4px rgba(220,38,38,0.16); }
+    tr:focus-within .src.err, .src.err { color: var(--red-600); font-weight: 500; }
+    .src.err::before { content: '\26A0\FE0E  '; }
+    .warn { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--amber-50); color: #92400e; font-size: 13.5px; line-height: 1.45; }
+    .warn .ico { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .warn[hidden] { display: none; }
+    .st-count.bad { color: var(--red-600); background: var(--red-50); }
+    .hero-kpi.loss { background: #7f1d1d; }
+    .hero-kpi .neg { color: #fff; }
+    .unit { font-size: 13px; font-weight: 500; color: var(--gray-500); }
+    select.field { width: auto; text-align: left; font-weight: 500; }
+
+    .pilot-out { margin-top: 8px; padding: 6px 18px 14px; background: var(--gray-50); border-radius: 14px; }
+    .notes { margin-top: 28px; padding: 22px 24px; background: var(--gray-50); border-radius: 18px; font-size: 13.5px; color: var(--gray-600); line-height: 1.6; }
+    .notes h3 { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+    .notes li { margin-left: 18px; margin-bottom: 6px; }
+    .notes li::marker { color: var(--blue-500); }
+
+    /* Results panel */
+    .summary { position: sticky; top: 20px; display: grid; gap: 14px; }
+    .hero-kpi { background: var(--blue-900); color: #fff; border-radius: 22px; padding: 28px 28px 26px; }
+    .hero-kpi .l { font-size: 14px; color: rgba(255,255,255,0.75); font-weight: 500; }
+    .hero-kpi .v { font-size: 56px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; margin-top: 10px; }
+    .hero-kpi .v small { font-size: 18px; font-weight: 600; letter-spacing: 0; opacity: 0.7; margin-left: 6px; }
+    .hero-kpi .sub { font-size: 13.5px; color: rgba(255,255,255,0.7); margin-top: 12px; line-height: 1.45; }
+    .mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .mini > div { border: 1px solid var(--gray-200); border-radius: 16px; padding: 16px 16px 14px; }
+    .mini .v { white-space: nowrap; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+    .mini .l { font-size: 12.5px; color: var(--gray-500); margin-top: 6px; line-height: 1.35; }
+    .panel { border: 1px solid var(--gray-200); border-radius: 18px; padding: 20px 22px 16px; }
+    .panel h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+    .split-bar { display: flex; height: 14px; border-radius: 99px; overflow: hidden; background: var(--gray-100); gap: 2px; }
+    .split-bar span { display: block; height: 100%; transition: flex-basis 0.3s; min-width: 0; }
+    .split-key { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin: 14px 0 6px; font-size: 13px; color: var(--gray-600); }
+    .split-key span { display: flex; align-items: center; gap: 8px; }
+    .split-key b { margin-left: auto; color: var(--gray-900); font-weight: 600; }
+    .sw { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    .c-fees { background: var(--gray-400); } .c-rider { background: var(--blue-200); }
+    .c-running { background: var(--amber-400); } .c-partner { background: var(--blue-500); }
+    .panel td { padding: 9px 0; font-size: 14px; }
+    .fleet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .fleet .v { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+    .fleet .l { font-size: 12.5px; color: var(--gray-500); margin-top: 4px; line-height: 1.35; }
+
+    .foot { padding: 22px 56px 26px; border-top: 1px solid var(--gray-200); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--gray-500); }
+
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; gap: 36px; padding: 32px 28px 40px; }
+      .summary { position: static; order: -1; }
+      .band-inner { padding: 0 28px; }
+      .foot { padding: 20px 28px 24px; }
+    }
+    @media (max-width: 640px) {
+      .band { padding: 36px 0 120px; }
+      .band-inner { padding: 0 20px; }
+      .band::after { width: 100%; opacity: 0.22; -webkit-mask-image: none; mask-image: none; }
+      .page { padding: 0 10px; margin-top: -48px; }
+      .band-top { margin-bottom: 26px; }
+      .band h1 { font-size: 32px; }
+      .band p { font-size: 15.5px; }
+      .layout { padding: 22px 16px 32px; }
+      .hero-kpi .v { font-size: 44px; }
+      .mini { gap: 8px; }
+      .mini > div { padding: 14px 12px 12px; }
+      .mini .v { font-size: 18px; }
+      .fleet .v { font-size: 16px; }
+      .split-key { grid-template-columns: 1fr; }
+      .step { padding-left: 50px; }
+      .num { width: 34px; height: 34px; font-size: 14px; }
+      .step::before { left: 16px; top: 38px; }
+      .step-body { padding: 4px 14px 16px; }
+      .st-count { display: none; }
+      .field { width: 88px; }
+      .progress { min-width: 0; width: 100%; }
+      .tools { width: 100%; }
+      .btn { flex: 1 1 auto; }
+      .foot { padding: 18px 16px 22px; }
+    }
+
+    /* ── Print: results on page 1, every step open on page 2 ── */
+    @page { size: A4; margin: 10mm; }
+    @media print {
+      html, body { background: #fff; padding: 0; }
+      .toolbar, .status, .dot, .chev, .step-nav, .st-count { display: none !important; }
+      .sheet { box-shadow: none; border-radius: 0; max-width: none; }
+      .band, .hero-kpi, .split-bar span, .sw, .step.done .num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .band { padding: 26px 0 28px; }
+      .band::before { display: none; }
+      .band-inner { padding: 0 30px; }
+      .page { padding: 0; margin-top: 0; }
+      .band-top { margin-bottom: 18px; }
+      .band h1 { font-size: 30px; }
+      .layout { display: block; padding: 20px 30px; }
+      .summary { position: static; }
+      .hero-kpi .v { font-size: 40px; }
+      .stepper { break-before: page; }
+      .step-body { display: block !important; padding: 2px 16px 8px; }
+      .step { padding-bottom: 8px; break-inside: avoid; }
+      td { padding: 5px 0; }
+      .field { border-color: transparent; background: transparent; padding: 0; width: auto; }
+      .field::-webkit-outer-spin-button, .field::-webkit-inner-spin-button { -webkit-appearance: none; }
+      select.field { -webkit-appearance: none; appearance: none; }
+      .step.no-data { display: none; }
+      .foot { padding: 12px 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="band">
+    <div class="band-inner">
+        <div class="band-top">
+          <img src="./logo-white.png" alt="Fetchr.">
+          <span class="meta">Internal · <span id="today"></span></span>
+        </div>
+        <h1>What one fleet bike costs and earns</h1>
+        <p>For partners putting a bike into Fetchr's corporate delivery fleet in Harare.</p>
+    </div>
+  </header>
+
+  <div class="page">
+  <div class="toolbar">
+    <div class="progress">
+      <div class="progress-text" id="progressText"></div>
+      <div class="progress-bar"><span id="progressBar"></span></div>
+      <div class="legend">
+        <span><i class="dot"></i>Estimate to confirm</span>
+        <span><i class="dot ok"></i>Confirmed</span>
+        <span><i class="dot empty"></i>Not filled in</span>
+      </div>
+    </div>
+    <div class="tools">
+      <button class="btn" id="copyLink" type="button"><i class="ph-duotone ph-link ico"></i>Copy link</button>
+      <button class="btn" id="reset" type="button"><i class="ph-duotone ph-arrow-counter-clockwise ico"></i>Reset</button>
+      <button class="btn primary" id="print" type="button"><i class="ph-duotone ph-file-pdf ico"></i>Save as PDF</button>
+    </div>
+  </div>
+  <p class="status" id="status" role="status"></p>
+
+  <main class="sheet">
+
+    <div class="layout">
+      <div class="stepper">
+        <div class="steps-intro">
+          <h2>Fill it in step by step</h2>
+          <p>Each figure starts as a sourced estimate. Change any number and it counts as confirmed. The results on the right update as you go.</p>
+        </div>
+        <ol class="steps" id="steps"></ol>
+        <div class="notes">
+          <h3>Assumptions</h3>
+          <ul id="notes"></ul>
+        </div>
+      </div>
+
+      <aside class="summary" aria-label="Results">
+        <div class="hero-kpi">
+          <div class="l">The partner earns</div>
+          <div class="v"><span id="k-partner">—</span><small>a week</small></div>
+          <div class="sub" id="k-partner-sub"></div>
+        </div>
+
+        <div class="mini">
+          <div><div class="v" id="k-setup">—</div><div class="l">To put one bike on the road</div></div>
+          <div><div class="v" id="k-payback">—</div><div class="l">Weeks to pay the bike back</div></div>
+          <div><div class="v" id="k-rider">—</div><div class="l">Rider takes home a week</div></div>
+        </div>
+
+        <div class="panel">
+          <h3>Where a week's fares go</h3>
+          <div class="split-bar" id="splitBar" role="img" aria-label="Split of weekly fares">
+            <span class="c-fees"></span><span class="c-rider"></span><span class="c-running"></span><span class="c-partner"></span>
+          </div>
+          <div class="split-key">
+            <span><i class="sw c-fees"></i>Fetchr and payments<b id="s-fees"></b></span>
+            <span><i class="sw c-rider"></i>Rider<b id="s-rider"></b></span>
+            <span><i class="sw c-running"></i>Running costs<b id="s-running"></b></span>
+            <span><i class="sw c-partner"></i>Partner<b id="s-partner"></b></span>
+          </div>
+          <table><tbody id="week"></tbody>
+            <tfoot><tr class="total"><td>Partner keeps</td><td id="t-partner">—</td></tr></tfoot>
+          </table>
+        </div>
+
+        <div class="panel">
+          <h3 id="fleetTitle">Across the fleet</h3>
+          <div class="fleet">
+            <div><div class="v" id="f-capital">—</div><div class="l">Capital to raise</div></div>
+            <div><div class="v" id="f-weekly">—</div><div class="l">Paid to partners a week</div></div>
+            <div><div class="v" id="f-deliveries">—</div><div class="l">Deliveries a month</div></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="foot">
+      <span>Fetchr Technologies (Pvt) Ltd · Harare · fetchr.delivery</span>
+      <span id="confirmed"></span>
+    </footer>
+  </main>
+  </div>
+
+  <script>
+  /* Every input: default value, label, unit, where the default came from.
+     Defaults count as estimates until someone edits them. */
+  const INPUTS = {
+    // step 1, paid once
+    bike:      { v: 1800, min: 0, max: 10000, step: 'setup', label: 'Motorbike, new 125 to 150cc', unit: '$', src: 'Harare listings Nov 2026: $1,250 to $2,650' },
+    box:       { v: 190, min: 0, max: 2000,  step: 'setup', label: 'Delivery box, rack and fitting', unit: '$', src: 'Sunday Mail Feb 2025: box $100 to $150, plus rack' },
+    kit:       { v: 90, min: 0, max: 1000,   step: 'setup', label: 'Helmet, hi-vis jacket, gloves', unit: '$', src: 'No local price found, estimate' },
+    tracker:   { v: 120, min: 0, max: 1000,  step: 'setup', label: 'GPS tracker unit', unit: '$', src: 'SMEAZ shop listing' },
+    phone:     { v: 120, min: 0, max: 1000,  step: 'setup', label: 'Rider phone, entry Android', unit: '$', src: 'Estimate, $0 if riders bring their own' },
+    regist:    { v: 50, min: 0, max: 1000,   step: 'setup', label: 'Registration and plates', unit: '$', src: 'SI 10 of 2026' },
+    // step 2
+    perDay:    { v: 12, min: 0, max: 60,   step: 'fares', label: 'Deliveries per day', unit: '', src: 'Deck 1 model, pilot target 8 to 12' },
+    fare:      { v: 4.50, min: 0, max: 50, step: 'fares', label: 'Average fare per delivery', unit: '$', src: 'Deck 2 corporate rate, market $2 to $5', inc: 0.1 },
+    days:      { v: 6, min: 1, max: 7, int: true,    step: 'fares', label: 'Working days per week', unit: '', src: 'Assumed' },
+    riderMode: { v: 'pct', step: 'fares', label: 'Rider paid as', options: { pct: 'Share of fares', fixed: 'Weekly wage' }, src: 'Leo to set' },
+    riderPct:  { v: 40, min: 0, max: 100,   step: 'fares', label: 'Rider share of fares', unit: '%', src: 'Leo to set' },
+    riderWeek: { v: 62, min: 0, max: 1000,   step: 'fares', label: 'Rider weekly wage', unit: '$', src: 'Minimum wage $270 a month, Jun 2026' },
+    fetchrPct: { v: 22, min: 0, max: 100,   step: 'fares', label: 'Fetchr platform share', unit: '%', src: 'Deck 1 take rate' },
+    procPct:   { v: 3, min: 0, max: 20,    step: 'fares', label: 'Payment fees', unit: '%', src: 'Paynow, Deck 1', inc: 0.5 },
+    // step 3
+    fuelPrice: { v: 2.05, min: 0.1, max: 10, step: 'running', label: 'Petrol price per litre', unit: '$', src: 'ZERA E20 cap from 8 Oct 2026', inc: 0.01 },
+    kmDay:     { v: 80, min: 0, max: 400,   step: 'running', label: 'Kilometres per day', unit: 'km', src: 'Assumed, the pilot will tell' },
+    kmPerL:    { v: 41, min: 5, max: 100,   step: 'running', label: 'Kilometres per litre', unit: 'km', src: 'Honda Ace 125 city figure' },
+    fuelBy:    { v: 'fleet', step: 'running', label: 'Fuel paid by', options: { fleet: 'Fleet', rider: 'Rider' }, src: 'Leo to set' },
+    maint:     { v: 10, min: 0, max: 200,   step: 'running', label: 'Service, tyres, chain per week', unit: '$', src: '$200 to $500 a year, Sunday Mail' },
+    insure:    { v: 250, min: 0, max: 3000,  step: 'running', label: 'Insurance per year', unit: '$', src: 'Comprehensive approx $250, get a commercial quote' },
+    licence:   { v: 45, min: 0, max: 1000,   step: 'running', label: 'ZINARA licence per year', unit: '$', src: 'Motorcycle rate not published, confirm' },
+    data:      { v: 2, min: 0, max: 50,    step: 'running', label: 'Rider phone data per week', unit: '$', src: 'Econet $9 for 5 GB a month' },
+    trackFee:  { v: 12, min: 0, max: 100,   step: 'running', label: 'Tracker subscription per month', unit: '$', src: 'Econet tracking' },
+    // step 4, blank until Leo fills them from the ops sheet
+    pDays:     { v: null, min: 1, max: 31, int: true, step: 'pilot', label: 'Days the bike ran', unit: '', src: 'Ops sheet' },
+    pDone:     { v: null, min: 0, max: 2000, int: true, step: 'pilot', label: 'Deliveries completed', unit: '', src: 'Ops sheet' },
+    pFailed:   { v: null, min: 0, max: 2000, int: true, step: 'pilot', label: 'Failed or cancelled', unit: '', src: 'Ops sheet' },
+    pKm:       { v: null, min: 0, max: 20000, step: 'pilot', label: 'Kilometres ridden', unit: 'km', src: 'Ops sheet' },
+    pFuel:     { v: null, min: 0, max: 5000, step: 'pilot', label: 'Fuel bought', unit: '$', src: 'Ops sheet', inc: 0.01 },
+    pHire:     { v: null, min: 0, max: 500, step: 'pilot', label: 'Bike hire per day', unit: '$', src: 'Bike agreement', inc: 0.5 },
+    pRider:    { v: null, min: 0, max: 500, step: 'pilot', label: 'Rider pay per day', unit: '$', src: 'Rider agreement', inc: 0.5 },
+    // step 5
+    bikes:     { v: 20, min: 1, max: 500, int: true,   step: 'fleet', label: 'Bikes, one per partner', unit: '', src: "Simba's partner list, about 20" },
+  };
+
+  const STEPS = [
+    { id: 'setup',   title: 'Set up one bike', icon: 'motorcycle' },
+    { id: 'fares',   title: 'Fares and who gets paid', icon: 'coins' },
+    { id: 'running', title: 'Running costs', icon: 'gas-pump' },
+    { id: 'pilot',   title: 'Pilot results, 26 to 30 October', icon: 'clipboard-text' },
+    { id: 'fleet',   title: 'Fleet size', icon: 'users-three' },
+  ];
+
+  const NOTES = [
+    'The partner buys and owns the bike. Fetchr assigns a vetted rider, finds the corporate work, and pays the partner weekly.',
+    'Fares are what corporate clients pay per delivery. Fetchr and payment fees come off the top, then the rider, then running costs.',
+    'Insurance, licence and the tracker subscription are spread across 52 weeks.',
+    "Riders need a Class A or A1 licence. A learner's licence does not allow commercial delivery.",
+    'Payback counts the setup cost only. It does not include resale value or downtime.',
+  ];
+
+  const state = {};       // current values
+  const confirmed = {};   // keys someone has edited
+  const errors = {};      // key -> message while a field holds a bad value
+  const STORE = 'fetchr-onepager-v3';
+  let openStep = 0;
+
+  const money = (n, dp = 0) => (n < 0 ? '−$' : '$') + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+
+  function compute(s) {
+    const setup = s.bike + s.box + s.kit + s.tracker + s.phone + s.regist;
+    const deliveries = s.perDay * s.days;
+    const revenue = deliveries * s.fare;
+    const fees = revenue * (s.fetchrPct + s.procPct) / 100;
+    const rider = s.riderMode === 'fixed' ? s.riderWeek : revenue * s.riderPct / 100;
+    const fuel = s.kmDay * s.days / s.kmPerL * s.fuelPrice;
+    const fleetFuel = s.fuelBy === 'fleet' ? fuel : 0;
+    const fixed = s.maint + s.data + (s.insure + s.licence + s.trackFee * 12) / 52;
+    const running = fleetFuel + fixed;
+    const partner = revenue - fees - rider - running;
+    const riderNet = rider - (s.fuelBy === 'rider' ? fuel : 0);
+    return {
+      setup, deliveries, revenue, fees, rider, fuel, fixed, running, partner, riderNet,
+      payback: partner > 0 ? setup / partner : Infinity,
+      capital: setup * s.bikes,
+      fleetWeekly: partner * s.bikes,
+      monthly: deliveries * s.bikes * 52 / 12,
+    };
+  }
+
+  // pilot results; null where an input is missing
+  function pilot(s) {
+    const ok = (...ks) => ks.every(k => typeof s[k] === 'number' && s[k] > 0);
+    return {
+      perDay: ok('pDone', 'pDays') ? s.pDone / s.pDays : null,
+      fail: ok('pDone') && typeof s.pFailed === 'number' ? s.pFailed / (s.pDone + s.pFailed) : null,
+      kmDel: ok('pKm', 'pDone') ? s.pKm / s.pDone : null,
+      fuelKm: ok('pFuel', 'pKm') ? s.pFuel / s.pKm : null,
+      cost: ok('pDone', 'pDays', 'pFuel', 'pHire', 'pRider') ? (s.pFuel + (s.pHire + s.pRider) * s.pDays) / s.pDone : null,
+      kmDay: ok('pKm', 'pDays') ? s.pKm / s.pDays : null,
+    };
+  }
+
+  // self-check of the arithmetic with round numbers
+  (function check() {
+    const r = compute({ bike: 1000, box: 0, kit: 0, tracker: 0, phone: 0, regist: 0, riderMode: 'pct', riderWeek: 0, perDay: 10, fare: 5, days: 5,
+      riderPct: 40, fetchrPct: 20, procPct: 0, fuelPrice: 2, kmDay: 40, kmPerL: 40, fuelBy: 'fleet',
+      maint: 0, insure: 52, licence: 0, data: 0, trackFee: 0, bikes: 2 });
+    console.assert(r.revenue === 250 && r.rider === 100 && r.fees === 50, 'split');
+    console.assert(r.fuel === 10 && r.running === 11 && r.partner === 89, 'running');
+    console.assert(Math.abs(r.payback - 1000 / 89) < 1e-9 && r.capital === 2000, 'payback');
+    const p = pilot({ pDays: 5, pDone: 50, pFailed: 0, pKm: 400, pFuel: 20, pHire: 10, pRider: 10 });
+    console.assert(p.perDay === 10 && p.fail === 0 && p.kmDel === 8 && p.fuelKm === 0.05 && p.cost === 2.4, 'pilot');
+    console.assert(pilot({ pDays: 5 }).cost === null, 'pilot blanks');
+  })();
+  (function checkValidate() {
+    console.assert(validate('days', '8') && validate('days', '2.5') && !validate('days', '6'), 'days');
+    console.assert(validate('riderPct', '120') && validate('bike', '-5') === 'Cannot be negative' && validate('fare', '') && !validate('pKm', ''), 'limits');
+  })();
+
+  // null when the value is fine, else a short message for whoever fills the form
+  function validate(k, raw) {
+    const d = INPUTS[k];
+    const fmt = n => n.toLocaleString('en-US');
+    if (raw.trim() === '') return d.step === 'pilot' ? null : 'Enter a number';
+    const n = Number(raw);
+    if (!isFinite(n)) return 'Enter a number';
+    if (d.int && !Number.isInteger(n)) return 'Use a whole number';
+    if (n < d.min || n > d.max) return d.min === 0 && n < 0 ? 'Cannot be negative' : `Enter ${fmt(d.min)} to ${fmt(d.max)}${d.unit === '%' ? '%' : ''}`;
+    return null;
+  }
+
+  function inputHTML(key) {
+    const d = INPUTS[key];
+    const dot = `<i class="dot" data-dot="${key}"></i>`;
+    if (d.options) {
+      return `<span class="inp">${dot}<select class="field" data-k="${key}" aria-label="${d.label}">` +
+        Object.entries(d.options).map(([v, t]) => `<option value="${v}">${t}</option>`).join('') + '</select></span>';
+    }
+    const pre = d.unit === '$' ? '<span class="unit">$</span>' : '';
+    const post = d.unit && d.unit !== '$' ? `<span class="unit">${d.unit}</span>` : '';
+    return `<span class="inp">${dot}${pre}<input class="field" data-k="${key}" type="number" min="${d.min}" max="${d.max}" step="${d.inc || 1}" inputmode="${d.int ? 'numeric' : 'decimal'}" aria-label="${d.label}" aria-describedby="src-${key}">${post}</span>`;
+  }
+
+  const row = key => `<tr data-row="${key}"><td>${INPUTS[key].label}<span class="src" id="src-${key}" data-src="${key}" aria-live="polite"></span></td><td>${inputHTML(key)}</td></tr>`;
+  const keysOf = id => Object.keys(INPUTS).filter(k => INPUTS[k].step === id);
+
+  function build() {
+    document.getElementById('steps').innerHTML = STEPS.map((st, i) => {
+      let body = `<table><tbody>${keysOf(st.id).map(row).join('')}</tbody></table>`;
+      if (st.id === 'fares') body += `<p class="warn" id="warn-shares" role="alert" hidden><i class="ph-duotone ph-warning ico"></i><span></span></p>`;
+      if (st.id === 'pilot') body = `<p class="src" style="font-size:13px;color:var(--gray-500);margin:12px 0 4px">Totals from the ops sheet for the hired bike. They replace estimates where they can.</p>` + body + `
+        <div class="pilot-out"><table><tbody>
+          <tr><td>Deliveries per day</td><td class="out" id="p-perday">—</td></tr>
+          <tr><td>Failed or cancelled</td><td class="out" id="p-fail">—</td></tr>
+          <tr><td>Kilometres per delivery</td><td class="out" id="p-kmdel">—</td></tr>
+          <tr><td>Fuel per kilometre</td><td class="out" id="p-fuelkm">—</td></tr>
+          <tr class="total"><td>Cost per delivery</td><td id="p-cost">—</td></tr>
+        </tbody></table></div>
+        <button class="btn" id="usePilot" type="button" style="width:100%;margin-top:14px" disabled><i class="ph-duotone ph-arrow-bend-left-up ico"></i>Use these in steps 2 and 3</button>`;
+      const back = i > 0 ? `<button class="btn" type="button" data-go="${i - 1}"><i class="ph-duotone ph-arrow-left ico"></i>Back</button>` : '<span></span>';
+      const next = i < STEPS.length - 1 ? `<button class="btn primary" type="button" data-go="${i + 1}">Next<i class="ph-duotone ph-arrow-right ico"></i></button>` : '';
+      return `<li class="step" data-step="${i}" id="step-${st.id}">
+        <span class="num" aria-hidden="true">${i + 1}</span>
+        <button class="step-head" type="button" data-go="${i}" aria-expanded="false" aria-controls="body-${st.id}">
+          <span><span class="st-title">${st.title}</span><span class="st-sub" id="sub-${st.id}"></span></span>
+          <span class="st-right"><span class="st-count" id="count-${st.id}"></span><i class="ph-duotone ph-caret-down chev"></i></span>
+        </button>
+        <div class="step-body" id="body-${st.id}">${body}<div class="step-nav">${back}${next}</div></div>
+      </li>`;
+    }).join('');
+    document.getElementById('week').innerHTML = `
+      <tr><td>Fares <span class="src" id="w-fares-src"></span></td><td class="out" id="w-revenue"></td></tr>
+      <tr class="minus"><td>Fetchr and payment fees <span class="src" id="w-fees-src"></span></td><td class="out" id="w-fees"></td></tr>
+      <tr class="minus"><td>Rider pay <span class="src" id="w-rider-src"></span></td><td class="out" id="w-rider"></td></tr>
+      <tr class="minus"><td>Running costs <span class="src" id="w-running-src"></span></td><td class="out" id="w-running"></td></tr>`;
+    document.getElementById('notes').innerHTML = NOTES.map(n => `<li>${n}</li>`).join('');
+    document.getElementById('today').textContent = new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  }
+
+  function render() {
+    const r = compute(state);
+    const p = pilot(state);
+    const set = (id, t) => { document.getElementById(id).textContent = t; };
+    const show = (v, f) => v === null ? '—' : f(v);
+
+    set('k-partner', money(r.partner));
+    set('k-partner-sub', `From ${r.deliveries} deliveries at ${money(state.fare, 2)}, after the rider, Fetchr, payment fees and running costs.`);
+    set('k-setup', money(r.setup));
+    set('k-payback', isFinite(r.payback) ? String(Math.ceil(r.payback)) : 'Never');
+    set('k-rider', money(r.riderNet));
+    document.getElementById('k-partner').classList.toggle('neg', r.partner < 0);
+
+    set('w-revenue', money(r.revenue));
+    set('w-fees', money(r.fees));
+    set('w-rider', money(r.rider));
+    set('w-running', money(r.running));
+    set('t-partner', money(r.partner));
+    set('w-fares-src', `${r.deliveries} deliveries × ${money(state.fare, 2)}`);
+    set('w-fees-src', `${state.fetchrPct}% Fetchr + ${state.procPct}% payments`);
+    set('w-rider-src', state.riderMode === 'fixed' ? 'weekly wage' : `${state.riderPct}% of fares`);
+    set('w-running-src', state.fuelBy === 'fleet' ? `fuel ${money(r.fuel)} + fixed ${money(r.fixed)}` : `fixed ${money(r.fixed)}, rider pays fuel`);
+    document.getElementById('t-partner').classList.toggle('neg', r.partner < 0);
+
+    // split bar, as shares of fares; a loss shows as an empty partner segment
+    const parts = [r.fees, r.rider, r.running, Math.max(r.partner, 0)];
+    const sum = parts.reduce((a, b) => a + b, 0) || 1;
+    [...document.getElementById('splitBar').children].forEach((el, i) => { el.style.flexBasis = (parts[i] / sum * 100) + '%'; });
+    const pct = v => r.revenue > 0 ? Math.round(v / r.revenue * 100) + '%' : '—';
+    set('s-fees', pct(r.fees)); set('s-rider', pct(r.rider)); set('s-running', pct(r.running)); set('s-partner', pct(r.partner));
+
+    set('fleetTitle', `Across ${state.bikes} bikes`);
+    set('f-capital', money(r.capital));
+    set('f-weekly', money(r.fleetWeekly));
+    set('f-deliveries', Math.round(r.monthly).toLocaleString('en-US'));
+
+    set('p-perday', show(p.perDay, v => v.toFixed(1)));
+    set('p-fail', show(p.fail, v => Math.round(v * 100) + '%'));
+    set('p-kmdel', show(p.kmDel, v => v.toFixed(1) + ' km'));
+    set('p-fuelkm', show(p.fuelKm, v => money(v, 3)));
+    set('p-cost', show(p.cost, v => money(v, 2)));
+    document.getElementById('usePilot').disabled = p.perDay === null && p.fuelKm === null;
+    document.getElementById('step-pilot').classList.toggle('no-data', p.perDay === null);
+
+    document.querySelector('[data-row="riderPct"]').hidden = state.riderMode === 'fixed';
+    document.querySelector('[data-row="riderWeek"]').hidden = state.riderMode !== 'fixed';
+
+    // step headers
+    const subs = {
+      setup: `${money(r.setup)} all-in`,
+      fares: `${money(r.revenue)} in fares a week`,
+      running: `${money(r.running)} a week`,
+      pilot: p.cost !== null ? `${money(p.cost, 2)} per delivery` : p.perDay !== null ? `${p.perDay.toFixed(1)} deliveries a day` : 'Not filled in yet',
+      fleet: `${state.bikes} bikes, ${money(r.capital)} to raise`,
+    };
+    STEPS.forEach((st, i) => {
+      const keys = keysOf(st.id).filter(k => !document.querySelector(`[data-row="${k}"]`)?.hidden);
+      const done = keys.filter(k => confirmed[k]).length;
+      const li = document.querySelector(`[data-step="${i}"]`);
+      li.classList.toggle('open', i === openStep);
+      li.classList.toggle('done', done === keys.length);
+      li.querySelector('.num').innerHTML = done === keys.length ? '<i class="ph-duotone ph-check ico"></i>' : String(i + 1);
+      li.querySelector('.step-head').setAttribute('aria-expanded', String(i === openStep));
+      set(`sub-${st.id}`, subs[st.id]);
+      const bad = keysOf(st.id).filter(k => errors[k]).length;
+      const count = document.getElementById(`count-${st.id}`);
+      count.textContent = bad ? `${bad} to fix` : `${done} of ${keys.length}`;
+      count.classList.toggle('bad', bad > 0);
+    });
+
+    document.querySelectorAll('[data-dot]').forEach(el => {
+      const k = el.dataset.dot;
+      el.className = 'dot' + (state[k] === null ? ' empty' : confirmed[k] ? ' ok' : '');
+    });
+    document.querySelectorAll('[data-src]').forEach(el => {
+      const k = el.dataset.src;
+      el.textContent = errors[k] || (confirmed[k] ? 'Confirmed' : INPUTS[k].src);
+      el.classList.toggle('err', !!errors[k]);
+    });
+    document.querySelectorAll('[data-k]').forEach(el => {
+      el.classList.toggle('invalid', !!errors[el.dataset.k]);
+      if (errors[el.dataset.k]) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid');
+    });
+
+    const shares = (state.riderMode === 'fixed' ? 0 : state.riderPct) + state.fetchrPct + state.procPct;
+    const warn = document.getElementById('warn-shares');
+    warn.hidden = shares <= 100;
+    warn.querySelector('span').textContent = `The rider, Fetchr and payment shares add up to ${shares}% of fares, so nothing is left for running costs or the partner.`;
+
+    document.querySelector('.hero-kpi').classList.toggle('loss', r.partner < 0);
+    if (r.partner < 0) set('k-partner-sub', `At these numbers the partner loses ${money(-r.partner)} a week. Raise the fare or deliveries, or lower the rider or Fetchr share.`);
+
+    const total = Object.keys(INPUTS).length;
+    const done = Object.keys(confirmed).length;
+    document.getElementById('progressText').innerHTML = `<b>${done} of ${total}</b> figures confirmed`;
+    document.getElementById('progressBar').style.width = (done / total * 100) + '%';
+    set('confirmed', `${done} of ${total} figures confirmed`);
+  }
+
+  function fill() { document.querySelectorAll('[data-k]').forEach(el => { el.value = state[el.dataset.k]; }); }
+
+  function save() {
+    try { localStorage.setItem(STORE, JSON.stringify({ state, confirmed })); } catch (e) { /* storage blocked: page still works */ }
+  }
+
+  function load() {
+    for (const [k, d] of Object.entries(INPUTS)) state[k] = d.v;
+    let saved = null;
+    try { if (location.hash.length > 1) saved = JSON.parse(decodeURIComponent(atob(location.hash.slice(1)))); } catch (e) { saved = null; }
+    if (!saved) { try { saved = JSON.parse(localStorage.getItem(STORE)); } catch (e) { saved = null; } }
+    if (saved && saved.state) {
+      for (const k of Object.keys(INPUTS)) if (k in saved.state) state[k] = saved.state[k];
+      Object.assign(confirmed, saved.confirmed || {});
+    }
+  }
+
+  build();
+  load();
+  fill();
+  render();
+
+  document.addEventListener('input', e => {
+    const k = e.target.dataset && e.target.dataset.k;
+    if (!k) return;
+    const raw = e.target.value;
+    if (INPUTS[k].options) state[k] = raw;
+    else {
+      // a half-typed number reads as '' with badInput set
+      const msg = e.target.validity && e.target.validity.badInput ? 'Enter a number' : validate(k, raw);
+      if (msg) { errors[k] = msg; render(); return; }   // results keep the last good value
+      delete errors[k];
+      if (raw.trim() === '') { state[k] = null; delete confirmed[k]; render(); save(); return; }
+      state[k] = Number(raw);
+    }
+    confirmed[k] = true;
+    render();
+    save();
+  });
+
+  document.addEventListener('click', e => {
+    const go = e.target.closest('[data-go]');
+    if (!go) return;
+    const i = Number(go.dataset.go);
+    openStep = go.classList.contains('step-head') && openStep === i ? -1 : i;
+    render();
+    if (!go.classList.contains('step-head') && openStep >= 0) {
+      document.querySelector(`[data-step="${openStep}"]`).scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+    }
+  });
+
+  const status = msg => { const s = document.getElementById('status'); s.textContent = msg; setTimeout(() => { if (s.textContent === msg) s.textContent = ''; }, 4000); };
+
+  document.getElementById('copyLink').addEventListener('click', async () => {
+    const url = location.href.split('#')[0] + '#' + btoa(encodeURIComponent(JSON.stringify({ state, confirmed })));
+    try { await navigator.clipboard.writeText(url); status('Link copied. Anyone who opens it sees these numbers.'); }
+    catch (e) { history.replaceState(null, '', url); status('Copy the address bar to share these numbers.'); }
+  });
+
+  document.getElementById('reset').addEventListener('click', () => {
+    for (const [k, d] of Object.entries(INPUTS)) state[k] = d.v;
+    for (const k of Object.keys(confirmed)) delete confirmed[k];
+    for (const k of Object.keys(errors)) delete errors[k];
+    history.replaceState(null, '', location.href.split('#')[0]);
+    fill(); render(); save();
+    status('Back to the starting estimates.');
+  });
+
+  document.getElementById('usePilot').addEventListener('click', () => {
+    const p = pilot(state);
+    const take = (k, v) => { state[k] = v; confirmed[k] = true; };
+    if (p.perDay !== null) take('perDay', Math.round(p.perDay * 10) / 10);
+    if (p.kmDay !== null) take('kmDay', Math.round(p.kmDay));
+    if (p.fuelKm !== null) take('kmPerL', Math.round(state.fuelPrice / p.fuelKm * 10) / 10);
+    fill(); render(); save();
+    status('Pilot figures copied into deliveries per day, kilometres per day and fuel use.');
+  });
+
+  document.getElementById('print').addEventListener('click', () => window.print());
+  </script>
+</body>
+</html>
