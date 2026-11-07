@@ -4,521 +4,311 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fetchr. — Enterprise Revenue Deck</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="../lib/hover.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;-webkit-font-smoothing:antialiased}
 
-:root {
-  --blue-50:#EBF0FF; --blue-100:#D6E0FF; --blue-200:#ADC2FF;
-  --blue-300:#6B8FFF; --blue-400:#2A5CFF; --blue-500:#0041F5;
-  --blue-600:#0035C9; --blue-700:#00299D; --blue-800:#001D71; --blue-900:#001245;
-  --green-50:#EDFCF2; --green-100:#D3F9DF; --green-400:#3CCB7F;
-  --green-500:#16B364; --green-600:#099250;
-  --amber:#F59E0B; --red:#EF4444;
-  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
-  --gray-300:#D1D5DB; --gray-400:#9CA3AF; --gray-500:#6B7280;
-  --gray-600:#4B5563; --gray-700:#374151; --gray-800:#1F2937; --gray-900:#111827;
-  --font-display:'Plus Jakarta Sans',system-ui,sans-serif;
-  --font-body:'Inter',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono',monospace;
-  --ease-out:cubic-bezier(0.16,1,0.3,1);
+/* Fetchr design system tokens (claude.ai Fetchr design system, tokens.json) */
+:root{
+  --blue-50:#ebf0ff; --blue-100:#d6e0ff; --blue-200:#adc2ff; --blue-300:#6b8fff; --blue-400:#2a5cff;
+  --blue-500:#0041f5; --blue-600:#0035c9; --blue-700:#00299d; --blue-800:#001d71; --blue-900:#001245;
+  --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb; --gray-300:#d1d5db; --gray-400:#9ca3af;
+  --gray-500:#6b7280; --gray-600:#4b5563; --gray-700:#374151; --gray-800:#1f2937; --gray-900:#111827;
+  --green-50:#ecfdf5; --green-100:#d1fae5; --green-400:#34d399; --green-500:#10b981; --green-600:#059669; --green-700:#047857;
+  --amber-50:#fffbeb; --amber-500:#f59e0b; --amber-700:#b45309;
+  --red-500:#ef4444;
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r-md:6px; --r-xl:12px; --r-2xl:16px; --r-3xl:24px;
+  --focus:0 0 0 3px rgba(0,65,245,0.3);
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --content:1320px;
 }
 
-body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-900)}
+body{font-family:var(--font);background:var(--gray-900);color:var(--gray-900)}
+:focus-visible{outline:none;box-shadow:var(--focus)}
+.ph-duotone,.ph-bold{line-height:1}
 
 .deck{position:relative;width:100vw;height:100vh;overflow:hidden;background:#fff}
 
+/* Content slides alternate white and gray-50, as the field test deck does */
 .slide{
   position:absolute;inset:0;
   display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
-  padding:56px 80px;
+  padding:64px clamp(56px,7vw,128px) 88px;
+  background:#fff;
   opacity:0;visibility:hidden;
-  transition:opacity 0.55s var(--ease-out),transform 0.55s var(--ease-out);
+  transition:opacity 0.5s var(--ease),transform 0.5s var(--ease);
   transform:translateY(24px);
-  will-change:opacity,transform;
   overflow:hidden;
 }
+.slide:nth-child(even of .slide){background:var(--gray-50)}
 .slide.active{opacity:1;visibility:visible;transform:translateY(0)}
 .slide.exit-up{opacity:0;transform:translateY(-32px)}
 .slide.exit-down{opacity:0;transform:translateY(32px)}
 
-/* Hero slides get centered */
-.slide--title,.slide--close{align-items:center;text-align:center}
-
-/* Progress */
-.progress-bar{
-  position:fixed;top:0;left:0;height:3px;
-  background:var(--blue-500);z-index:100;
-  transition:width 0.4s var(--ease-out);
-  box-shadow:0 0 12px rgba(0,65,245,0.4);
-}
+/* Chrome */
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--blue-500);z-index:100;transition:width 0.4s var(--ease)}
 .slide-counter{
-  position:fixed;bottom:24px;right:32px;
-  font-family:var(--font-mono);font-size:12px;
-  color:var(--gray-400);z-index:100;letter-spacing:0.06em;
+  position:fixed;bottom:28px;left:clamp(56px,7vw,128px);
+  font-family:var(--mono);font-size:12px;font-weight:500;color:var(--gray-500);z-index:100;
 }
 .nav-hint{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  font-size:11px;color:var(--gray-400);opacity:0.6;z-index:100;
-  letter-spacing:0.06em;pointer-events:none;
+  position:fixed;bottom:28px;left:calc(clamp(56px,7vw,128px) + 72px);
+  font-size:13px;color:var(--gray-500);z-index:100;pointer-events:none;
 }
-
-/* Slide dot nav */
-.dot-nav{
-  position:fixed;right:20px;top:50%;transform:translateY(-50%);
-  display:flex;flex-direction:column;gap:10px;z-index:100;
-}
-.dot-nav button{
-  width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;
-  background:var(--gray-300);transition:all 0.3s var(--ease-out);padding:0;
-}
+.deck:has(.slide--title.active) .nav-hint{display:none}
+.deck:has(.slide--close.active) .nav-hint,
+.deck:has(.slide--title.active) .slide-counter,.deck:has(.slide--close.active) .slide-counter{color:var(--blue-100)}
+.dot-nav{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:100}
+.dot-nav button{width:8px;height:8px;border-radius:9999px;border:none;cursor:pointer;background:var(--gray-300);transition:background-color 0.2s,transform 0.2s;padding:0}
 .dot-nav button.active{background:var(--blue-500);transform:scale(1.4)}
 .dot-nav button:hover{background:var(--blue-400)}
+.deck:has(.slide--title.active) .dot-nav button,.deck:has(.slide--close.active) .dot-nav button{background:rgba(255,255,255,0.35)}
+.deck:has(.slide--title.active) .dot-nav button.active,.deck:has(.slide--close.active) .dot-nav button.active{background:#fff}
 
-/* Animations */
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* Entrance: rise 30px over 0.6s, the marketing reveal */
+@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes barGrow{from{width:0}to{width:var(--w)}}
-@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:0.6}50%{opacity:1}}
-@keyframes drawLine{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
-
 [data-animate]{opacity:0}
-[data-animate].animate-in{animation:fadeUp 0.6s var(--ease-out) forwards}
-[data-animate][data-anim="right"].animate-in{animation:slideRight 0.6s var(--ease-out) forwards}
-[data-animate][data-anim="fade"].animate-in{animation:fadeIn 0.6s var(--ease-out) forwards}
+[data-animate].animate-in{animation:rise 0.6s cubic-bezier(0.33,1,0.68,1) forwards}
+[data-animate][data-anim="fade"].animate-in{animation:fadeIn 0.6s ease-out forwards}
 
-/* ─── TYPOGRAPHY ─── */
+/* Type: eyebrow-mono, h2, lead */
 .overline{
-  font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;
-  color:var(--blue-500);margin-bottom:16px;display:block;
+  display:block;margin-bottom:16px;
+  font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--blue-500);
 }
 .slide-headline{
-  font-family:var(--font-display);font-weight:800;
-  font-size:clamp(28px,3.6vw,52px);line-height:1.1;
-  letter-spacing:-0.03em;color:var(--gray-900);
-  margin-bottom:20px;max-width:820px;
+  font-weight:700;font-size:clamp(32px,3.4vw,56px);line-height:1.1;letter-spacing:-0.025em;
+  color:var(--gray-900);margin-bottom:clamp(28px,3.2vh,44px);max-width:1100px;text-wrap:balance;
 }
-.slide-headline em{color:var(--blue-500);font-style:normal}
-.slide-sub{
-  font-size:clamp(15px,1.6vw,19px);line-height:1.65;
-  color:var(--gray-500);max-width:600px;margin-bottom:32px;font-weight:400;
+.slide-headline em{font-style:normal;color:inherit}
+.slide-sub{font-size:clamp(17px,1.4vw,22px);line-height:1.5;color:var(--gray-600);max-width:42rem;margin-bottom:32px}
+.footnote{font-size:14px;line-height:1.5;color:var(--gray-500);margin-top:20px;max-width:var(--content)}
+
+/* Icon tile: 40px, radius-xl, tinted by meaning */
+.tile{
+  width:44px;height:44px;border-radius:var(--r-xl);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  background:var(--blue-50);color:var(--blue-500);
 }
+.tile--green{background:var(--green-50);color:var(--green-600)}
+.tile--gray{background:var(--gray-100);color:var(--gray-600)}
 
-/* ─── LOGO ─── */
-.logo-img{height:52px;width:auto;object-fit:contain}
-.logo-img--sm{height:36px}
+/* Logos on cards */
+.logo-img{height:56px;width:auto;object-fit:contain}
+.logo-img--sm{height:40px}
+.co-logo{height:30px;width:auto;max-width:150px;object-fit:contain;display:block}
 
-/* ─── SLIDE 0: TITLE ─── */
-.slide--title{background:var(--blue-900);color:#fff;align-items:center}
-.slide--title .slide-headline{color:#fff;font-size:clamp(30px,4vw,58px);text-align:center}
-.slide--title .slide-headline em{color:var(--green-400)}
+/* ─── Cover and ask: fetchr-blue-500 ground ─── */
+.slide--title,.slide--close{background:var(--blue-500)!important;color:#fff}
+.slide--title{justify-content:flex-end;padding-bottom:clamp(96px,14vh,160px)}
+.slide--title .logo-img{position:absolute;top:clamp(48px,9vh,112px);left:clamp(56px,7vw,128px)}
 .title-pill{
-  display:inline-flex;align-items:center;gap:10px;
-  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
-  border-radius:100px;padding:8px 20px;
-  font-size:13px;font-weight:500;color:rgba(255,255,255,0.75);
-  margin-bottom:32px;letter-spacing:0.04em;
+  font-family:var(--mono);font-size:clamp(14px,1.1vw,18px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--blue-100);margin-bottom:24px;
 }
-.title-pip{width:6px;height:6px;border-radius:50%;background:var(--green-400);animation:pulse 2s infinite}
-.title-nav-hint{
-  font-size:12px;color:rgba(255,255,255,0.35);margin-top:40px;
-  letter-spacing:0.08em;text-transform:uppercase;
-}
-.title-nav-hint kbd{
-  display:inline-block;padding:2px 7px;border:1px solid rgba(255,255,255,0.2);
-  border-radius:4px;font-family:var(--font-mono);font-size:11px;
-  background:rgba(255,255,255,0.05);
-}
-.title-bg-grid{
-  position:absolute;inset:0;
-  background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);
-  background-size:48px 48px;pointer-events:none;
-}
-.title-glow{
-  position:absolute;top:-20%;left:50%;transform:translateX(-50%);
-  width:700px;height:500px;
-  background:radial-gradient(ellipse,rgba(0,65,245,0.25) 0%,transparent 70%);
-  pointer-events:none;
+.slide--title .slide-headline{color:#fff;font-size:clamp(44px,5.6vw,96px);line-height:1.04;letter-spacing:-0.03em;max-width:1300px;margin-bottom:28px}
+.title-lead{font-size:clamp(18px,1.7vw,28px);line-height:1.4;color:var(--blue-100);max-width:1100px}
+.title-nav-hint{font-size:15px;color:var(--blue-100);margin-top:40px}
+.title-nav-hint kbd,.close-cta kbd{
+  display:inline-block;padding:1px 8px;border:1px solid rgba(255,255,255,0.35);border-radius:var(--r-md);
+  font-family:var(--mono);font-size:13px;color:#fff;
 }
 
-/* ─── SLIDE DECORATION: Left accent bar ─── */
-.slide-accent-bar{
-  position:absolute;left:0;top:80px;bottom:80px;
-  width:4px;background:var(--blue-500);border-radius:0 4px 4px 0;
-  opacity:0;transition:opacity 0.4s 0.3s;
-}
-.slide.active .slide-accent-bar{opacity:1}
+/* ─── Pain: three flat cards ─── */
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;width:100%;max-width:var(--content)}
+.problem-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);padding:32px}
+.prob-num{font-size:14px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-500);margin-bottom:16px}
+.prob-value{font-weight:700;font-size:clamp(36px,3.6vw,60px);letter-spacing:-0.03em;line-height:1;color:var(--gray-900);margin-bottom:14px}
+.prob-desc{font-size:clamp(16px,1.15vw,19px);line-height:1.5;color:var(--gray-600)}
 
-/* ─── PROBLEM STATS ─── */
-.problem-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
-  width:100%;max-width:960px;margin-top:8px;
-}
-.problem-card{
-  background:var(--gray-50);border:1px solid var(--gray-200);
-  border-radius:16px;padding:28px 24px;position:relative;overflow:hidden;
-  transition:transform 0.3s var(--ease-out),box-shadow 0.3s;
-}
-.problem-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.1)}
-.problem-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--red);
-}
-.prob-num{
-  font-family:var(--font-mono);font-size:10px;color:var(--gray-400);
-  font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;
-}
-.prob-value{
-  font-family:var(--font-display);font-weight:800;
-  font-size:clamp(26px,3vw,42px);color:var(--gray-900);
-  letter-spacing:-0.03em;line-height:1;margin-bottom:8px;
-}
-.prob-desc{font-size:13px;color:var(--gray-500);line-height:1.55}
-
-/* ─── COLD START FLOW ─── */
+/* ─── Solution: a five-step chain ─── */
 .flow-diagram{
-  display:flex;align-items:center;gap:0;
-  background:var(--gray-50);border:1px solid var(--gray-200);
-  border-radius:16px;padding:32px 36px;width:100%;max-width:960px;
-  overflow:hidden;
+  display:flex;align-items:flex-start;width:100%;max-width:var(--content);
+  background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);padding:36px 32px;
 }
-.flow-node{
-  flex:1;text-align:center;padding:0 12px;
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-}
-.flow-node-icon{
-  width:48px;height:48px;border-radius:12px;
-  background:var(--blue-500);display:flex;align-items:center;justify-content:center;
-  margin-bottom:4px;flex-shrink:0;
-}
-.flow-node-icon svg{color:#fff}
-.flow-node-title{font-weight:700;font-size:13px;color:var(--gray-900);line-height:1.3}
-.flow-node-sub{font-size:11px;color:var(--gray-400);line-height:1.4}
-.flow-arrow{
-  flex-shrink:0;display:flex;align-items:center;
-  color:var(--blue-300);font-size:20px;padding:0 4px;
-}
-.flow-node--result .flow-node-icon{background:var(--green-500)}
+.flow-node{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 8px}
+.flow-node .tile{width:52px;height:52px;font-size:28px;margin-bottom:4px}
+.flow-node-title{font-weight:700;font-size:clamp(15px,1.15vw,18px);line-height:1.3;color:var(--gray-900)}
+.flow-node-sub{font-size:14px;color:var(--gray-500);line-height:1.4}
+.flow-arrow{flex-shrink:0;color:var(--blue-300);font-size:20px;padding-top:16px}
 .insight-box{
-  display:flex;align-items:flex-start;gap:12px;
-  background:var(--blue-50);border:1px solid var(--blue-100);border-radius:12px;
-  padding:16px 20px;max-width:960px;width:100%;margin-top:16px;
+  display:flex;align-items:flex-start;gap:14px;width:100%;max-width:var(--content);margin-top:20px;
+  background:var(--blue-50);border-radius:var(--r-2xl);padding:20px 24px;
 }
-.insight-icon{flex-shrink:0;width:20px;height:20px;color:var(--blue-500);margin-top:1px}
-.insight-text{font-size:13px;color:var(--blue-700);line-height:1.55;font-weight:500}
+.insight-icon{flex-shrink:0;font-size:24px;color:var(--blue-500)}
+.insight-text{font-size:clamp(15px,1.1vw,18px);line-height:1.5;color:var(--blue-800);font-weight:500}
 
-/* ─── CORPORATE TABLE ─── */
-.corp-table{
-  width:100%;max-width:960px;border-collapse:collapse;
-  border:1px solid var(--gray-200);border-radius:12px;overflow:hidden;
-  font-size:13px;
+/* ─── Tables: light header, section-label style ─── */
+.corp-table,.ltv-table{
+  width:100%;border-collapse:separate;border-spacing:0;background:#fff;
+  border:1px solid var(--gray-200);border-radius:var(--r-2xl);overflow:hidden;
+  font-size:clamp(14px,1.05vw,17px);
 }
-.corp-table th{
-  background:var(--gray-900);color:#fff;
-  padding:12px 16px;text-align:left;font-weight:600;
-  font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+.corp-table th,.ltv-table th{
+  background:var(--gray-100);color:var(--gray-500);text-align:left;
+  padding:14px 20px;font-size:13px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;
 }
-.corp-table td{
-  padding:13px 16px;border-bottom:1px solid var(--gray-100);
-  color:var(--gray-700);vertical-align:top;
-}
-.corp-table tr:last-child td{border-bottom:none}
-.corp-table tr:hover td{background:var(--blue-50)}
-.corp-table td:first-child{font-weight:700;color:var(--gray-900)}
-.corp-badge{
-  display:inline-block;background:var(--green-50);color:var(--green-600);
-  border:1px solid var(--green-100);border-radius:6px;
-  padding:2px 8px;font-size:11px;font-weight:600;
-}
-.corp-badge--amber{background:#FFFBEB;color:#92400E;border-color:#FDE68A}
+.corp-table td,.ltv-table td{padding:14px 20px;border-top:1px solid var(--gray-100);color:var(--gray-600);vertical-align:middle;line-height:1.4}
+.corp-table td:first-child,.ltv-table td:first-child{font-weight:600;color:var(--gray-900)}
+.co-cell{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.co-cell .co-logo{height:28px}
+.co-cell span{font-size:0.9em;color:var(--gray-500)}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-md);padding:3px 10px;font-size:13px;font-weight:600;white-space:nowrap}
+.corp-badge{display:inline-flex;align-items:center;border-radius:var(--r-md);padding:3px 10px;font-size:13px;font-weight:600;background:var(--green-50);color:var(--green-700)}
+.corp-badge--amber{background:var(--amber-50);color:var(--amber-700)}
 
-/* ─── COMPARISON GRID ─── */
-.comp-wrapper{width:100%;max-width:900px;overflow:hidden}
-.comp-table{
-  width:100%;border-collapse:collapse;
-  font-size:13px;
-}
-.comp-table th{
-  padding:10px 14px;font-size:11px;font-weight:700;
-  letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--gray-400);text-align:center;border-bottom:2px solid var(--gray-100);
-}
-.comp-table th:first-child{text-align:left}
-.comp-table th.us{color:var(--blue-500);border-bottom-color:var(--blue-500)}
-.comp-table td{
-  padding:12px 14px;border-bottom:1px solid var(--gray-100);
-  text-align:center;color:var(--gray-600);
-}
-.comp-table td:first-child{text-align:left;font-weight:600;color:var(--gray-800);font-size:12px}
-.comp-table tr.us-row td{background:var(--blue-50)}
-.comp-table tr.us-row td:first-child{color:var(--blue-600);font-weight:700}
-.chk-yes{color:var(--green-500);font-size:16px}
-.chk-no{color:var(--red);font-size:14px}
-.chk-warn{
-  display:inline-block;background:#FFFBEB;color:#92400E;
-  border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;
-}
+/* ─── Comparison: Fetchr's column carries the blue ─── */
+.comp-wrapper{width:100%;max-width:var(--content);background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);overflow:hidden}
+.comp-table{width:100%;border-collapse:collapse;font-size:clamp(14px,1.05vw,17px)}
+.comp-table th{padding:16px;text-align:center;border-bottom:1px solid var(--gray-200);vertical-align:middle}
+.comp-table th:first-child{text-align:left;font-size:13px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-500)}
+.comp-table th .co-logo{margin:0 auto;height:28px}
+.comp-table th img[src*="dial-a"],.comp-table th img[src*="munch"]{height:40px}
+.comp-table th.us,.comp-table td:last-child{background:var(--blue-50)}
+.comp-table td{padding:11px 16px;text-align:center;color:var(--gray-600);border-top:1px solid var(--gray-100)}
+.comp-table td:first-child{text-align:left;font-weight:600;color:var(--gray-900)}
+.chk-yes{color:var(--green-600);font-size:20px;font-weight:700}
+.chk-no{color:var(--gray-300);font-size:18px}
+.chk-warn{display:inline-flex;background:var(--amber-50);color:var(--amber-700);border-radius:var(--r-md);padding:2px 10px;font-size:13px;font-weight:600}
 
-/* ─── REVENUE MODEL ─── */
-.pricing-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
-  width:100%;max-width:900px;margin-bottom:24px;
-}
-.pricing-card{
-  border:1px solid var(--gray-200);border-radius:14px;
-  padding:24px;background:#fff;
-  transition:transform 0.3s,box-shadow 0.3s;
-}
-.pricing-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.1)}
-.pricing-card--featured{
-  border-color:var(--blue-500);border-width:2px;
-  background:var(--blue-50);position:relative;
-}
-.pricing-tier{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-400);margin-bottom:8px}
+/* ─── Pricing: featured card gets the ring-2 ─── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;width:100%;max-width:var(--content);margin-bottom:24px}
+.pricing-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);padding:28px;position:relative}
+.pricing-card--featured{border-radius:var(--r-3xl);box-shadow:0 0 0 2px var(--blue-500);border-color:transparent}
+.pricing-tier{font-size:14px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-500);margin-bottom:10px}
 .pricing-card--featured .pricing-tier{color:var(--blue-500)}
-.pricing-price{font-family:var(--font-display);font-size:clamp(22px,2.4vw,32px);font-weight:800;color:var(--gray-900);letter-spacing:-0.03em;line-height:1}
-.pricing-price span{font-size:14px;font-weight:500;color:var(--gray-400)}
-.pricing-per{font-size:12px;color:var(--gray-400);margin-top:4px;margin-bottom:16px}
-.pricing-feature{font-size:12px;color:var(--gray-600);margin-bottom:6px;display:flex;align-items:flex-start;gap:6px}
-.pricing-check{color:var(--green-500);flex-shrink:0;font-size:13px;margin-top:1px}
-.feat-badge{
-  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
-  background:var(--blue-500);color:#fff;border-radius:100px;
-  padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
-  white-space:nowrap;
-}
-.revenue-math{
-  display:flex;align-items:center;gap:12px;
-  background:var(--gray-900);border-radius:12px;padding:20px 24px;
-  width:100%;max-width:900px;
-}
-.rev-math-item{text-align:center;flex:1}
-.rev-math-val{font-family:var(--font-display);font-weight:800;font-size:clamp(18px,2vw,26px);color:#fff;letter-spacing:-0.03em}
-.rev-math-val em{color:var(--green-400);font-style:normal}
-.rev-math-label{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;letter-spacing:0.04em}
-.rev-math-op{font-size:22px;color:rgba(255,255,255,0.2);flex-shrink:0}
+.pricing-price{font-weight:700;font-size:clamp(30px,2.8vw,44px);letter-spacing:-0.025em;line-height:1;color:var(--gray-900);font-variant-numeric:tabular-nums}
+.pricing-price span{font-size:16px;font-weight:500;color:var(--gray-500);letter-spacing:0}
+.pricing-per{font-size:14px;color:var(--gray-500);margin:8px 0 18px}
+.pricing-feature{display:flex;align-items:flex-start;gap:8px;font-size:clamp(14px,1.05vw,16px);color:var(--gray-600);margin-bottom:8px}
+.pricing-check{color:var(--green-600);flex-shrink:0;font-size:17px;margin-top:2px}
+.feat-badge{position:absolute;top:-14px;left:28px;background:var(--blue-500);color:#fff;border-radius:var(--r-md);padding:4px 10px;font-size:13px;font-weight:600}
+.revenue-math{display:flex;align-items:center;gap:16px;width:100%;max-width:var(--content);background:var(--gray-900);border-radius:var(--r-2xl);padding:24px 32px}
+.rev-math-item{flex:1;text-align:center}
+.rev-math-val{font-weight:700;font-size:clamp(22px,2vw,32px);letter-spacing:-0.025em;color:#fff;font-variant-numeric:tabular-nums}
+.rev-math-val em{font-style:normal;color:var(--green-400)}
+.rev-math-label{font-size:14px;color:var(--gray-400);margin-top:4px}
+.rev-math-op{font-size:24px;color:var(--gray-600);flex-shrink:0}
 
-/* ─── PIPELINE ─── */
-.pipeline-list{
-  width:100%;max-width:920px;display:flex;flex-direction:column;gap:12px;
-}
-.pipeline-item{
-  display:flex;align-items:center;gap:16px;
-  background:var(--gray-50);border:1px solid var(--gray-200);
-  border-radius:12px;padding:16px 20px;
-  transition:all 0.3s var(--ease-out);
-}
-.pipeline-item:hover{background:var(--blue-50);border-color:var(--blue-200)}
-.pipeline-logo{
-  width:40px;height:40px;border-radius:10px;
-  background:var(--blue-500);display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;color:#fff;font-weight:800;font-size:14px;
-  font-family:var(--font-display);
-}
+/* ─── Pipeline ─── */
+.pipeline-list{width:100%;max-width:var(--content);display:flex;flex-direction:column;gap:12px}
+.pipeline-item{display:flex;align-items:center;gap:20px;background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);padding:16px 24px}
+.pipeline-logo{width:270px;height:40px;flex-shrink:0;display:flex;align-items:center}
+.pipeline-logo .co-logo{height:34px}
+.pipeline-logo-row{display:flex;align-items:center;gap:14px}
+.pipeline-logo-row .co-logo{height:24px;max-width:96px}
 .pipeline-info{flex:1}
-.pipeline-name{font-weight:700;font-size:14px;color:var(--gray-900)}
-.pipeline-desc{font-size:12px;color:var(--gray-500);margin-top:2px}
-.pipeline-status{
-  display:flex;align-items:center;gap:6px;
-  font-size:11px;font-weight:600;padding:5px 12px;border-radius:100px;
-}
-.pipeline-status--warm{background:var(--green-50);color:var(--green-600)}
+.pipeline-name{font-weight:700;font-size:clamp(15px,1.15vw,18px);color:var(--gray-900)}
+.pipeline-desc{font-size:clamp(13px,1vw,15px);color:var(--gray-500);margin-top:2px}
+.pipeline-status{display:inline-flex;align-items:center;gap:6px;border-radius:9999px;padding:5px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+.pipeline-status--warm{background:var(--green-50);color:var(--green-700)}
 .pipeline-status--target{background:var(--blue-50);color:var(--blue-600)}
-.pipeline-status--network{background:#FFF7ED;color:#C2410C}
-.pipeline-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.pipeline-status--network{background:var(--amber-50);color:var(--amber-700)}
+.pipeline-dot{width:6px;height:6px;border-radius:9999px;background:currentColor}
+.sales-steps{display:flex;align-items:flex-start;width:100%;max-width:var(--content);margin-top:16px;background:var(--gray-900);border-radius:var(--r-2xl);padding:22px 28px}
+.sales-step{flex:1;text-align:center;padding:0 12px}
+.step-num{width:30px;height:30px;border-radius:9999px;margin:0 auto 10px;background:var(--blue-500);color:#fff;font-family:var(--mono);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step-title{font-size:clamp(14px,1.05vw,16px);font-weight:600;color:#fff;margin-bottom:4px}
+.step-sub{font-size:13px;color:var(--gray-400)}
 
-.sales-steps{
-  display:flex;align-items:flex-start;gap:0;
-  background:var(--gray-900);border-radius:12px;padding:20px 28px;
-  width:100%;max-width:920px;margin-top:12px;
-}
-.sales-step{flex:1;text-align:center;padding:0 12px;position:relative}
-.sales-step::after{
-  content:'→';position:absolute;right:-8px;top:6px;
-  color:rgba(255,255,255,0.2);font-size:16px;
-}
-.sales-step:last-child::after{display:none}
-.step-num{
-  width:28px;height:28px;border-radius:50%;
-  background:var(--blue-500);color:#fff;
-  font-size:12px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 8px;font-family:var(--font-mono);
-}
-.step-title{font-size:12px;font-weight:600;color:#fff;margin-bottom:4px}
-.step-sub{font-size:11px;color:rgba(255,255,255,0.4)}
-
-/* ─── UNIT ECONOMICS ─── */
-.ue-container{display:flex;gap:32px;width:100%;max-width:940px;align-items:flex-start}
-.ue-left{flex:1.2;display:flex;flex-direction:column;gap:16px}
+/* ─── Unit economics ─── */
+.ue-container{display:flex;gap:32px;width:100%;max-width:var(--content);align-items:flex-start}
+.ue-left{flex:1.1;display:flex;flex-direction:column;gap:18px}
 .ue-right{flex:1;display:flex;flex-direction:column;gap:16px}
-.ue-equation{
-  display:flex;align-items:center;gap:12px;
-  background:var(--gray-50);border:1px solid var(--gray-200);
-  border-radius:14px;padding:24px 24px;
-}
-.ue-term{display:flex;flex-direction:column;align-items:center;flex:1}
-.ue-val{font-family:var(--font-display);font-weight:800;font-size:clamp(22px,2.6vw,36px);color:var(--gray-900);letter-spacing:-0.03em}
-.ue-val--green{color:var(--green-500)}
-.ue-val--red{color:var(--red)}
-.ue-lbl{font-size:11px;color:var(--gray-400);letter-spacing:0.06em;text-transform:uppercase;margin-top:4px;font-weight:600}
-.ue-op{font-size:24px;color:var(--gray-300);flex-shrink:0}
-.ue-bar{
-  height:10px;border-radius:100px;overflow:hidden;
-  background:var(--gray-100);display:flex;
-}
-.ue-seg{height:100%;transition:width 1s var(--ease-out)}
-.ue-seg--rider{background:var(--red);width:75%}
-.ue-seg--fee{background:var(--amber);width:3%}
-.ue-seg--msg{background:#FCD34D;width:1%}
+.ue-equation{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);padding:28px}
+.ue-term{flex:1;display:flex;flex-direction:column;align-items:center}
+.ue-val{font-weight:700;font-size:clamp(28px,2.8vw,46px);letter-spacing:-0.025em;color:var(--gray-900);font-variant-numeric:tabular-nums}
+.ue-val--green{color:var(--green-600)}
+.ue-val--red{color:var(--red-500)}
+.ue-lbl{font-size:13px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-500);margin-top:6px}
+.ue-op{font-size:26px;color:var(--gray-300);flex-shrink:0}
+.ue-bar{height:12px;border-radius:9999px;overflow:hidden;background:var(--gray-100);display:flex;gap:2px}
+.ue-seg{height:100%}
+.ue-seg--rider{background:var(--blue-500);width:75%}
+.ue-seg--fee{background:var(--blue-300);width:3%}
+.ue-seg--msg{background:var(--blue-200);width:1%}
 .ue-seg--margin{background:var(--green-500);width:21%}
-.ue-legend{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ue-leg{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-600)}
-.ue-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
-.ltv-table{width:100%;border-collapse:collapse;border:1px solid var(--gray-200);border-radius:12px;overflow:hidden;font-size:12px}
-.ltv-table th{background:var(--gray-800);color:#fff;padding:10px 14px;text-align:left;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600}
-.ltv-table td{padding:11px 14px;border-bottom:1px solid var(--gray-100);color:var(--gray-700)}
-.ltv-table tr:last-child td{border-bottom:none}
-.ltv-table td:first-child{font-weight:600;color:var(--gray-900)}
+.ue-legend{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ue-leg{display:flex;align-items:center;gap:8px;font-size:clamp(13px,1vw,15px);color:var(--gray-600)}
+.ue-dot{width:10px;height:10px;border-radius:9999px;flex-shrink:0}
+.ltv-table td{padding:11px 18px}
 .ltv-table .highlight td{background:var(--blue-50);color:var(--blue-700)}
-.ltv-table .highlight td:first-child{color:var(--blue-600);font-weight:700}
-.ltvval{font-weight:700;font-family:var(--font-mono)}
-.ltvval--green{color:var(--green-500)}
+.ltvval{font-weight:600;color:var(--gray-900);font-variant-numeric:tabular-nums}
+.ltvval--green{color:var(--green-600)}
 .ltvval--blue{color:var(--blue-500)}
+.ltvval--ratio{font-family:var(--mono)}
 
-/* ─── TECH SLIDE ─── */
-.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;width:100%;max-width:900px}
-.tech-card{
-  background:var(--gray-50);border:1px solid var(--gray-200);border-radius:14px;
-  padding:22px;display:flex;gap:16px;align-items:flex-start;
-  transition:all 0.3s var(--ease-out);
-}
-.tech-card:hover{background:var(--blue-50);border-color:var(--blue-200)}
-.tech-icon{
-  width:44px;height:44px;border-radius:10px;background:var(--blue-500);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;
-}
-.tech-info .tech-title{font-weight:700;font-size:14px;color:var(--gray-900);margin-bottom:4px}
-.tech-info .tech-desc{font-size:12px;color:var(--gray-500);line-height:1.55}
-.tech-trust{
-  display:flex;align-items:center;gap:12px;
-  background:var(--green-50);border:1px solid var(--green-100);
-  border-radius:12px;padding:14px 20px;width:100%;max-width:900px;margin-top:12px;
-}
-.tech-trust-icon{color:var(--green-500)}
-.tech-trust-text{font-size:13px;color:var(--green-700);font-weight:500}
-.tech-trust-text strong{color:var(--green-600)}
+/* ─── Technology ─── */
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;width:100%;max-width:var(--content)}
+.tech-card{display:flex;gap:18px;align-items:flex-start;background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);padding:24px}
+.tech-title{font-weight:700;font-size:clamp(15px,1.2vw,19px);color:var(--gray-900);margin-bottom:6px}
+.tech-desc{font-size:clamp(14px,1.05vw,16px);line-height:1.5;color:var(--gray-600)}
+.tech-trust{display:flex;align-items:center;gap:14px;width:100%;max-width:var(--content);margin-top:16px;background:var(--green-50);border-radius:var(--r-2xl);padding:18px 24px}
+.tech-trust-icon{font-size:24px;color:var(--green-600)}
+.tech-trust-text{font-size:clamp(14px,1.1vw,17px);color:var(--green-700);font-weight:500}
+.tech-trust-text strong{font-weight:700}
 
-/* ─── REVENUE BRIDGE ─── */
+/* ─── 18-month plan ─── */
 .bridge-chart{
-  display:flex;align-items:flex-end;gap:0;
-  width:100%;max-width:900px;
-  background:var(--gray-50);border:1px solid var(--gray-200);
-  border-radius:16px;padding:28px 32px 20px;height:220px;position:relative;
+  position:relative;display:flex;align-items:flex-end;width:100%;max-width:var(--content);
+  height:clamp(260px,38vh,380px);background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);padding:40px 40px 24px;
 }
-.bridge-be-line{
-  position:absolute;bottom:85px;left:32px;right:32px;
-  border-top:2px dashed var(--blue-300);
-}
-.bridge-be-label{
-  position:absolute;bottom:90px;left:38px;
-  font-size:10px;font-weight:700;color:var(--blue-500);
-  letter-spacing:0.1em;text-transform:uppercase;
-}
-.bridge-col{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;
-  justify-content:flex-end;height:100%;
-}
-.bridge-bar-wrap{
-  flex:1;width:100%;display:flex;align-items:flex-end;
-  justify-content:center;
-}
-.bridge-bar{
-  width:min(52px,4.5vw);border-radius:8px 8px 0 0;
-  background:var(--blue-200);
-  transition:height 1s var(--ease-out);
-  position:relative;min-height:8px;
-}
+.bridge-be-line{display:none}
+.bridge-chart{isolation:isolate;overflow:hidden}
+/* break-even is month 6, so the line runs from the top of its bar */
+#b3::before{content:"";position:absolute;top:0;left:-100vw;right:-100vw;border-top:2px dashed var(--blue-300);z-index:-1}
+.bridge-be-label::before{content:"";width:24px;border-top:2px dashed var(--blue-300)}
+.bridge-be-label{position:absolute;left:40px;top:16px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--blue-500)}
+.bridge-col{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px}
+.bridge-bar-wrap{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.bridge-bar{position:relative;width:min(72px,5vw);min-height:8px;border-radius:var(--r-xl) var(--r-xl) 0 0;background:var(--blue-200)}
 .bridge-bar--active{background:var(--blue-500)}
-.bridge-bar--accent{background:var(--green-500)}
-.bridge-val{
-  position:absolute;top:-22px;left:50%;transform:translateX(-50%);
-  font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--gray-700);
-  white-space:nowrap;
-}
-.bridge-label{font-size:11px;color:var(--gray-500);text-align:center;font-weight:500;line-height:1.3}
-.bridge-milestone{
-  font-size:9px;color:var(--gray-400);text-align:center;
-  line-height:1.3;max-width:70px;
-}
+.bridge-bar--accent{background:var(--blue-700)}
+.bridge-val{position:absolute;top:-26px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:14px;font-weight:700;color:var(--gray-900);font-variant-numeric:tabular-nums}
+.bridge-label{font-size:clamp(13px,1vw,15px);font-weight:600;color:var(--gray-700);text-align:center;line-height:1.3;min-height:2.6em;display:flex;align-items:flex-start}
+.bridge-milestone{font-size:13px;color:var(--gray-500);text-align:center;line-height:1.3;max-width:120px}
 
-/* ─── TEAM ─── */
-.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:720px}
-.team-card{
-  background:var(--gray-50);border:1px solid var(--gray-200);
-  border-radius:14px;padding:22px 16px;text-align:center;
-}
-.team-avatar{
-  width:56px;height:56px;border-radius:16px;margin:0 auto 12px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-weight:800;font-size:18px;color:#fff;
-}
-.team-name{font-weight:700;font-size:13px;color:var(--gray-900);margin-bottom:4px}
-.team-role{font-size:11px;color:var(--blue-500);font-weight:600;margin-bottom:8px;letter-spacing:0.04em}
-.team-pitch{font-size:11px;color:var(--gray-500);line-height:1.55}
+/* ─── Team ─── */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;width:100%;max-width:var(--content)}
+.team-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-2xl);padding:28px}
+.team-avatar{width:56px;height:56px;border-radius:var(--r-xl);margin-bottom:16px;display:flex;align-items:center;justify-content:center;background:var(--blue-50);color:var(--blue-600);font-weight:700;font-size:20px}
+.team-name{font-weight:700;font-size:clamp(16px,1.25vw,20px);color:var(--gray-900);margin-bottom:4px}
+.team-role{font-size:14px;font-weight:600;color:var(--blue-500);margin-bottom:12px}
+.team-pitch{font-size:clamp(14px,1.05vw,16px);line-height:1.5;color:var(--gray-600)}
 
-/* ─── ASK ─── */
-.slide--close{background:var(--blue-900);color:#fff;align-items:center}
-.slide--close .slide-headline{color:#fff;text-align:center}
-.slide--close .slide-headline em{color:var(--green-400)}
-.ask-amount{
-  font-family:var(--font-display);font-weight:800;
-  font-size:clamp(56px,7vw,96px);color:#fff;
-  letter-spacing:-0.04em;line-height:1;margin:8px 0;
-}
-.ask-desc{font-size:16px;color:rgba(255,255,255,0.65);max-width:480px;line-height:1.6;text-align:center;margin-bottom:32px}
-.alloc-grid{
-  display:flex;gap:16px;width:100%;max-width:760px;margin-bottom:24px;
-}
-.alloc-item{
-  flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
-  border-radius:12px;padding:16px;text-align:center;
-}
-.alloc-val{font-family:var(--font-display);font-weight:800;font-size:clamp(20px,2.2vw,28px);color:var(--green-400);letter-spacing:-0.03em}
-.alloc-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;letter-spacing:0.06em}
-.close-contacts{display:flex;gap:16px;margin-top:8px}
+/* ─── The ask ─── */
+.close-wrap{width:100%;max-width:var(--content);display:flex;flex-direction:column;align-items:flex-start}
+.close-tag{font-family:var(--mono);font-size:clamp(14px,1.1vw,18px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--blue-100);margin:28px 0 12px}
+.ask-amount{font-weight:700;font-size:clamp(64px,8vw,136px);letter-spacing:-0.04em;line-height:1;color:#fff;font-variant-numeric:tabular-nums}
+.ask-desc{font-size:clamp(18px,1.5vw,24px);line-height:1.45;color:var(--blue-100);max-width:46rem;margin:20px 0 36px}
+.alloc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%;margin-bottom:28px}
+.alloc-item{background:var(--blue-600);border-radius:var(--r-2xl);padding:22px 24px}
+.alloc-val{font-weight:700;font-size:clamp(26px,2.4vw,38px);letter-spacing:-0.025em;color:#fff;font-variant-numeric:tabular-nums}
+.alloc-lbl{font-size:clamp(14px,1.05vw,16px);color:var(--blue-100);margin-top:6px}
+.close-contacts{display:flex;gap:12px;flex-wrap:wrap}
 .close-pill{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
-  border-radius:100px;padding:10px 20px;
-  font-size:13px;color:rgba(255,255,255,0.8);text-decoration:none;
-  transition:all 0.3s;
+  --flood:var(--blue-900);--flood-edge:var(--blue-200);
+  display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:var(--r-xl);
+  background:#fff;color:var(--blue-600);font-size:16px;font-weight:600;text-decoration:none;
+  transition:color 0.3s;
 }
-.close-pill:hover{background:rgba(255,255,255,0.15);color:#fff}
-.close-tag{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
-  border-radius:100px;padding:6px 16px;
-  font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;
-  margin-bottom:24px;
-}
-.close-cta{
-  font-size:14px;color:rgba(255,255,255,0.4);margin-top:28px;
-  letter-spacing:0.06em;text-transform:uppercase;
-}
-.close-cta kbd{
-  display:inline-block;padding:2px 7px;border:1px solid rgba(255,255,255,0.15);
-  border-radius:4px;font-family:var(--font-mono);font-size:11px;
-}
+.close-pill i{font-size:20px}
+.close-pill:hover{color:#fff}
+.close-quote{font-size:clamp(15px,1.15vw,18px);color:var(--blue-100);margin-top:28px;max-width:46rem}
+.close-cta{font-size:14px;color:var(--blue-100);margin-top:16px}
 
 /* Print */
-@media print {
+@media print{
   .deck{overflow:visible;height:auto}
-  .slide{position:relative;opacity:1!important;visibility:visible!important;transform:none!important;page-break-after:always;height:100vh;padding:48px}
+  .slide{position:relative;opacity:1!important;visibility:visible!important;transform:none!important;page-break-after:always;height:100vh}
   .progress-bar,.slide-counter,.nav-hint,.dot-nav{display:none}
   [data-animate]{opacity:1!important;animation:none!important}
   @page{size:landscape;margin:0}
@@ -526,33 +316,29 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
 
 /* Responsive */
 @media(max-width:1100px){
-  .slide{padding:48px 56px}
-  .problem-grid{grid-template-columns:1fr 1fr}
-  .pricing-grid{grid-template-columns:1fr 1fr}
-  .team-grid{grid-template-columns:repeat(2,1fr)}
+  .problem-grid,.pricing-grid,.team-grid{grid-template-columns:1fr 1fr}
   .ue-container{flex-direction:column}
+  .alloc-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:768px){
-  .slide{padding:32px 28px;overflow-y:auto;overflow-x:hidden;justify-content:flex-start;padding-top:48px;padding-bottom:48px;-webkit-overflow-scrolling:touch;scrollbar-color:rgba(0,65,245,0.25) transparent}
-  .slide-headline{font-size:26px}
-  .problem-grid,.pricing-grid,.tech-grid,.team-grid{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;display:flex;gap:12px;padding-bottom:6px}
-  .problem-grid>*,.pricing-grid>*,.tech-grid>*,.team-grid>*{min-width:240px;flex-shrink:0}
-  .alloc-grid{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;scrollbar-width:thin}
-  .alloc-item{min-width:140px;flex-shrink:0}
-  .flow-diagram{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;scrollbar-width:thin}
-  .flow-diagram>*{flex-shrink:0}
-  .flow-arrow{transform:none}
-  .corp-table{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;font-size:11px}
-  .problem-grid,.pricing-grid,.tech-grid,.team-grid,.alloc-grid,.flow-diagram,.corp-table{mask-image:linear-gradient(to right,black 88%,transparent 100%);-webkit-mask-image:linear-gradient(to right,black 88%,transparent 100%)}
-  .scroll-end{mask-image:none;-webkit-mask-image:none}
-  .slide::-webkit-scrollbar,.problem-grid::-webkit-scrollbar,.pricing-grid::-webkit-scrollbar,.tech-grid::-webkit-scrollbar,.team-grid::-webkit-scrollbar,.alloc-grid::-webkit-scrollbar,.flow-diagram::-webkit-scrollbar,.corp-table::-webkit-scrollbar{height:3px;width:3px}
-  .slide::-webkit-scrollbar-thumb,.problem-grid::-webkit-scrollbar-thumb,.pricing-grid::-webkit-scrollbar-thumb,.tech-grid::-webkit-scrollbar-thumb,.team-grid::-webkit-scrollbar-thumb,.alloc-grid::-webkit-scrollbar-thumb,.flow-diagram::-webkit-scrollbar-thumb,.corp-table::-webkit-scrollbar-thumb{background:rgba(0,65,245,0.25);border-radius:4px}
-  .slide::-webkit-scrollbar-thumb:hover,.problem-grid::-webkit-scrollbar-thumb:hover,.pricing-grid::-webkit-scrollbar-thumb:hover,.tech-grid::-webkit-scrollbar-thumb:hover,.team-grid::-webkit-scrollbar-thumb:hover,.alloc-grid::-webkit-scrollbar-thumb:hover,.flow-diagram::-webkit-scrollbar-thumb:hover,.corp-table::-webkit-scrollbar-thumb:hover{background:rgba(0,65,245,0.4)}
-  .slide::-webkit-scrollbar-track{background:rgba(0,65,245,0.04)}
+  .slide{padding:56px 20px 72px;overflow-y:auto;overflow-x:hidden;justify-content:flex-start;-webkit-overflow-scrolling:touch}
+  .slide-headline{font-size:28px}
+  .slide--title .slide-headline{font-size:40px}
+  .slide--title .logo-img{position:static;margin-bottom:auto}
+  .nav-hint{display:none}
+  .slide-counter{left:20px}
+  .problem-grid,.pricing-grid,.tech-grid,.team-grid{grid-template-columns:1fr}
+  .flow-diagram{flex-direction:column;align-items:stretch;gap:12px}
+  .flow-node{flex-direction:row;text-align:left}
+  .flow-arrow{display:none}
+  .comp-wrapper,.corp-table-wrap{overflow-x:auto}
+  .pipeline-item{flex-wrap:wrap}
+  .sales-steps,.revenue-math{flex-wrap:wrap}
+  .alloc-grid{grid-template-columns:1fr 1fr}
 }
 @media(prefers-reduced-motion:reduce){
   [data-animate]{opacity:1;animation:none!important}
-  .slide{transition:opacity 0.3s!important;transform:none!important}
+  .slide{transition:opacity 0.2s!important;transform:none!important}
 }
 </style>
 </head>
@@ -567,18 +353,13 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
 
 <!-- ═══ SLIDE 0: TITLE ═══ -->
 <section class="slide slide--title active" data-slide="0">
-  <div class="title-bg-grid"></div>
-  <div class="title-glow"></div>
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0">
-    <img src="fetchrLogoColor.jpg" alt="Fetchr." class="logo-img" style="filter:brightness(0) invert(1);margin-bottom:32px" data-animate>
-    <div class="title-pill" data-animate>
-      <span class="title-pip"></span>
-      Pre-Seed &middot; $350,000 &middot; 2026
-    </div>
+  <img src="fetchrLogoWhite.png" alt="Fetchr." class="logo-img" data-animate data-anim="fade">
+  <div>
+    <div class="title-pill" data-animate>Pre-seed &middot; $350,000 &middot; 2026</div>
     <h1 class="slide-headline" data-animate>
       The delivery platform that has<br><em>revenue before it has riders.</em>
     </h1>
-    <p style="font-size:16px;color:rgba(255,255,255,0.5);max-width:480px;line-height:1.65;text-align:center;margin-top:16px" data-animate>
+    <p class="title-lead" data-animate>
       Fetchr. secures B2B contracts with Zimbabwe's corporates before launch — de-risking the marketplace cold start problem entirely.
     </p>
     <p class="title-nav-hint" data-animate>Press <kbd>→</kbd> or swipe to begin</p>
@@ -587,89 +368,76 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
 
 <!-- ═══ SLIDE 1: PROBLEM ═══ -->
 <section class="slide" data-slide="1">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>The Pain Point</span>
   <h2 class="slide-headline" data-animate>Zimbabwe's corporates run logistics on<br><em>WhatsApp groups and phone calls.</em></h2>
   <div class="problem-grid" data-animate>
     <div class="problem-card">
-      <div class="prob-num">01 / Speed</div>
+      <div class="prob-num">Speed</div>
       <div class="prob-value">3 Hours</div>
       <div class="prob-desc">Dial a Delivery average wait time. The market leader keeps clients waiting half a day.</div>
     </div>
     <div class="problem-card">
-      <div class="prob-num">02 / Infrastructure</div>
+      <div class="prob-num">Infrastructure</div>
       <div class="prob-value">$0</div>
       <div class="prob-desc">Tech infrastructure for corporate delivery. Zero platforms, zero SLAs, zero digital audit trail.</div>
     </div>
     <div class="problem-card">
-      <div class="prob-num">03 / Accountability</div>
+      <div class="prob-num">Accountability</div>
       <div class="prob-value">None</div>
       <div class="prob-desc">No proof of delivery. No chain of custody. Law firms, banks, and labs sending sensitive items with no accountability.</div>
     </div>
   </div>
-  <p style="font-size:12px;color:var(--gray-400);margin-top:16px" data-animate>
+  <p class="footnote" data-animate>
     Source: World Bank Logistics Performance Index, 2023 · Fetchr. primary research, 2026
   </p>
 </section>
 
 <!-- ═══ SLIDE 2: COLD START SOLUTION ═══ -->
 <section class="slide" data-slide="2">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>The Solution</span>
   <h2 class="slide-headline" data-animate>We solve the chicken-and-egg problem<br><em>before launch day.</em></h2>
   <div class="flow-diagram" data-animate>
     <div class="flow-node">
-      <div class="flow-node-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c0-4.97-4.03-9-9-9S3 7.03 3 12s4.03 9 9 9"/><path d="M21 3l-9 9"/></svg>
-      </div>
+      <div class="tile"><i class="ph-duotone ph-handshake"></i></div>
       <div class="flow-node-title">Corporate SLA<br>Signed Pre-Launch</div>
       <div class="flow-node-sub">4–6 contracts</div>
     </div>
-    <div class="flow-arrow">→</div>
+    <div class="flow-arrow" aria-hidden="true"><i class="ph-bold ph-arrow-right"></i></div>
     <div class="flow-node">
-      <div class="flow-node-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
-      </div>
+      <div class="tile"><i class="ph-duotone ph-chart-bar"></i></div>
       <div class="flow-node-title">Guaranteed<br>Delivery Volume</div>
       <div class="flow-node-sub">Predictable demand</div>
     </div>
-    <div class="flow-arrow">→</div>
+    <div class="flow-arrow" aria-hidden="true"><i class="ph-bold ph-arrow-right"></i></div>
     <div class="flow-node">
-      <div class="flow-node-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
-      </div>
+      <div class="tile"><i class="ph-duotone ph-users-three"></i></div>
       <div class="flow-node-title">Justified Rider<br>Recruitment</div>
       <div class="flow-node-sub">Not speculative</div>
     </div>
-    <div class="flow-arrow">→</div>
+    <div class="flow-arrow" aria-hidden="true"><i class="ph-bold ph-arrow-right"></i></div>
     <div class="flow-node">
-      <div class="flow-node-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      </div>
+      <div class="tile"><i class="ph-duotone ph-calendar-check"></i></div>
       <div class="flow-node-title">Riders Have Work<br>From Day 1</div>
       <div class="flow-node-sub">Natural retention</div>
     </div>
-    <div class="flow-arrow">→</div>
+    <div class="flow-arrow" aria-hidden="true"><i class="ph-bold ph-arrow-right"></i></div>
     <div class="flow-node flow-node--result">
-      <div class="flow-node-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-      </div>
+      <div class="tile tile--green"><i class="ph-duotone ph-storefront"></i></div>
       <div class="flow-node-title">Consumer Platform<br>Launches Live</div>
       <div class="flow-node-sub">Working marketplace</div>
     </div>
   </div>
   <div class="insight-box" data-animate>
-    <svg class="insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <i class="ph-duotone ph-lightbulb insight-icon" aria-hidden="true"></i>
     <p class="insight-text">Every marketplace that failed did so by recruiting supply before demand existed. Corporate contracts ARE the demand. Fetchr. inverts the cold start problem before launch day.</p>
   </div>
 </section>
 
 <!-- ═══ SLIDE 3: CORPORATE VERTICALS ═══ -->
 <section class="slide" data-slide="3">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>Target Market</span>
   <h2 class="slide-headline" data-animate>Five industries. High volume.<br><em>Already in pain.</em></h2>
-  <div style="width:100%;max-width:960px;overflow-x:auto" data-animate>
+  <div class="corp-table-wrap" style="width:100%;max-width:var(--content)" data-animate>
     <table class="corp-table">
       <thead>
         <tr>
@@ -682,36 +450,36 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       </thead>
       <tbody>
         <tr>
-          <td>🏥 Pharmaceuticals</td>
-          <td>Lancet Labs, CIMAS MedLabs</td>
+          <td>Pharmaceuticals</td>
+          <td><div class="co-cell"><img class="co-logo" src="logos/lancet.png" alt="Lancet Laboratories Zimbabwe"><img class="co-logo" src="logos/cimas.svg" alt="CIMAS"></div></td>
           <td>Specimen transport, chain of custody compliance</td>
           <td><span class="corp-badge">High</span></td>
           <td>COO / Ops Manager</td>
         </tr>
         <tr>
-          <td>⚖️ Legal Sector</td>
-          <td>Law firms, High Court</td>
+          <td>Legal Sector</td>
+          <td><div class="co-cell"><img class="co-logo" src="logos/law-society-zimbabwe.png" alt="Law Society of Zimbabwe"><span>Law firms, High Court</span></div></td>
           <td>Sensitive documents, timestamped proof of delivery</td>
           <td><span class="corp-badge">High</span></td>
           <td>Office Manager / Partner</td>
         </tr>
         <tr>
-          <td>🏦 Banking & Finance</td>
-          <td>CBZ, Stanbic, FBC</td>
+          <td>Banking & Finance</td>
+          <td><div class="co-cell"><img class="co-logo" src="logos/cbz.png" alt="CBZ"><img class="co-logo" src="logos/stanbic.svg" alt="Stanbic Bank"><img class="co-logo" src="logos/fbc.png" alt="FBC"></div></td>
           <td>Cash & document courier, audit trails, security</td>
           <td><span class="corp-badge">High</span></td>
           <td>Procurement / COO</td>
         </tr>
         <tr>
-          <td>🛡️ Insurance</td>
-          <td>Old Mutual, First Mutual</td>
+          <td>Insurance</td>
+          <td><div class="co-cell"><img class="co-logo" src="logos/old-mutual.svg" alt="Old Mutual"><img class="co-logo" src="logos/first-mutual.svg" alt="First Mutual"></div></td>
           <td>Claim documents, assessor dispatching</td>
           <td><span class="corp-badge corp-badge--amber">Medium</span></td>
           <td>Operations Director</td>
         </tr>
         <tr>
-          <td>🌍 NGOs & Embassies</td>
-          <td>UN agencies, diplomatic missions</td>
+          <td>NGOs & Embassies</td>
+          <td><div class="co-cell"><img class="co-logo" src="logos/un.svg" alt="United Nations"><span>UN agencies, diplomatic missions</span></div></td>
           <td>Reliable courier with digital receipts for donor reporting</td>
           <td><span class="corp-badge corp-badge--amber">Medium</span></td>
           <td>Admin / Finance</td>
@@ -719,14 +487,13 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       </tbody>
     </table>
   </div>
-  <p style="font-size:12px;color:var(--gray-400);margin-top:16px" data-animate>
+  <p class="footnote" data-animate>
     Estimated 2,000+ corporate entities in Harare with regular courier needs · Zero current provider with GPS tracking + SLA framework
   </p>
 </section>
 
 <!-- ═══ SLIDE 4: SLA ADVANTAGE ═══ -->
 <section class="slide" data-slide="4">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>Competitive Advantage</span>
   <h2 class="slide-headline" data-animate>inDrive has a $100 item cap. We have none.<br><em>That's the entire conversation.</em></h2>
   <div class="comp-wrapper" data-animate>
@@ -734,81 +501,80 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       <thead>
         <tr>
           <th style="text-align:left">Requirement</th>
-          <th>Dial a Delivery</th>
-          <th>Munch</th>
-          <th>inDrive</th>
-          <th class="us">Fetchr.</th>
+          <th><img class="co-logo" src="logos/dial-a-delivery.png" alt="Dial a Delivery"></th>
+          <th><img class="co-logo" src="logos/munch.png" alt="Munch"></th>
+          <th><img class="co-logo" src="logos/indrive.svg" alt="inDrive"></th>
+          <th class="us"><img class="co-logo" src="../Deck1/fetchrLogoColor-removebg-preview.png" alt="Fetchr."></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>GPS Tracking</td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-yes">✓</span></td>
-          <td><span class="chk-yes">✓</span></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-check chk-yes" aria-label="Yes"></i></td>
+          <td><i class="ph-bold ph-check chk-yes" aria-label="Yes"></i></td>
         </tr>
         <tr>
           <td>SLA Contract</td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-yes">✓</span></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-check chk-yes" aria-label="Yes"></i></td>
         </tr>
         <tr>
           <td>Proof of Delivery</td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-yes">✓</span></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-check chk-yes" aria-label="Yes"></i></td>
         </tr>
         <tr>
           <td>Digital Audit Trail</td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-yes">✓</span></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-check chk-yes" aria-label="Yes"></i></td>
         </tr>
         <tr>
           <td>Item Value Cap</td>
           <td style="color:var(--gray-400);font-size:12px">Unlimited (informal)</td>
           <td style="color:var(--gray-400);font-size:12px">Unlimited (informal)</td>
           <td><span class="chk-warn">$100 limit</span></td>
-          <td><span class="chk-yes">No cap</span></td>
+          <td><span class="corp-badge">No cap</span></td>
         </tr>
         <tr>
           <td>Monthly Invoicing</td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-yes">✓</span></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-check chk-yes" aria-label="Yes"></i></td>
         </tr>
         <tr>
           <td>Corporate Portal</td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-yes">✓</span></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-check chk-yes" aria-label="Yes"></i></td>
         </tr>
         <tr class="us-row">
           <td>WhatsApp Ordering</td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-no">✕</span></td>
-          <td><span class="chk-yes">✓</span></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-x chk-no" aria-label="No"></i></td>
+          <td><i class="ph-bold ph-check chk-yes" aria-label="Yes"></i></td>
         </tr>
       </tbody>
     </table>
   </div>
   <div class="insight-box" style="margin-top:14px" data-animate>
-    <svg class="insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    <i class="ph-duotone ph-lightbulb insight-icon" aria-hidden="true"></i>
     <p class="insight-text">For Lancet Labs to courier a blood specimen, inDrive is legally unusable. For a law firm to courier a signed contract, Dial a Delivery provides zero accountability. <strong>Fetchr. is the only option that meets institutional requirements.</strong></p>
   </div>
 </section>
 
 <!-- ═══ SLIDE 5: REVENUE MODEL ═══ -->
 <section class="slide" data-slide="5">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>Business Model</span>
   <h2 class="slide-headline" data-animate>Recurring revenue, not<br><em>one-off transactions.</em></h2>
   <div class="pricing-grid" data-animate>
@@ -816,29 +582,29 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       <div class="pricing-tier">Starter SLA</div>
       <div class="pricing-price">$299<span>/mo</span></div>
       <div class="pricing-per">+ $4.50 per delivery (up to 80/month)</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>Corporate portal & dashboard</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>Proof of delivery archive</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>Monthly ZIMRA-compliant invoice</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>WhatsApp order dispatch</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>Corporate portal & dashboard</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>Proof of delivery archive</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>Monthly ZIMRA-compliant invoice</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>WhatsApp order dispatch</div>
     </div>
     <div class="pricing-card pricing-card--featured">
-      <div class="feat-badge">Most Popular</div>
+      <div class="feat-badge">Most popular</div>
       <div class="pricing-tier">Growth SLA</div>
       <div class="pricing-price">$599<span>/mo</span></div>
       <div class="pricing-per">+ $4.00 per delivery (up to 200/month)</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>Everything in Starter</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>Priority dispatch queue</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>SLA breach reporting</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>Dedicated account manager</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>Everything in Starter</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>Priority dispatch queue</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>SLA breach reporting</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>Dedicated account manager</div>
     </div>
     <div class="pricing-card">
       <div class="pricing-tier">Enterprise SLA</div>
       <div class="pricing-price">Custom</div>
       <div class="pricing-per">Volume pricing, bespoke terms</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>Everything in Growth</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>API integration access</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>Dedicated rider fleet option</div>
-      <div class="pricing-feature"><span class="pricing-check">✓</span>White-label delivery receipts</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>Everything in Growth</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>API integration access</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>Dedicated rider fleet option</div>
+      <div class="pricing-feature"><i class="ph-bold ph-check pricing-check" aria-hidden="true"></i>White-label delivery receipts</div>
     </div>
   </div>
   <div class="revenue-math" data-animate>
@@ -866,12 +632,11 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
 
 <!-- ═══ SLIDE 6: PIPELINE ═══ -->
 <section class="slide" data-slide="6">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>Sales Pipeline</span>
   <h2 class="slide-headline" data-animate>Simba's network. Our compliance.<br><em>Signed before launch.</em></h2>
   <div class="pipeline-list" data-animate>
     <div class="pipeline-item">
-      <div class="pipeline-logo">LL</div>
+      <div class="pipeline-logo"><img class="co-logo" src="logos/lancet.png" alt="Lancet Laboratories Zimbabwe"></div>
       <div class="pipeline-info">
         <div class="pipeline-name">Lancet Laboratories Zimbabwe</div>
         <div class="pipeline-desc">Medical logistics compliance need identified · Specimen transport, pharmacy delivery network</div>
@@ -879,7 +644,7 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       <div class="pipeline-status pipeline-status--warm"><span class="pipeline-dot"></span>Warm intro</div>
     </div>
     <div class="pipeline-item">
-      <div class="pipeline-logo">CM</div>
+      <div class="pipeline-logo"><img class="co-logo" src="logos/cimas.svg" alt="CIMAS"></div>
       <div class="pipeline-info">
         <div class="pipeline-name">CIMAS MedLabs</div>
         <div class="pipeline-desc">Temperature-sensitive specimen transport · Lab-to-clinic delivery network</div>
@@ -887,7 +652,7 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       <div class="pipeline-status pipeline-status--warm"><span class="pipeline-dot"></span>Warm intro</div>
     </div>
     <div class="pipeline-item">
-      <div class="pipeline-logo">LS</div>
+      <div class="pipeline-logo"><img class="co-logo" src="logos/law-society-zimbabwe.png" alt="Law Society of Zimbabwe"></div>
       <div class="pipeline-info">
         <div class="pipeline-name">Law Society of Zimbabwe Member Firms</div>
         <div class="pipeline-desc">Simba's legal sector network · Document courier, timestamped proof of delivery</div>
@@ -895,7 +660,7 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       <div class="pipeline-status pipeline-status--network"><span class="pipeline-dot"></span>Network access</div>
     </div>
     <div class="pipeline-item">
-      <div class="pipeline-logo" style="background:var(--gray-700)">BK</div>
+      <div class="pipeline-logo pipeline-logo-row"><img class="co-logo" src="logos/cbz.png" alt="CBZ"><img class="co-logo" src="logos/stanbic.svg" alt="Stanbic Bank"><img class="co-logo" src="logos/fbc.png" alt="FBC"></div>
       <div class="pipeline-info">
         <div class="pipeline-name">Banking Institution (CBZ / Stanbic / FBC)</div>
         <div class="pipeline-desc">Cash & document courier · Digital audit trail for compliance · High-frequency delivery</div>
@@ -903,7 +668,7 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       <div class="pipeline-status pipeline-status--target"><span class="pipeline-dot"></span>Targeted</div>
     </div>
     <div class="pipeline-item">
-      <div class="pipeline-logo" style="background:var(--gray-600)">NG</div>
+      <div class="pipeline-logo"><img class="co-logo" src="logos/un.svg" alt="United Nations"></div>
       <div class="pipeline-info">
         <div class="pipeline-name">NGO / Embassy</div>
         <div class="pipeline-desc">Reliable courier with digital receipts for donor reporting compliance</div>
@@ -937,41 +702,32 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
 
 <!-- ═══ SLIDE 7: TECH / TRUST ═══ -->
 <section class="slide" data-slide="7">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>Technology</span>
   <h2 class="slide-headline" data-animate>The platform corporates can show<br><em>their compliance team.</em></h2>
   <div class="tech-grid" data-animate>
     <div class="tech-card">
-      <div class="tech-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-      </div>
+      <div class="tile"><i class="ph-duotone ph-browsers"></i></div>
       <div class="tech-info">
         <div class="tech-title">Corporate Portal</div>
         <div class="tech-desc">Order history, invoice download, delivery tracking, user management, bulk booking dashboard.</div>
       </div>
     </div>
     <div class="tech-card">
-      <div class="tech-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </div>
+      <div class="tile"><i class="ph-duotone ph-camera"></i></div>
       <div class="tech-info">
         <div class="tech-title">Proof of Delivery</div>
         <div class="tech-desc">GPS-stamped photo + signature capture stored for 12 months. Exportable per delivery or in bulk.</div>
       </div>
     </div>
     <div class="tech-card">
-      <div class="tech-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-      </div>
+      <div class="tile"><i class="ph-duotone ph-code"></i></div>
       <div class="tech-info">
         <div class="tech-title">API Access (Enterprise)</div>
         <div class="tech-desc">Plug Fetchr. directly into internal systems. Automate order creation, tracking webhooks, invoice retrieval.</div>
       </div>
     </div>
     <div class="tech-card">
-      <div class="tech-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
+      <div class="tile"><i class="ph-duotone ph-lock-key"></i></div>
       <div class="tech-info">
         <div class="tech-title">Data Privacy Compliant</div>
         <div class="tech-desc">Built for Zimbabwe Cyber & Data Protection Act (SI 155 of 2024). Row-level security, HTTPS everywhere, SOC 2 infrastructure via Supabase.</div>
@@ -979,14 +735,13 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
     </div>
   </div>
   <div class="tech-trust" data-animate>
-    <svg class="tech-trust-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+    <i class="ph-duotone ph-shield-check tech-trust-icon" aria-hidden="true"></i>
     <p class="tech-trust-text">Built on <strong>Supabase (SOC 2 compliant)</strong>, encrypted in transit and at rest — corporate-grade security from Day 1, not retrofitted after complaints.</p>
   </div>
 </section>
 
 <!-- ═══ SLIDE 8: UNIT ECONOMICS ═══ -->
 <section class="slide" data-slide="8">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>Unit Economics</span>
   <h2 class="slide-headline" data-animate>Corporate deliveries: more profitable,<br><em>more predictable.</em></h2>
   <div class="ue-container" data-animate>
@@ -1014,9 +769,9 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
         <div class="ue-seg ue-seg--margin"></div>
       </div>
       <div class="ue-legend">
-        <div class="ue-leg"><div class="ue-dot" style="background:var(--red)"></div>Rider · $3.75 (75%)</div>
-        <div class="ue-leg"><div class="ue-dot" style="background:var(--amber)"></div>Paynow · $0.15 (3%)</div>
-        <div class="ue-leg"><div class="ue-dot" style="background:#FCD34D"></div>WhatChimp · $0.03 (&lt;1%)</div>
+        <div class="ue-leg"><div class="ue-dot" style="background:var(--blue-500)"></div>Rider · $3.75 (75%)</div>
+        <div class="ue-leg"><div class="ue-dot" style="background:var(--blue-300)"></div>Paynow · $0.15 (3%)</div>
+        <div class="ue-leg"><div class="ue-dot" style="background:var(--blue-200)"></div>WhatChimp · $0.03 (&lt;1%)</div>
         <div class="ue-leg"><div class="ue-dot" style="background:var(--green-500)"></div>Margin · $1.07 (21%)</div>
       </div>
     </div>
@@ -1037,7 +792,7 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
           </tr>
           <tr>
             <td>Predictability</td>
-            <td style="color:var(--gray-400);font-size:12px">Variable</td>
+            <td style="color:var(--gray-500)">Variable</td>
             <td class="ltvval ltvval--green">Contracted</td>
           </tr>
           <tr>
@@ -1052,19 +807,19 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
           </tr>
           <tr>
             <td>Payment Risk</td>
-            <td style="color:var(--amber);font-size:12px">COD friction</td>
+            <td style="color:var(--amber-700)">COD friction</td>
             <td class="ltvval ltvval--green">Monthly invoice</td>
           </tr>
           <tr class="highlight">
             <td>LTV:CAC Ratio</td>
-            <td class="ltvval">~8:1</td>
-            <td class="ltvval ltvval--blue">~18:1</td>
+            <td class="ltvval ltvval--ratio">~8:1</td>
+            <td class="ltvval ltvval--blue ltvval--ratio">~18:1</td>
           </tr>
         </tbody>
       </table>
       <div class="insight-box" style="margin-top:0">
-        <svg class="insight-icon" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <p class="insight-text" style="font-size:12px">Corporate LTV:CAC is 2.3× better. B2B is a better business. Consumer is a bigger business. Both together is the play.</p>
+        <i class="ph-duotone ph-lightbulb insight-icon" aria-hidden="true"></i>
+        <p class="insight-text">Corporate LTV:CAC is 2.3× better. B2B is a better business. Consumer is a bigger business. Both together is the play.</p>
       </div>
     </div>
   </div>
@@ -1072,7 +827,6 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
 
 <!-- ═══ SLIDE 9: REVENUE BRIDGE ═══ -->
 <section class="slide" data-slide="9">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>18-Month Plan</span>
   <h2 class="slide-headline" data-animate>From contracted revenue<br><em>to market dominance.</em></h2>
   <div class="bridge-chart" data-animate id="bridgeChart">
@@ -1104,7 +858,7 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       <div class="bridge-milestone">Series A ready<br>Bulawayo</div>
     </div>
   </div>
-  <p style="font-size:12px;color:var(--gray-400);margin-top:14px" data-animate>
+  <p class="footnote" data-animate>
     Projections based on $5 avg fare · 25% commission · 350/day break-even · Corporate SLAs reduce consumer break-even from 350 to ~220 deliveries/day
     <br>Source: IMF WEO 2025 · Euromonitor 2025 · Unit economics benchmarked against Chowdeck Nigeria (profitable, 2024)
   </p>
@@ -1112,40 +866,37 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
 
 <!-- ═══ SLIDE 10: TEAM ═══ -->
 <section class="slide" data-slide="10">
-  <div class="slide-accent-bar"></div>
   <span class="overline" data-animate>The Team</span>
   <h2 class="slide-headline" data-animate>Operators who build,<br><em>builders who operate.</em></h2>
   <div class="team-grid" data-animate>
     <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#0041F5,#6B8FFF)">SM</div>
+      <div class="team-avatar">SM</div>
       <div class="team-name">Simbarashe Makahamadze</div>
       <div class="team-role">Co-CEO · Commercial</div>
       <div class="team-pitch">Investor relations, corporate BD, legal sector network via African Law. Leads the enterprise sales pipeline.</div>
     </div>
     <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706)">SC</div>
+      <div class="team-avatar">SC</div>
       <div class="team-name">Shaun Chivandire</div>
       <div class="team-role">Co-CEO · CPTO</div>
       <div class="team-pitch">6 yrs UX engineering. Built FareWise. Full-stack: Next.js 16, TypeScript, Supabase. Architecting every platform surface.</div>
     </div>
     <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#6B8FFF,#4F6ADB)">LM</div>
+      <div class="team-avatar">LM</div>
       <div class="team-name">Leo Marecha</div>
       <div class="team-role">COO · Operations</div>
       <div class="team-pitch">Ground-level Harare logistics knowledge. Rider recruitment network. Fleet management. Knows which roads work in rainy season.</div>
     </div></div>
-  <p style="font-size:12px;color:var(--gray-400);margin-top:20px" data-animate>
+  <p class="footnote" data-animate>
     Complementary skills: commercial networks (Simba) + full-stack engineering (Shaun) + ground operations (Leo)
   </p>
 </section>
 
 <!-- ═══ SLIDE 11: THE ASK ═══ -->
 <section class="slide slide--close" data-slide="11">
-  <div class="title-bg-grid"></div>
-  <div class="title-glow"></div>
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0">
-    <img src="fetchrLogoColor.jpg" alt="Fetchr." class="logo-img logo-img--sm" style="filter:brightness(0) invert(1);margin-bottom:24px" data-animate>
-    <div class="close-tag" data-animate><span class="title-pip"></span>Pre-Seed Round</div>
+  <div class="close-wrap">
+    <img src="fetchrLogoWhite.png" alt="Fetchr." class="logo-img logo-img--sm" data-animate data-anim="fade">
+    <div class="close-tag" data-animate>Pre-seed round</div>
     <div class="ask-amount" data-animate>$350,000</div>
     <p class="ask-desc" data-animate>To launch Zimbabwe's first enterprise-grade logistics platform and reach break-even within 6 months.</p>
     <div class="alloc-grid" data-animate>
@@ -1167,16 +918,16 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
       </div>
     </div>
     <div class="close-contacts" data-animate>
-      <a href="mailto:hello@fetchr.delivery" class="close-pill">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      <a href="mailto:hello@fetchr.delivery" class="close-pill" data-hover="flood">
+        <i class="ph-duotone ph-envelope-simple" aria-hidden="true"></i>
         hello@fetchr.delivery
       </a>
-      <a href="https://fetchr.delivery" class="close-pill">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <a href="https://fetchr.delivery" class="close-pill" data-hover="flood" target="_blank" rel="noopener noreferrer">
+        <i class="ph-duotone ph-arrow-square-out" aria-hidden="true"></i>
         fetchr.delivery
       </a>
     </div>
-    <p style="font-size:13px;color:rgba(255,255,255,0.35);margin-top:20px;font-style:italic" data-animate>
+    <p class="close-quote" data-animate>
       "Four signed SLA contracts change the entire risk profile of this investment."
     </p>
     <p class="close-cta" data-animate>Press <kbd>Home</kbd> to restart · <kbd>Ctrl+P</kbd> to export PDF</p>
@@ -1322,6 +1073,9 @@ body{font-family:var(--font-body);background:var(--gray-900);color:var(--gray-90
   updateProgress();
 })();
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="../lib/hover-motion.js"></script>
 
 <!-- Annotation System -->
 <link rel="stylesheet" href="../lib/annotations.css">

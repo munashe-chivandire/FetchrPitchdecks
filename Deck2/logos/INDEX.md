@@ -1,0 +1,19 @@
+# Partner and market logos
+
+Downloaded 2026-11-07 for the Deck2 restyle. All files are local, so the Vercel build serves them without hotlinking. None of the SVGs contained `<script>` elements or `on*` attributes.
+
+| Slug | File | Source | Format and size | Notes |
+|---|---|---|---|---|
+| lancet | lancet.png | https://www.cerbalancetafrica.com/media/gqob1hr2/logo-zimbabwe.png (lancet.co.zw redirects to the Cerba Lancet Africa Zimbabwe page) | PNG, 171 x 81 | Zimbabwe-specific "Lancet Laboratories Zimbabwe" mark. The source is small and had a #f4f4f4 background, which I keyed to transparent and trimmed. Sharp up to about 40px tall. |
+| cimas | cimas.svg | https://cimas.co.zw/wp-content/uploads/2023/08/cimas-logo.svg (site header) | SVG, viewBox 204 x 171 | CIMAS group mark. The "cimas" text inside the cross is tiny below about 48px tall. The site has no separate MedLabs logo, only a MedLabs service graphic. |
+| law-society-zimbabwe | law-society-zimbabwe.png | https://lawsociety.org.zw/wp-content/uploads/2025/10/LSZ-Blue-transparent.png | PNG, 379 x 78 | New LSZ mark from the 2025/26 rebrand, navy on transparent. Trimmed. |
+| cbz | cbz.png | https://upload.wikimedia.org/wikipedia/commons/d/db/CBZ_Holdings_Logo.png | PNG, 600 x 233 | Current red-circle "cbz Holdings" mark. It matches the header logo on cbz.co.zw, which is only a 221 x 108 JPG. Holdings mark, not a separate CBZ Bank lockup. |
+| stanbic | stanbic.svg | https://www.stanbicbank.co.zw/file_source/assets/icons/StanbicBank.svg (site header) | SVG, viewBox 195 x 53 | The site file has white "Stanbic Bank" text for a dark header. In stanbic.svg I recoloured that text to #0033A1, the Standard Bank group blue. The shield is untouched. The SVG embeds a small base64 PNG used for the shield's shading. |
+| stanbic (dark) | stanbic-white.svg | same as above | SVG, viewBox 195 x 53 | Unmodified site file. White text, for dark backgrounds only. |
+| fbc | fbc.png | https://www.fbc.co.zw/sites/default/files/fbc-holdings-logo.png (site header) | PNG, 280 x 48 | FBC Holdings Limited mark. Low resolution, so it is slightly soft at 40px on retina screens. No SVG found. |
+| old-mutual | old-mutual.svg | https://upload.wikimedia.org/wikipedia/en/5/5c/Old_Mutual.svg (Wikipedia, uploaded 2023) | SVG, viewBox 198 x 43.5 | Current green shield plus OLDMUTUAL wordmark. oldmutual.co.zw only shows the shield icon in its header, so this is the group lockup. No Zimbabwe-specific mark found. |
+| first-mutual | first-mutual.svg | https://www.firstmutual.co.zw/uploads/fmlh/logo/a521111b-2874-440d-8649-82c94fe93f85.svg (site header) | SVG, viewBox 365 x 80 | First Mutual Holdings wordmark. The site also has fml-logo.png with "Holdings Limited, Go Beyond" underneath, not saved. |
+| un | un.svg | https://commons.wikimedia.org/wiki/File:UN_emblem_blue.svg | SVG, viewBox 470 x 400 | UN emblem in UN blue, no wordmark. |
+| dial-a-delivery | dial-a-delivery.png | https://www.simbisabrands.com/assets/img/DAD-Footer-Download-500x500.png | PNG, 800 x 719 | Red "Dial a Delivery" badge, the same art as the current Play Store icon. Trimmed and downscaled from 5906 px. Dial a Delivery is Simbisa Brands' food delivery service, not a parcel courier. dialadelivery.co.zw does not resolve. |
+| munch | munch.png | App Store icon for "Munch Zimbabwe App" (id6447060261), mzstatic.com 1024 px render | PNG, 471 x 443 | Orange M plus MUNCH. munchzimbabwe.com returns "Service Unavailable", so the app icon is the only official source. White background keyed to transparent and trimmed. |
+| indrive | indrive.svg | https://indrive.com/files/inDrive_Logo.zip (Newsroom, brand assets), page 1 of "inDrive Logo_RGB.pdf" | SVG, viewBox 489 x 133 | Official lime iD icon plus black wordmark. I converted the PDF page to SVG, cropped it to the logo and removed the white page rectangle. |
