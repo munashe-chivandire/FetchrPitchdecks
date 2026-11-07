@@ -1,6 +1,9 @@
 {
   "cleanUrls": true,
   "trailingSlash": true,
+  "redirects": [
+    { "source": "/Deck2/Fetchr_Enterprise_Deck(.*)", "destination": "/Deck2/", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",
