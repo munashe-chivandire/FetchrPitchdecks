@@ -155,7 +155,6 @@
     .btn-primary:hover { box-shadow: 0 14px 30px -8px rgba(0,65,245,0.65); }
 
     .btn-primary:focus-visible,
-    .ws-icon-btn:focus-visible,
     .nav-link:focus-visible,
     .featured-card:focus-visible,
     .compact-card:focus-visible {
@@ -163,32 +162,6 @@
       outline-offset: 3px;
     }
 
-
-    .ws-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .ws-icon-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: transparent;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: border-color 0.18s, color 0.18s, background 0.18s;
-    }
-
-    .ws-icon-btn:hover, .ws-icon-btn.active {
-      border-color: rgba(42,92,255,0.5);
-      color: var(--fetchr-blue-200);
-      background: rgba(0,65,245,0.10);
-    }
 
     /* ══════════════════════════════════════════════
        MAIN CONTENT
@@ -564,9 +537,6 @@
       flex-shrink: 0;
     }
 
-    /* List-view-only index badge (hidden in grid) */
-    .cc-list-idx { display: none; }
-
     /* ══════════════════════════════════════════════
        ANIMATIONS
     ══════════════════════════════════════════════ */
@@ -580,154 +550,6 @@
 
     /* SVG icon helper */
     .ico { display: block; flex-shrink: 0; line-height: 1; }
-
-    /* ══════════════════════════════════════════════
-       LIST VIEW
-    ══════════════════════════════════════════════ */
-    .feat-list-idx, .feat-list-open { display: none; }
-
-    .content.list-view {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    /* Dissolve the right-col wrapper so all cards sit at the same level */
-    .content.list-view .right-col { display: contents; }
-
-    /* Featured card — list row */
-    .content.list-view .featured-card {
-      height: 68px;
-      flex-direction: row;
-      align-items: center;
-    }
-
-    .content.list-view .feat-preview { display: none; }
-
-    .content.list-view .feat-info {
-      flex-direction: row;
-      align-items: center;
-      gap: 16px;
-      padding: 0 20px;
-      overflow: visible;
-    }
-
-    .content.list-view .feat-list-idx {
-      display: flex;
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 500;
-      flex-shrink: 0;
-      letter-spacing: -0.01em;
-      background: var(--amber-dim);
-      border: 1px solid var(--amber-border);
-      color: var(--amber);
-    }
-
-    .content.list-view .feat-head-group {
-      flex-shrink: 0;
-      gap: 4px;
-    }
-
-    .content.list-view .card-title-lg {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .content.list-view .card-desc { display: none; }
-
-    .content.list-view .card-foot {
-      flex: 1;
-      margin-top: 0;
-      justify-content: flex-end;
-      gap: 14px;
-    }
-
-    .content.list-view .feat-action-bar { display: none; }
-
-    .content.list-view .feat-list-open {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-family: var(--font-head);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--blue);
-      text-decoration: none;
-      flex-shrink: 0;
-    }
-
-    /* Compact cards — list row */
-    .content.list-view .compact-card {
-      flex: none;
-      height: 68px;
-      flex-direction: row;
-      align-items: center;
-    }
-
-    .content.list-view .cc-preview { display: none; }
-
-    .content.list-view .cc-list-idx {
-      display: flex;
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 500;
-      flex-shrink: 0;
-      letter-spacing: -0.01em;
-    }
-
-    .cc-list-idx.cc-lidx-blue {
-      background: rgba(59,130,246,0.10);
-      border: 1px solid rgba(59,130,246,0.20);
-      color: #7FAAEF;
-    }
-
-    .cc-list-idx.cc-lidx-amber {
-      background: rgba(245,158,11,0.09);
-      border: 1px solid rgba(245,158,11,0.22);
-      color: #D4A74A;
-    }
-
-    .content.list-view .cc-info {
-      flex-direction: row;
-      align-items: center;
-      gap: 14px;
-      padding: 0 20px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .content.list-view .cc-title {
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-shrink: 0;
-    }
-
-    .content.list-view .cc-desc { display: none; }
-
-    .content.list-view .cc-foot {
-      flex: 1;
-      margin-top: 0;
-      justify-content: flex-end;
-      gap: 14px;
-    }
-
-    .content.list-view .cc-open {
-      opacity: 1;
-      transform: none;
-    }
 
     /* ══════════════════════════════════════════════
        RESPONSIVE
@@ -757,8 +579,6 @@
 
       .compact-card { flex: none; height: auto; }
       .cc-preview { flex: 0 0 46%; min-height: 240px; }
-
-      .content.list-view .compact-card { min-height: 0; height: 68px; }
     }
 
     /* Header stacks when the headline and button no longer fit side by side */
@@ -775,7 +595,6 @@
 
       .ph-sub { font-size: 14px; }
       .btn-primary { flex: 1; padding: 14px 18px; }
-      .ws-controls { display: none; }
 
       .feat-preview { aspect-ratio: 4 / 3; }
       .feat-info { padding: 18px; }
@@ -790,9 +609,6 @@
       .cc-stats { padding: 14px 16px; }
       .cc-stat { padding: 0 10px; }
       .cc-stat-val { font-size: 18px; }
-
-      .content.list-view .compact-card,
-      .content.list-view .featured-card { flex-direction: row; }
     }
 
     /* Small phones */
@@ -836,14 +652,6 @@
         View the pre-seed deck
         <i class="ph-duotone ph-arrow-right ico" style="font-size:18px" aria-hidden="true"></i>
       </a>
-    <div class="ws-controls" role="group" aria-label="Layout">
-      <button class="ws-icon-btn active" aria-label="Grid view">
-        <i class="ph-duotone ph-squares-four ico" style="font-size:16px" aria-hidden="true"></i>
-      </button>
-      <button class="ws-icon-btn" aria-label="List view">
-        <i class="ph-duotone ph-list ico" style="font-size:16px" aria-hidden="true"></i>
-      </button>
-    </div>
     </div>
   </header>
 
@@ -879,7 +687,6 @@
       </div>
 
       <div class="feat-info">
-        <div class="feat-list-idx">01</div>
         <div class="feat-head-group">
           <h2 class="card-title-lg">Pre-Seed Investor Deck</h2>
         </div>
@@ -887,10 +694,6 @@
         <div class="card-foot">
           <span class="card-meta">Updated Sep 2026 &middot; Dark theme</span>
         </div>
-        <a class="feat-list-open" href="./Deck1/index.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-          Open
-          <i class="ph-duotone ph-arrow-square-out ico" style="font-size:13px" aria-hidden="true"></i>
-        </a>
 
         <div class="feat-action-bar">
           <a class="btn-open" data-hover="flood" href="./Deck1/index.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
@@ -914,7 +717,6 @@
             <div class="cc-stat"><span class="cc-stat-val">$350K</span><span class="cc-stat-lbl">Raise</span></div>
           </div>
         </div>
-        <div class="cc-list-idx cc-lidx-blue">02</div>
         <div class="cc-info">
           <span class="cc-title">Enterprise Revenue Deck</span>
           <span class="cc-desc">Light-theme enterprise deck — revenue model, corporate logistics partnerships, unit economics, and go-to-market strategy. 12 slides with embedded charts and dot navigation.</span>
@@ -938,12 +740,11 @@
             <div class="cc-stat"><span class="cc-stat-val">$15.5T</span><span class="cc-stat-lbl">TAM</span></div>
           </div>
         </div>
-        <div class="cc-list-idx cc-lidx-amber">03</div>
         <div class="cc-info">
           <span class="cc-title">Africa Macro / Regional Vision</span>
           <span class="cc-desc">The $15.5T global logistics market's Africa problem — macro thesis, Southern Africa expansion timeline, competitive moat, and $350K pre-seed ask. 13 slides with animated counters.</span>
           <div class="cc-foot">
-            <span class="cc-meta">Mar 2026 &middot; Dark theme</span>
+            <span class="cc-meta">Mar 2026 &middot; Light theme</span>
             <span class="cc-open">
               Open
               <i class="ph-duotone ph-arrow-square-out ico" style="font-size:13px" aria-hidden="true"></i>
@@ -991,24 +792,6 @@
       function ready() { setTimeout(reveal, Math.max(0, 700 - performance.now())); }
       if (document.readyState === 'complete') ready(); else addEventListener('load', ready);
       setTimeout(reveal, 3000);
-    })();
-
-    (function () {
-      var gridBtn = document.querySelector('[aria-label="Grid view"]');
-      var listBtn = document.querySelector('[aria-label="List view"]');
-      var content = document.querySelector('.content');
-
-      gridBtn.addEventListener('click', function () {
-        content.classList.remove('list-view');
-        gridBtn.classList.add('active');
-        listBtn.classList.remove('active');
-      });
-
-      listBtn.addEventListener('click', function () {
-        content.classList.add('list-view');
-        listBtn.classList.add('active');
-        gridBtn.classList.remove('active');
-      });
     })();
   </script>
 </body>
