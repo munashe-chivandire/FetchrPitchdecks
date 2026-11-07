@@ -568,12 +568,12 @@
     licence:   { v: 45, min: 0, max: 1000,   step: 'running', label: 'ZINARA licence per year', unit: '$', src: 'Motorcycle rate not published, confirm' },
     data:      { v: 2, min: 0, max: 50,    step: 'running', label: 'Rider phone data per week', unit: '$', src: 'Econet $9 for 5 GB a month' },
     trackFee:  { v: 12, min: 0, max: 100,   step: 'running', label: 'Tracker subscription per month', unit: '$', src: 'Econet tracking' },
-    // step 4, blank until Leo fills them from the ops sheet
-    pDays:     { v: null, min: 1, max: 31, int: true, step: 'pilot', label: 'Days the bike ran', unit: '', src: 'Ops sheet' },
-    pDone:     { v: null, min: 0, max: 2000, int: true, step: 'pilot', label: 'Deliveries completed', unit: '', src: 'Ops sheet' },
-    pFailed:   { v: null, min: 0, max: 2000, int: true, step: 'pilot', label: 'Failed or cancelled', unit: '', src: 'Ops sheet' },
-    pKm:       { v: null, min: 0, max: 20000, step: 'pilot', label: 'Kilometres ridden', unit: 'km', src: 'Ops sheet' },
-    pFuel:     { v: null, min: 0, max: 5000, step: 'pilot', label: 'Fuel bought', unit: '$', src: 'Ops sheet', inc: 0.01 },
+    // step 4, Samuel's field test (27 Oct, 31 Oct, 3 Nov) from the production database; the team sheet holds the values
+    pDays:     { v: null, min: 1, max: 31, int: true, step: 'pilot', label: 'Days the bike ran', unit: '', src: 'Test days: 27 Oct, 31 Oct, 3 Nov' },
+    pDone:     { v: null, min: 0, max: 2000, int: true, step: 'pilot', label: 'Deliveries completed', unit: '', src: '11 of 12 jobs, rider field test deck' },
+    pFailed:   { v: null, min: 0, max: 2000, int: true, step: 'pilot', label: 'Failed or cancelled', unit: '', src: 'Cancelled by us to resend the offer' },
+    pKm:       { v: null, min: 0, max: 20000, step: 'pilot', label: 'Kilometres ridden', unit: 'km', src: 'GPS, pickup to drop-off only' },
+    pFuel:     { v: null, min: 0, max: 5000, step: 'pilot', label: 'Fuel bought', unit: '$', src: 'Not recorded in the field test', inc: 0.01 },
     pHire:     { v: null, min: 0, max: 500, step: 'pilot', label: 'Bike hire per day', unit: '$', src: 'Bike agreement', inc: 0.5 },
     pRider:    { v: null, min: 0, max: 500, step: 'pilot', label: 'Rider pay per day', unit: '$', src: 'Rider agreement', inc: 0.5 },
     // step 5
@@ -584,7 +584,7 @@
     { id: 'setup',   title: 'Set up one bike', icon: 'motorcycle' },
     { id: 'fares',   title: 'Fares and who gets paid', icon: 'coins' },
     { id: 'running', title: 'Running costs', icon: 'gas-pump' },
-    { id: 'pilot',   title: 'Pilot results, 26 to 30 October', icon: 'clipboard-text' },
+    { id: 'pilot',   title: 'Field test with Samuel, 27 Oct to 3 Nov', icon: 'clipboard-text' },
     { id: 'fleet',   title: 'Fleet size', icon: 'users-three' },
   ];
 
@@ -693,7 +693,7 @@
     document.getElementById('steps').innerHTML = STEPS.map((st, i) => {
       let body = `<table><tbody>${keysOf(st.id).map(row).join('')}</tbody></table>`;
       if (st.id === 'fares') body += `<p class="warn" id="warn-shares" role="alert" hidden><i class="ph-duotone ph-warning ico"></i><span></span></p>`;
-      if (st.id === 'pilot') body = `<p class="src" style="font-size:13px;color:var(--gray-500);margin:12px 0 4px">Totals from the ops sheet for the hired bike. They replace estimates where they can.</p>` + body + `
+      if (st.id === 'pilot') body = `<p class="src" style="font-size:13px;color:var(--gray-500);margin:12px 0 4px">Totals from Samuel's three test days, read from the production database on 7 November. Test orders came a few at a time, so deliveries per day is low. His full morning on 3 November ran 6 jobs in 2 h 40.</p>` + body + `
         <div class="pilot-out"><table><tbody>
           <tr><td>Deliveries per day</td><td class="out" id="p-perday">—</td></tr>
           <tr><td>Failed or cancelled</td><td class="out" id="p-fail">—</td></tr>
