@@ -204,13 +204,13 @@
   if (stored) {
     root.setAttribute('data-theme', stored);
   } else {
-    root.setAttribute('data-theme', 'dark');
+    root.setAttribute('data-theme', 'light');
   }
 
   if (toggle) {
     toggle.addEventListener('click', function (e) {
       e.stopPropagation();
-      var current_theme = root.getAttribute('data-theme') || 'dark';
+      var current_theme = root.getAttribute('data-theme') || 'light';
       var next_theme = current_theme === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', next_theme);
       localStorage.setItem('fetchr-theme', next_theme);

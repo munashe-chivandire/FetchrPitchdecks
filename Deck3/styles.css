@@ -2977,3 +2977,203 @@ body, .slide, .slide::before, .slide::after,
   .speed-bar-row, .chain-step, .chain-arrow { opacity: 1 !important; transform: none !important; }
   @page { size: landscape; margin: 0; }
 }
+
+/* ============================================
+   FETCHR DESIGN SYSTEM LAYER (November 2026)
+   Brings this deck in line with the Fetchr design system and the
+   Enterprise deck. Rules here are prefixed with :root so they match the
+   specificity of the [data-theme="light"] rules above and win by order.
+   ============================================ */
+
+/* Dark theme: gray-900 page, white at 3% and 6% for cards and borders */
+:root {
+  --primary: #6b8fff;
+  --primary-dark: #001245;
+  --primary-mid: #adc2ff;
+  --primary-light: rgba(107, 143, 255, 0.14);
+  --primary-glow: transparent;
+  --primary-subtle: rgba(255, 255, 255, 0.03);
+  --accent: #f59e0b;
+  --accent-light: rgba(245, 158, 11, 0.14);
+  --green: #34d399;
+  --green-light: rgba(16, 185, 129, 0.14);
+  --error: #ef4444;
+  --error-light: rgba(239, 68, 68, 0.12);
+  --bg-body: #111827;
+  --bg-slide: #111827;
+  --bg-slide-end: #111827;
+  --bg-alt: #1f2937;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --bg-card-hover: rgba(255, 255, 255, 0.05);
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-card: rgba(255, 255, 255, 0.06);
+  --shadow-sm: none;
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-elevated: none;
+  --font-display: 'DM Sans', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --blue-500: #0041f5;
+  --blue-600: #0035c9;
+  --blue-100: #d6e0ff;
+  --content-max-width: 1240px;
+  --slide-padding: 64px clamp(56px, 7vw, 128px) 88px;
+}
+
+/* Light theme, the default: white and gray-50 slides, white cards on gray-200 borders */
+[data-theme="light"] {
+  --primary: #0041f5;
+  --primary-dark: #001245;
+  --primary-mid: #2a5cff;
+  --primary-light: #ebf0ff;
+  --primary-glow: transparent;
+  --primary-subtle: #f9fafb;
+  --accent: #f59e0b;
+  --accent-light: #fffbeb;
+  --green: #059669;
+  --green-light: #ecfdf5;
+  --error: #ef4444;
+  --error-light: #fef2f2;
+  --bg-body: #f3f4f6;
+  --bg-slide: #ffffff;
+  --bg-slide-end: #ffffff;
+  --bg-alt: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-card-hover: #ffffff;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --border-card: #e5e7eb;
+  --shadow-sm: none;
+  --shadow-card: none;
+  --shadow-card-hover: 0 10px 15px -3px rgba(229, 231, 235, 0.5), 0 4px 6px -4px rgba(229, 231, 235, 0.5);
+  --shadow-elevated: none;
+}
+
+/* Slides: flat grounds, light slides alternate white and gray-50 */
+:root .slide { background: var(--bg-slide); }
+[data-theme="light"] .slide:nth-child(even of .slide):not(.slide--title, .slide--ask, .slide--closing) { background: #f9fafb; }
+:root .slide::before,
+:root .slide::after,
+:root .grain,
+:root .title-bg,
+:root .title-bg::before,
+:root .title-bg::after { display: none; }
+:root .progress-bar { background: #0041f5; box-shadow: none; }
+
+/* Type */
+:root .slide-headline,
+:root .title-headline,
+:root .closing-headline { font-weight: 700; letter-spacing: -0.025em; }
+:root .slide-headline { font-size: clamp(32px, 3.4vw, 56px); line-height: 1.1; }
+:root .text-accent,
+:root .title-highlight { color: inherit; opacity: 1; -webkit-text-fill-color: currentColor; background: none; }
+:root .moat-pill, :root .layer-badge, :root .layer-sam, :root .layer-cagr,
+:root .comp-table-row--header, :root .comp-cell--market, :root .feature-pill, :root .team-tag,
+:root .vchart-val, :root .vchart-label, :root .vchart-milestone, :root .milestone-breakeven-label,
+:root .exit-pill, :root .flow-chain-node--input, :root .return-pill, :root .closing-pillar-label,
+:root .domino-label {
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+}
+:root .comp-table-row--header, :root .milestone-breakeven-label, :root .closing-pillar-label,
+:root .layer-badge, :root .domino-label { letter-spacing: 0.05em; font-weight: 600; }
+:root .problem-stat-number { display: none; }
+
+/* Hero slides: cover, ask and closing sit on fetchr-blue-500 in both themes */
+:root .slide--title,
+:root .slide--ask,
+:root .slide--closing { background: #0041f5; color: #ffffff; }
+:root .slide--title .title-headline,
+:root .slide--closing .closing-headline,
+:root .slide--title .title-highlight { color: #ffffff; }
+:root .slide--title .title-sub,
+:root .slide--title .title-nav,
+:root .slide--ask .ask-purpose { color: #d6e0ff; }
+:root .logo-img { background: none; border-radius: 0; padding: 0; box-shadow: none; }
+[data-theme] .ask-amount {
+  text-shadow: none; filter: none;
+  background: none; color: #ffffff; -webkit-text-fill-color: #ffffff;
+  animation: none; font-weight: 700; letter-spacing: -0.04em;
+}
+:root .closing-pillars { background: #0035c9; border: none; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+:root .closing-pillar-value { color: #ffffff; }
+:root .closing-pillar-label { color: #d6e0ff; }
+:root .closing-pillar-divider { background: rgba(255, 255, 255, 0.2); }
+:root .closing-contact-pill {
+  --flood: #001245; --flood-edge: #adc2ff;
+  background: #ffffff; color: #0035c9; border: none; border-radius: 12px; font-weight: 600;
+  min-height: 48px; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none;
+}
+:root .closing-contact-pill:hover { color: #ffffff; background: #ffffff; transform: none; }
+:root .closing-contact-pill i { font-size: 20px; }
+:root .slide--closing .closing-cta,
+:root .slide--closing p { color: #d6e0ff; }
+
+/* Cards: flat, radius-2xl, no lift */
+:root .problem-stats,
+:root .market-layer,
+:root .platform-card,
+:root .team-member,
+:root .comp-table,
+:root .closing-pillars,
+:root .exit-thesis {
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 16px;
+}
+:root .problem-stats { background: var(--bg-card); border: 1px solid var(--border-card); }
+:root .problem-stat-value { color: var(--text-primary); }
+:root .problem-stat-desc { color: var(--text-secondary); }
+:root .market-layer:hover,
+:root .platform-card:hover,
+:root .team-member:hover,
+:root .problem-stat:hover { transform: none; }
+:root .problem-stat::after { display: none; }
+
+/* Icon tiles: 44px, radius-xl, tinted */
+:root .problem-stat-icon,
+:root .platform-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--primary-light); color: var(--primary);
+  display: flex; align-items: center; justify-content: center; font-size: 24px;
+}
+:root .gap-callout-icon i,
+:root .network-callout-icon i,
+:root .vision-callout-icon i { font-size: 20px; }
+
+/* Avatars: one tint, no gradient */
+:root .team-monogram { background: var(--primary-light); color: var(--primary); box-shadow: none; border-radius: 12px; font-weight: 700; }
+:root .team-member:hover .team-monogram { box-shadow: none; transform: none; }
+
+/* Charts and timelines: solid fills */
+:root .vchart-bar { background: #adc2ff; box-shadow: none; }
+:root .vchart-bar:not(:first-child) { background: #0041f5; }
+:root .vchart-bar--accent { background: #00299d; box-shadow: none; }
+:root .tl-rail-fill { background: #0041f5; }
+:root .expansion-line { background: var(--border); }
+:root .flow-node--target { background: #0041f5; box-shadow: none; color: #ffffff; }
+
+/* Footer line in place of the navigation hint */
+:root .nav-hint { font-size: 13px; color: var(--text-muted); opacity: 1; letter-spacing: 0; }
+:root .deck:has(.slide--title.active, .slide--ask.active, .slide--closing.active) .nav-hint { color: #d6e0ff; }
+:root .slide--closing .closing-headline,
+:root .slide--closing .closing-headline * { color: #ffffff; opacity: 1; -webkit-text-fill-color: #ffffff; }
+:root .slide--ask * { text-shadow: none; }
+/* The ask: chips on blue use blue-600 grounds, the outcomes are white */
+[data-theme] .slide--ask .flow-chain-node { background: #0035c9; color: #ffffff; border: none; box-shadow: none; }
+[data-theme] .slide--ask .flow-chain-node--input { color: #ffffff; font-weight: 700; }
+[data-theme] .slide--ask .flow-chain-node--result { background: #ffffff; color: #0035c9; font-weight: 600; }
+[data-theme] .slide--ask .flow-chain-arrow { color: #adc2ff; }
+[data-theme] .slide--ask .return-pill { background: #0035c9; color: #d6e0ff; border: none; }
+[data-theme] .slide--ask .return-pill--accent { background: #ffffff; color: #0035c9; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root .ask-amount { animation: none; }
+}
