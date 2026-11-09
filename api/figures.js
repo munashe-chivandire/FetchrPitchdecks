@@ -8,15 +8,15 @@ const SHEET = 'fleet-bike';
 
 // Fields the page may write, with the range each accepts. Options are the allowed strings.
 const FIELDS = {
-  bike: [0, 10000], box: [0, 2000], kit: [0, 1000], tracker: [0, 1000], phone: [0, 1000], regist: [0, 1000],
+  bike: [0, 10000], box: [0, 2000], kit: [0, 1000], tracker: [0, 1000], phone: [0, 1000],
   perDay: [0, 60], fare: [0, 50], days: [1, 7], riderPct: [0, 100], riderWeek: [0, 1000],
   fetchrPct: [0, 100], procPct: [0, 20], fuelPrice: [0.1, 10], kmDay: [0, 400], kmPerL: [5, 100],
   maint: [0, 200], insure: [0, 3000], licence: [0, 1000], data: [0, 50], trackFee: [0, 100],
   pDays: [1, 31], pDone: [0, 2000], pFailed: [0, 2000], pKm: [0, 20000], pFuel: [0, 5000],
-  pHire: [0, 500], pRider: [0, 500], bikes: [1, 500],
+  pRider: [0, 500], bikes: [1, 500],
   riderMode: ['pct', 'fixed'], fuelBy: ['fleet', 'rider'],
 };
-const NULLABLE = new Set(['pDays', 'pDone', 'pFailed', 'pKm', 'pFuel', 'pHire', 'pRider']);
+const NULLABLE = new Set(['pDays', 'pDone', 'pFailed', 'pKm', 'pFuel', 'pRider']);
 
 const SCHEMA = [
   ['CREATE TABLE IF NOT EXISTS figures (sheet TEXT NOT NULL, key TEXT NOT NULL, value TEXT, edited_by TEXT NOT NULL, edited_at TEXT NOT NULL, PRIMARY KEY (sheet, key))'],

@@ -548,7 +548,6 @@
     kit:       { v: 90, min: 0, max: 1000,   step: 'setup', label: 'Helmet, hi-vis jacket, gloves', unit: '$', src: 'No local price found, estimate' },
     tracker:   { v: 120, min: 0, max: 1000,  step: 'setup', label: 'GPS tracker unit', unit: '$', src: 'SMEAZ shop listing' },
     phone:     { v: 120, min: 0, max: 1000,  step: 'setup', label: 'Rider phone, entry Android', unit: '$', src: 'Estimate, $0 if riders bring their own' },
-    regist:    { v: 50, min: 0, max: 1000,   step: 'setup', label: 'Registration and plates', unit: '$', src: 'SI 10 of 2026' },
     // step 2
     perDay:    { v: 12, min: 0, max: 60,   step: 'fares', label: 'Deliveries per day', unit: '', src: 'Deck 1 model, pilot target 8 to 12' },
     fare:      { v: 4.50, min: 0, max: 50, step: 'fares', label: 'Average fare per delivery', unit: '$', src: 'Deck 2 corporate rate, market $2 to $5', inc: 0.1 },
@@ -574,7 +573,6 @@
     pFailed:   { v: null, min: 0, max: 2000, int: true, step: 'pilot', label: 'Failed or cancelled', unit: '', src: 'Cancelled by us to resend the offer' },
     pKm:       { v: null, min: 0, max: 20000, step: 'pilot', label: 'Kilometres ridden', unit: 'km', src: 'GPS, pickup to drop-off only' },
     pFuel:     { v: null, min: 0, max: 5000, step: 'pilot', label: 'Fuel bought', unit: '$', src: 'Not recorded in the field test', inc: 0.01 },
-    pHire:     { v: null, min: 0, max: 500, step: 'pilot', label: 'Bike hire per day', unit: '$', src: 'Bike agreement', inc: 0.5 },
     pRider:    { v: null, min: 0, max: 500, step: 'pilot', label: 'Rider pay per day', unit: '$', src: 'Rider agreement', inc: 0.5 },
     // step 5
     bikes:     { v: 20, min: 1, max: 500, int: true,   step: 'fleet', label: 'Bikes, one per partner', unit: '', src: "Simba's partner list, about 20" },
@@ -612,7 +610,7 @@
   const money = (n, dp = 0) => (n < 0 ? '−$' : '$') + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
 
   function compute(s) {
-    const setup = s.bike + s.box + s.kit + s.tracker + s.phone + s.regist;
+    const setup = s.bike + s.box + s.kit + s.tracker + s.phone;
     const deliveries = s.perDay * s.days;
     const revenue = deliveries * s.fare;
     const fees = revenue * (s.fetchrPct + s.procPct) / 100;
@@ -640,20 +638,20 @@
       fail: ok('pDone') && typeof s.pFailed === 'number' ? s.pFailed / (s.pDone + s.pFailed) : null,
       kmDel: ok('pKm', 'pDone') ? s.pKm / s.pDone : null,
       fuelKm: ok('pFuel', 'pKm') ? s.pFuel / s.pKm : null,
-      cost: ok('pDone', 'pDays', 'pFuel', 'pHire', 'pRider') ? (s.pFuel + (s.pHire + s.pRider) * s.pDays) / s.pDone : null,
+      cost: ok('pDone', 'pDays', 'pFuel', 'pRider') ? (s.pFuel + s.pRider * s.pDays) / s.pDone : null,
       kmDay: ok('pKm', 'pDays') ? s.pKm / s.pDays : null,
     };
   }
 
   // self-check of the arithmetic with round numbers
   (function check() {
-    const r = compute({ bike: 1000, box: 0, kit: 0, tracker: 0, phone: 0, regist: 0, riderMode: 'pct', riderWeek: 0, perDay: 10, fare: 5, days: 5,
+    const r = compute({ bike: 1000, box: 0, kit: 0, tracker: 0, phone: 0, riderMode: 'pct', riderWeek: 0, perDay: 10, fare: 5, days: 5,
       riderPct: 40, fetchrPct: 20, procPct: 0, fuelPrice: 2, kmDay: 40, kmPerL: 40, fuelBy: 'fleet',
       maint: 0, insure: 52, licence: 0, data: 0, trackFee: 0, bikes: 2 });
     console.assert(r.revenue === 250 && r.rider === 100 && r.fees === 50, 'split');
     console.assert(r.fuel === 10 && r.running === 11 && r.partner === 89, 'running');
     console.assert(Math.abs(r.payback - 1000 / 89) < 1e-9 && r.capital === 2000, 'payback');
-    const p = pilot({ pDays: 5, pDone: 50, pFailed: 0, pKm: 400, pFuel: 20, pHire: 10, pRider: 10 });
+    const p = pilot({ pDays: 5, pDone: 50, pFailed: 0, pKm: 400, pFuel: 20, pRider: 20 });
     console.assert(p.perDay === 10 && p.fail === 0 && p.kmDel === 8 && p.fuelKm === 0.05 && p.cost === 2.4, 'pilot');
     console.assert(pilot({ pDays: 5 }).cost === null, 'pilot blanks');
   })();
